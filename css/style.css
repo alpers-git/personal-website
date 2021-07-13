@@ -1,22 +1,10 @@
-@font-face {
-    font-family: Roboto Condensed;
-    src: url(fonts/RobotoCondensed-Regular.ttf);
-}
 
-@font-face {
-    font-family: Roboto Condensed Bold;
-    src: url(fonts/RobotoCondensed-Bold.ttf);
-}
-
-@font-face {
-    font-family: Roboto Condensed Italic;
-    src: url(fonts/RobotoCondensed-Italic.ttf);
-}
 
 body{
     background-color: #222831;
     margin: 0em;
     padding: 0em;
+    font-family: 'Roboto Condensed', sans-serif;
 }
 
 ul{
@@ -26,56 +14,94 @@ ul{
 a{
     text-decoration:none;
 }
-#main{
-	padding:30px 50px;
-	position:center;
-	width:100%;
-	height: 100vh;
-	box-sizing: border-box;
-	background-position: right bottom;
-	background-repeat: no-repeat;
-	/*background-image: url("../images/bg.png");*/
-	background-color: #222831;
+
+i.icon-dark {
+    color: #222831
 }
 
 nav{
+    border-radius: 0px 0px 15px 0px;
     display: flex;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     align-items: center;
     font-weight: 600;
-    letter-spacing: 1px;
-    font-family: 'Roboto Condensed';
+    letter-spacing: 2px !important;
+    font-family: 'Roboto Condensed'!important;
     position: fixed;
-    top:0;
-    left:0;
     width: 100%;
     box-sizing: border-box;
-    padding: 0.8% 4%;
-    background-color: #BBE1FA;
-    box-shadow: 0px 0px 20px rgba(233, 255, 254, 0.4);
+    padding: 0% 2%;
+    background-color: #BBE1FA !important; 
+    box-shadow: 0px 0px 25px rgba(233, 255, 254, 0.5)!important;
     z-index: 1;
 }
 
-.menu{
-    display: flex;
+.sidenav{
+    background-color: #BBE1FA !important; 
 }
-.menu li a{
-    padding: 10px 15px;
-    color: #0F4C75;
-    font-size: 22px;
+
+.hide-on-med-and-down{
+    display: flex !important;
+}
+.hide-on-med-and-down li a{
+    color: #157ec4 ;
+    font-size: 18px;
+    font-family: 'Roboto Condensed'!important;
 }
 
 .cornerName{
     color: #222831;
-    font-family: 'Roboto Condensed Bold';
+    font-family: 'Roboto Condensed';
     font-size: 32px;
 }
 
-.menu li a:hover,
+.hide-on-med-and-down li a:hover,
 .active{
     background-color: black;
-    color: #BBE1FA;
+    color: #FFC107;
     font-weight: 700;
     transition: all ease 0.4s;
     box-sizing: border-box;
+    border-radius: 5px 5px 15px 5px;
+}
+
+.about{
+    border-radius: 5px 5px 25px 5px;
+	font-family: 'Roboto Condensed';
+    font-size: 18px;
+    /*padding-top: 3%;*/
+    padding: 1%;
+    color:#1B262C;
+	width: 50%;
+	position: absolute;
+	left: 20%;
+	top: 50%;
+	transform: translate(-20%,-50%);
+    background-color: #BBE1FA;
+    box-shadow: 0px 0px 20px rgba(233, 255, 254, 0.5);
+}
+.about p:nth-child(1),.name .details{
+	color:#6c707c;
+	font-size: 16px;
+}
+.card h1{
+	font-family: 'Roboto Condensed';
+	font-size: 2rem;
+	margin: 0px;
+	letter-spacing: 3px;
+	color:#157ec4;
+}
+
+
+.card{
+    border-radius: 5px 5px 25px 5px !important;
+    font-family: 'Roboto Condensed'!important;
+    font-size: 1rem;
+    /*padding-top: 3%;*/
+    padding: 1%;
+    width: 100%;
+    color:#eeeeee;
+	position: absolute;
+    background-color: #0f4c75ce !important;
+    box-shadow: 0px 0px 20px rgba(233, 255, 254, 0.5)!important;
 }
