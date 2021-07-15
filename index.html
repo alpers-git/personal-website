@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link href="css/style.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet" media="screen,projection">
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--Import materialize.css-->
@@ -12,55 +12,108 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
   </head>
 
   <body>
     <nav>
       <div class="nav-wrapper">
-        <a href="#!" class="cornerName"><b> Alper Şahıstan</b></a>
-        <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-dark">menu</i></a>
+        <a href="#!" class="cornerName"><b> Alper Şahıstan</b></a> <a  href="https://twitter.com/stlkr_v1"><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #FFC107;"></span></a> 
+        <a  href="https://github.com/STLKRv1"><span class="iconify" data-icon="mdi-github" data-inline="false" style="color: #FFC107;"></span></a>
+        <a  href="https://www.linkedin.com/in/alper-sahistan"><span class="iconify" data-icon="mdi-linkedin" data-inline="false" style="color: #FFC107;"></span></a>
+        <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-light">menu</i></a>
         <ul class="right hide-on-med-and-down">
-          <li><a href="#">About</a></li>
-          <li><a href="#">Projects</a></li>
-          <li><a href="#">Contact</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#">Research</a></li>
+          <li><a href="#contact-footer">Contact</a></li>
           <li><a href="cv.pdf">CV</a></li>
         </ul>
       </div>
     </nav>
 
     <ul class="sidenav" id="mobile-sidebar">
-      <li><a href="#">About</a></li>
-      <li><a href="#">Projects</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#">Research</a></li>
+      <li><a href="#contact-footer">Contact</a></li>
       <li><a href="cv.pdf">CV</a></li>
     </ul>
-    
+
     <div id="index-banner" class="parallax-container">
-      <div class="section no-pad-bot">
-        <div class="container">
+      <div class="section no-pad-bot" id="about">
+        <div class="container row">
           <br><br>
-          <div class="row">
-            <br><br>
-            <div class="col s12 m10">
-              <div class="card horizontal row">
-                <div class="card-image col s5">
-                  <img src="images/wow.jpeg">
-                </div>
-                  <div class="card-stacked">
-                    <div class="card-content row">
-                    <h1 class="col s12">About</h1>
-                    <br><br>
-                    <p class="col s12">I'm Alper Şahıstan an <strong>MSc Candidate</strong> and teaching asistant at Bilkent University Department of <strong>Computer Science</strong>. My areas of research include <strong>ray-tracing, volume-rendering, visualization and computer graphics</strong>. I am also interested in HPC and computational geometry.</p>
-                  </div>
-                </div>
-              </div>
+          <br><br>
+          <br><br>
+          <br><br>
+            <img src="images/wow.jpeg" alt="" class="col s4 l3" id="intro-img">
+            <div class= "col s12 l8" id="intro-text">
+              <h3>I'm Alper Şahıstan</h3>
+              <h6>A <b>Master's student</b> and teaching asistant at Bilkent University Department of <b>Computer Science</b>. My areas of research include <b>ray-tracing, volume-rendering, visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
             </div>
-          <br><br>
         </div>
-        <br><br>
       </div>
       <div class="parallax"><img src="images/VeachAjar.png"></div>
     </div>
+
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <div class="col l8 s12">
+            <h5 id = "extra-info-head">Research experience</h5>
+            <ul id = "extra-info-text">
+              <li id = "extra-info-text">I'm currently remotely collaborating with Dr.Ingo Wald, Nate Morricial, and Stefan Zellman on a 3D scientific visualization paper. Research is focused on compaction and hardware-assisted efficient traversal of unstructured meshes over multiple nodes.
+              </li>
+              <li id = "extra-info-text">
+                  I also utilized compact tetrahedral-meshes as acceleration structures for ray-tracing in a previous government-funded(TÜBİTAK) study supervised by Prof. Güdükbay Of Bilkent University.
+              </li>
+            </ul>
+          </div>
+          <div class="col l4 s12">
+            <div class="row">
+             <h6 id="extra-info-head">
+                Advisor:
+              </h6><a id = "extra-info-text" href="http://www.cs.bilkent.edu.tr/~gudukbay/">Prof. Uğur Güdükbay</a>
+            </div>
+            <div class="row">
+              <h6 id = "extra-info-head">How to pronounce my name?</h6>
+                <p id = "extra-info-text"><i>Alperr Shahisthan</i></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div id="index-banner" class="parallax-container">
+      <div class="section no-pad-bot" id="about">
+        <div class="container row">
+          <br><br>
+          <br><br>
+          <br><br>
+          <br><br>
+            
+        </div>
+      </div>
+      <div class="parallax"><img src="images/agulhas_all_teaser.png"></div>
+    </div>
+
+
+    <footer class="page-footer" id="contact-footer">
+      <div class="container">
+        <h4 class="center" id="contact-footer">Feel free to contact me!</h4>
+        <div class="row center">
+          <div class="col l6 s12">
+            <h5 class="center" id="contact-footer">Email <i class="material-icons">mail</i> </h5>
+            <p><a href="mailto:alpersahistan@gmail.com">alpersahistan@gmail.com</a> OR
+            <a href="mailto:alper.sahistan@bilkent.edu.tr">alper.sahistan@bilkent.edu.tr</a> </p>
+          </div>
+          <div class="col l6 s12">
+            <h5 class="center"><a href="https://twitter.com/stlkr_v1">Twitter </a><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #222831;"></span></h5>
+            <p id="contact-footer">Note: Although, my tweets in English usually concern research, I may tweet unrelated ideas in Turkish.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
 
   <!--JavaScript at end of body for optimized loading-->
 </body>

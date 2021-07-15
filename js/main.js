@@ -11,4 +11,14 @@ document.addEventListener('DOMContentLoaded', function() {
   
     }); // end of document ready
   })(jQuery); // end of jQuery name space
+
   
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
