@@ -23,9 +23,9 @@
         <a  href="https://www.linkedin.com/in/alper-sahistan"><span class="iconify" data-icon="mdi-linkedin" data-inline="false" style="color: #FFC107;"></span></a>
         <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-light">menu</i></a>
         <ul class="right hide-on-med-and-down">
-          <li><a href="#about">About</a></li>
-          <li><a href="#">Research</a></li>
-          <li><a href="#contact-footer">Contact</a></li>
+          <li><a class ="active" id="about-tab" href="#about">About</a></li>
+          <li><a id = "research-tab" href="#research">Research</a></li>
+          <li><a id="contact-tab" href="#contact-footer">Contact</a></li>
           <li><a href="cv.pdf">CV</a></li>
         </ul>
       </div>
@@ -33,13 +33,13 @@
 
     <ul class="sidenav" id="mobile-sidebar">
       <li><a href="#about">About</a></li>
-      <li><a href="#">Research</a></li>
+      <li><a href="#research">Research</a></li>
       <li><a href="#contact-footer">Contact</a></li>
       <li><a href="cv.pdf">CV</a></li>
     </ul>
 
     <div id="index-banner" class="parallax-container">
-      <div class="section no-pad-bot" id="about">
+      <div class="section no-pad-bot anchor" id="about">
         <div class="container row">
           <br><br>
           <br><br>
@@ -47,8 +47,8 @@
           <br><br>
             <img src="images/wow.jpeg" alt="" class="col s4 l3" id="intro-img">
             <div class= "col s12 l8" id="intro-text">
-              <h3>I'm Alper Şahıstan</h3>
-              <h6>A <b>Master's student</b> and teaching asistant at Bilkent University Department of <b>Computer Science</b>. My areas of research include <b>ray-tracing, volume-rendering, visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
+              <h3>About</h3>
+              <h6>I'm Alper Şahıstan a <b>Master's student</b> and teaching asistant at Bilkent University Department of <b>Computer Science</b>. My areas of research include <b>ray-tracing, volume-rendering, visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
             </div>
         </div>
       </div>
@@ -59,12 +59,16 @@
       <div class="section">
         <div class="row">
           <div class="col l8 s12">
-            <h5 id = "extra-info-head">Research experience</h5>
+            <h5 id = "extra-info-head">Further Information</h5>
             <ul id = "extra-info-text">
-              <li id = "extra-info-text">I'm currently remotely collaborating with Dr.Ingo Wald, Nate Morricial, and Stefan Zellman on a 3D scientific visualization paper. Research is focused on compaction and hardware-assisted efficient traversal of unstructured meshes over multiple nodes.
+              <li id = "extra-info-text">
+                I'm currently remotely collaborating with Dr.Ingo Wald, Dr.Stefan Zellman, and Nate Morricial on a 3D scientific visualization paper. Research is focused on compaction and hardware-assisted efficient traversal of unstructured meshes over multiple nodes.
               </li>
               <li id = "extra-info-text">
-                  I also utilized compact tetrahedral-meshes as acceleration structures for ray-tracing in a previous government-funded(TÜBİTAK) study supervised by Prof. Güdükbay Of Bilkent University.
+                  We have submitted a short paper demonstrating RTX-accelerated shell traversal for volume-visulization to IEEE VIS 2021.
+              </li>
+              <li id = "extra-info-text">
+                  We also utilized compact tetrahedral-meshes as acceleration structures for ray-tracing in a previous government-funded(TÜBİTAK) study supervised by Prof. Güdükbay Of Bilkent University.
               </li>
             </ul>
           </div>
@@ -76,7 +80,7 @@
             </div>
             <div class="row">
               <h6 id = "extra-info-head">How to pronounce my name?</h6>
-                <p id = "extra-info-text"><i>Alperr Shahisthan</i></p>
+                <p id = "extra-info-text"><i>Allper Shahisthan</i></p>
             </div>
           </div>
         </div>
@@ -85,30 +89,70 @@
 
 
     <div id="index-banner" class="parallax-container">
-      <div class="section no-pad-bot" id="about">
+      <div class="section no-pad-bot anchor" id="research">
         <div class="container row">
           <br><br>
           <br><br>
-          <br><br>
-          <br><br>
-            
+          <div class= "col s12 l12" id="section-title">
+            <h3>Research</h3>
+          </div>
         </div>
       </div>
       <div class="parallax"><img src="images/agulhas_all_teaser.png"></div>
     </div>
 
+    <div class="container">
+      <div class="section">
+        <div class="col s12 m12" id = "extra-info-text">
+          <h4 id="extra-info-head">Journal Papers</h4>
+          <p id="extra-info-text">coming soon</p>
+        </div>
+          <h4 id="extra-info-head">Conference/Short Papers</h4>
+          <ul>
+            <li class="row" id="extra-info-text">
+              <div class="col s12 l8">
+                <img id="teaser-img" src="images/raytraced_shell/t1.png">
+                <img id="teaser-img" src="images/raytraced_shell/t2.png">
+                <img id="teaser-img" src="images/raytraced_shell/t3.png">
+                <img id="teaser-img" src="images/raytraced_shell/t4.png">
+              </div>
+              <p class="col s12 l12" id = "extra-info-text"><b>A. Şahıstan</b>, S. Demirci, N. Morrical, S. Zellman, A. Aman, I. Wald, U. Güdükbay "Ray-traced Shell Traversal of Tetrahedral Meshes for
+              Direct Volume Visualization" <b>IEEE VIS Short Papers 2021</b>(under review) <i>(avaliable with permission of supervisor)</i></p></li>
+          </ul>
+      </div>
+      <div class="row">
+        <div class="col s12 m6" id = "extra-info-text">
+          <h4 id="extra-info-head">Working Papers</h4>
+          <p id="extra-info-text">coming soon</p>
+        </div>
+        <div class="col s12 m6" id = "extra-info-text">
+          <h4 id="extra-info-head">Preprint</h4>
+          <p id="extra-info-text">coming soon</p>
+        </div>
+      </div>
+    </div>
 
-    <footer class="page-footer" id="contact-footer">
+
+    <div id="index-banner" class="parallax-container">
+      <div class="section no-pad-bot">
+        <div class="container row">
+        </div>
+      </div>
+      <div class="parallax"><img src="images/cornellbox_2.png"></div>
+    </div>
+
+
+    <footer class="page-footer anchor" id="contact-footer">
       <div class="container">
         <h4 class="center" id="contact-footer">Feel free to contact me!</h4>
         <div class="row center">
           <div class="col l6 s12">
-            <h5 class="center" id="contact-footer">Email <i class="material-icons">mail</i> </h5>
+            <h5 class="center" id="contact-footer"><i class="material-icons">mail</i> Email </h5>
             <p><a href="mailto:alpersahistan@gmail.com">alpersahistan@gmail.com</a> OR
             <a href="mailto:alper.sahistan@bilkent.edu.tr">alper.sahistan@bilkent.edu.tr</a> </p>
           </div>
           <div class="col l6 s12">
-            <h5 class="center"><a href="https://twitter.com/stlkr_v1">Twitter </a><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #222831;"></span></h5>
+            <h5 class="center"></a><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #222831;"></span> <a href="https://twitter.com/stlkr_v1">Twitter </h5>
             <p id="contact-footer">Note: Although, my tweets in English usually concern research, I may tweet unrelated ideas in Turkish.</p>
           </div>
         </div>
