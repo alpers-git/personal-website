@@ -21,6 +21,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }); // end of document ready
   })(jQuery); // end of jQuery name space
 
+  $(document).ready(function(){
+    $('.modal').modal();
+  });
+
   
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
