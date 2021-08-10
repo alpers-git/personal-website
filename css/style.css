@@ -41,6 +41,21 @@ i.icon-light {
     color: #FFC107
 }
 
+#citation-box{
+    background-color: #ffc107;
+    color:#222831;
+}
+
+#citation-text{
+    background-color: #222831;
+    white-space: pre-wrap;
+    display: flex;
+    font-weight: 300;
+    font-family: 'Source Code Pro', monospace;
+    font-size: small;
+}
+
+
 nav{
     display: flex;
     /*justify-content: space-between;*/
