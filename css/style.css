@@ -195,3 +195,13 @@ nav{
     width: 9rem;
     
 }
+
+.loader {     
+  opacity: 1;
+  transition: 2s opacity;
+  height: 300px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
