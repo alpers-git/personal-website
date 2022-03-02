@@ -196,6 +196,13 @@ nav{
     
 }
 
+#wide-img{
+    margin-bottom: 2.2rem;
+    padding: 0.3rem;
+    width: 20rem;
+    
+}
+
 .loader {     
   opacity: 1;
   transition: 2s opacity;

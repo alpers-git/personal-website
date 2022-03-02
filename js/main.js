@@ -82,12 +82,21 @@ $(document).on("scroll", function() {
 });
 
 
-function copyToClipboard(id) {
+function copyToClipboard(id) 
+{
   var r = document.createRange();
   r.selectNode(document.getElementById(id));
-  window.getSelection().removeAllRanges();
-  window.getSelection().addRange(r);
-  document.execCommand('copy');
-  window.getSelection().removeAllRanges();
-  alert("Copied!");
+  if (!navigator.clipboard){
+    document.execCommand('copy');
+  } 
+  else{
+    navigator.clipboard.writeText(r).then(
+        function(){
+          alert("Copied!"); // success 
+        })
+      .catch(
+         function() {
+          alert("failed to copy!"); // error
+      });
+  }    
 }
