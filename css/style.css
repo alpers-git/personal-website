@@ -33,6 +33,11 @@ h3{
     color: #157ec4;
 }
 
+#Link-header{
+    color: #ffc1079c;
+    text-decoration: underline;
+}
+
 #extra-info-text{
     color: #ffffff;
 }
@@ -193,7 +198,12 @@ nav{
     margin-bottom: 0rem;
     padding: 0.3rem;
     width: 9rem;
-    
+}
+
+#teaser-img-2{
+    margin-bottom: 0rem;
+    padding: 0.3rem;
+    height: 6rem;
 }
 
 #wide-img{

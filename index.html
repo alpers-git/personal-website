@@ -32,7 +32,7 @@
   <body>
     <nav>
       <div class="nav-wrapper">
-        <a href="#!" class="cornerName"><b> Alper Şahıstan</b></a> <a  href="https://twitter.com/stlkr_v1"><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #FFC107;" data-width="1.5rem"></span></a> 
+        <a href="#!" class="cornerName"><b> Alper Şahıstan</b></a> <a  href="https://twitter.com/robotoglumrobot"><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #FFC107;" data-width="1.5rem"></span></a> 
         <a  href="https://github.com/STLKRv1"><span class="iconify" data-icon="mdi-github" data-inline="false" style="color: #FFC107;" data-width="1.5rem" ></span></a>
         <a  href="https://www.researchgate.net/profile/Alper-Sahistan"><span class="iconify" data-icon="fa-brands:researchgate" data-inline="false" style="color: #FFC107;" data-width="1.3rem"></span></a>
         <a  href="https://www.linkedin.com/in/alper-sahistan"><span class="iconify" data-icon="mdi-linkedin" data-inline="false" style="color: #FFC107;" data-width="1.6rem"></span></a>
@@ -67,7 +67,7 @@
               <img src="images/wow.jpeg" class="col s12 l3 object-fit-cover" id="intro-img">
               <div id="about-text">
                 <h3>About</h3>
-                <h6>I'm Alper Şahıstan a <b>M.Sc. student</b> and teaching asistant at <a href="https://w3.cs.bilkent.edu.tr/en/">Bilkent University Department of <b>Computer Science</b></a> . My areas of research include <b>ray-tracing, volume-rendering, visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
+                <h6>I'm Alper Şahıstan a <b>M.Sc. student</b> and teaching asistant at <a href="https://w3.cs.bilkent.edu.tr/en/">Bilkent University Department of <b>Computer Science</b></a>. I will be starting my Ph.D. at <a href="https://www.cs.utah.edu/"> <b>University of Utah</b> SoC</a> Fall 2022 semester My areas of research include <b>ray-tracing, volume-rendering, visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
               </div>
             </div>
           </div>
@@ -83,8 +83,7 @@
             <h5 id = "extra-info-head">Further Information</h5>
             <ul id = "extra-info-text">
               <li id = "extra-info-text">
-                I'm currently remotely collaborating with Dr. Ingo Wald, Dr. Stefan Zellmann, and Nate Morricial on a 3D scientific visualization paper. Research is focused on compaction and hardware-assisted efficient traversal of unstructured meshes over multiple nodes.
-                <b>We have submitted a short paper demonstrating RTX-accelerated shell traversal for volume-visulization to IEEE VIS 2021.</b>
+                I'm currently remotely collaborating with Dr. Ingo Wald, Dr. Stefan Zellmann, and Nate Morricial on multiple scientific visualization oriented papers.
               </li>
               <li id = "extra-info-text">
                   We also utilized compact tetrahedral-meshes as acceleration structures for ray-tracing in a previous government-funded(TÜBİTAK) study supervised by Prof. Güdükbay Of Bilkent University.
@@ -150,7 +149,19 @@
             <!--<h4 id="extra-info-head">Journal Papers</h4>
           <p id="extra-info-text">coming soon</p>-->
         </div>
-        <h4 id="extra-info-head">Conference/Short Papers</h4>
+        <a href="publications.html"><h3 id="Link-header">See all Publications</h3></a></u>
+        <h4 id="extra-info-head">Recent Publications</h4>
+        <ul>
+          <li class="row" id="extra-info-text">
+            <div class="col s12 l12">
+              <img class="responsive-img" id="teaser-img-2" src="images/gpu_streaming/t1.png">
+            </div>
+            <p class="col s12 m12 l12" id = "extra-info-text">S. Zellmann, <b>A. Sahistan</b>, I. Wald, M. Hellmann, W. Usher 
+              "Design and Evaluation of a GPU Streaming Framework for Visualizing Time-Varying AMR Data" <b>EGPGV 2022</b>
+            <a href="research/paper-exajet-animated-compressed.pdf"><i class="material-icons icon-light">picture_as_pdf</i></a>
+            <a class=" modal-trigger" href="#modal2"><i class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a></p>
+          </li>
+        </ul>
           <ul>
             <li class="row" id="extra-info-text">
               <div class="col s12 l12">
@@ -176,10 +187,6 @@
                   <p class="col s12 m12 l12" id = "extra-info-text">Untitled Distributed Mars Lander Project</p>
                 </li>
                 <li class="col s12 l4" id="extra-info-text">
-                  <img class="responsive-img" id="wide-img" src="images/working_paper/anim-amr.png">
-                  <p class="col s12 m12 l12" id = "extra-info-text">Untitled Animated AMR data Project</p>
-                </li>
-                <li class="col s12 l4" id="extra-info-text">
                   <img class="responsive-img" id="teaser-img" src="images/working_paper/owlPTDVR.png">
                   <p class="col s12 m12 l12" id = "extra-info-text">Untitled Adaptive Sampling Clustering Paper</p>
                 </li>
@@ -198,15 +205,31 @@
       <div class="modal-content" id="citation-box">
         <h4>BibTeX citation</h4>
         <div class="card-panel" id ="citation-text">
-          <p type="text" id="paper1">@inproceedings{sahistan2021shellToShell,
+          <p type="text" id="paper1">@inproceedings{Sahistan2021ShellToShell,
             author={Sahistan, Alper and Demirci, Serkan and Morrical, Nathan and Zellmann, Stefan and Aman, Aytek and Wald, Ingo and G\"ud\"ukbay, U\^gur},
             booktitle={2021 IEEE Visualization Conference (VIS)}, 
             title={Ray-traced Shell Traversal of Tetrahedral Meshes for Direct Volume Visualization}, 
             year={2021},
-            volume={},
-            number={},
-            pages={91-95},
             doi={10.1109/VIS49827.2021.9623298}}</p>
+        </div>
+        <div class="row">
+          <div class="col m11"></div>
+          <a class="button col m1" onclick="copyToClipboard('paper1')" style="position: absolute; right: 0;"><i class="material-icons">copy_all</i></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal2" class="modal">
+      <div class="modal-content" id="citation-box">
+        <h4>BibTeX citation</h4>
+        <div class="card-panel" id ="citation-text">
+          <p type="text" id="paper2">@inproceedings{Zellmann2022AMRAnimated,
+            booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},
+            editor = {Bujack, R. and Tierny, J. and Sadlo, F.},
+            title = {Design and Evaluation of a {GPU} Streaming Framework for Visualizing Time-Varying {AMR} Data},
+            author = {Zellmann, Stefan and Wald, Ingo and Sahistan, Alper and Hellmann, Matthias and Usher, Will},
+            year = {2022},
+            }</p>
         </div>
         <div class="row">
           <div class="col m11"></div>
@@ -235,7 +258,7 @@
             <a href="mailto:alper.sahistan@bilkent.edu.tr">alper.sahistan@bilkent.edu.tr</a> </p>
           </div>
           <div class="col l6 s12">
-            <h5 class="center"></a><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #222831;"></span> <a href="https://twitter.com/stlkr_v1">Twitter </h5>
+            <h5 class="center"></a><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #222831;"></span> <a href="https://twitter.com/robotoglumrobot">Twitter </h5>
             <p id="contact-footer">Note: Although, my tweets in English usually concern research, I may tweet on unrelated subjects in Turkish.</p>
           </div>
         </div>
