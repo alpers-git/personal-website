@@ -104,7 +104,7 @@ nav{
     display: flex !important;
 }
 .hide-on-med-and-down li a{
-    color: #157ec4 ;
+    color: #157ec4;
     font-size: 18px;
     font-family: 'Roboto Condensed'!important;
 }
@@ -228,12 +228,23 @@ nav{
     
 }
 
-.loader {     
-  opacity: 1;
-  transition: 2s opacity;
-  height: 300px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.image-wrapper {
+    overflow: hidden;
+    display: inline-block;
+  }
+  
+  .image-wrapper img {
+    float: left;
+    display: block;
+    opacity: 0.2; /* simulating a semitransparent image */
 }
+
+
+.image-wrapper:after, .loading {
+    content: ' ';
+    background: transparent  url('../images/spinner.gif')  center no-repeat ;
+    background-size : auto 100%;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
