@@ -256,3 +256,9 @@ nav{
 .publication .card-title{
     color: #FFC107;
 }
+
+@media (max-width:580px) {
+    img.for-large-screens{
+      display: none;
+    }
+  }
