@@ -1,293 +1,358 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JK1W65JPPR"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
 
-        gtag('config', 'G-JK1W65JPPR');
-    </script>
-    <!-- End Google Analytics -->
-    
-    <link href="css/style.css" rel="stylesheet" media="screen,projection">
-    <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!--Import materialize.css-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<head>
 
-    <!--Let browser know website is optimized for mobile-->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
-    <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-JK1W65JPPR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-    <title>AŞ's personal website</title>
-  </head>
+    gtag('config', 'G-JK1W65JPPR');
+  </script>
+  <!-- End Google Analytics -->
 
-  <body>
-    <nav>
-      <div class="nav-wrapper">
-        <a href="#!" class="cornerName"><b> Alper Sahistan</b></a> <a  href="https://twitter.com/alpers_tw"><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #FFC107;" data-width="1.5rem"></span></a> 
-        <a  href="https://github.com/alpers-git"><span class="iconify" data-icon="mdi-github" data-inline="false" style="color: #FFC107;" data-width="1.5rem" ></span></a>
-        <a  href="https://gitlab.com/alpers-git"><span class="iconify" data-icon="mdi-gitlab" data-inline="false" style="color: #FFC107;" data-width="1.5rem" ></span></a>
-        <a  href="https://www.researchgate.net/profile/Alper-Sahistan"><span class="iconify" data-icon="fa-brands:researchgate" data-inline="false" style="color: #FFC107;" data-width="1.3rem"></span></a>
-        <a  href="https://www.linkedin.com/in/alper-sahistan"><span class="iconify" data-icon="mdi-linkedin" data-inline="false" style="color: #FFC107;" data-width="1.6rem"></span></a>
-        <a  href="https://scholar.google.com/citations?hl=tr&user=dUs6hMIAAAAJ"><span class="iconify" data-icon="academicons:google-scholar" data-inline="false" style="color: #FFC107;" data-width="1.2rem" ></span></a>
-        <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-light" data-width="1rem">menu</i></a>
-        <ul class="right hide-on-med-and-down">
-          <li><a class ="active" id="about-tab" href="#about">About</a></li>
-          <li><a id = "research-tab" href="#research">Research</a></li>
-          <li><a id="contact-tab" href="#contact-footer">Contact</a></li>
-          <li ><a href="resume.pdf" style="color: #FFC107;"><u>Resume</u></a></li>
-          <li ><a href="cv.pdf" style="color: #FFC107;"><u>CV</u></a></li>
-        </ul>
-      </div>
-    </nav>
+  <link href="css/style.css" rel="stylesheet" media="screen,projection">
+  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
-    <ul class="sidenav" id="mobile-sidebar">
-      <li><a href="#about">About</a></li>
-      <li><a href="#research">Research</a></li>
-      <li><a href="#contact-footer">Contact</a></li>
-      <li><a href="resume.pdf">Resume.pdf</a></li>
-      <li><a href="cv.pdf">cv.pdf</a></li>
-    </ul>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
 
-    <div id="index-banner" class="parallax-container">
-      <div class="section no-pad-bot anchor " id="about">
-        <br><br>
-        <br><br>
-        <br><br>
-        <div class="container">
-          <div class="row center-on-small-only">
-          <br><br>
-            <div class= "col s12 l10" id="intro-text">
-              <img src="images/wow.jpeg" class="col s12 l3 object-fit-cover" id="intro-img">
-              <div id="about-text">
-                <h3>About</h3>
-                <h6>I'm Alper Sahistan(Şahıstan) a <b>PhD student</b> at <a href="https://www.cs.utah.edu/">University of Utah <b>School of Computing</b></a>. My areas of research include <b>ray-tracing, volume-rendering, visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="parallax image-wrapper"><img src="images/VeachAjar.png"></div>
-    </div>
+  <title>AŞ's personal website</title>
+</head>
 
-    <div class="container">
-      <div class="section">
-        <div class="row">
-          <div class="col l8 s12">
-            <h5 id = "extra-info-head">Further Information</h5>
-            <ul id = "extra-info-text">
-              <li id = "extra-info-text">
-                I have recieved my MS & BS degrees from <a href="https://w3.cs.bilkent.edu.tr/en/"> Bilkent University <b>Department of Computer Engineering</b></a> 
-              </li>
-              <li id = "extra-info-text">
-                I'm currently collaborating with Prof. Valerio Pascucci, Dr. Ingo Wald, Dr. Stefan Zellmann, and Nate Morricial on multiple scientific visualization oriented papers.
-              </li>
-              <li id = "extra-info-text">
-                I'm also remotely-collaborating with Prof. Uğur Güdükbay and Serkan Demirci from Bilkent University.
-              </li>
-              <li id = "extra-info-text">
-                I did my internship at <a href="https://www.taleworlds.com/en/Home">Taleworlds Entertainment</a>, where I developed C# scripts and c++ geometry extraction tools. My work was credited in the game <a href="https://www.taleworlds.com/tr/Games/Bannerlord">Mount&Blade II: Bannerlord</a>.
-              </li>
-            </ul>
-            <div class="row">
-              <h6 id = "extra-info-head">How to pronounce my name?</h6>
-                <p id = "extra-info-text"><i>Allper Shahisthan</i></p>
-            </div>
-          </div>
-          <div class="col l4 s12">
-            <div class="row">
-             <h6 id="extra-info-head">
-                Advisor:
-              </h6><a id = "extra-info-text">Valerio Pascucci</a>
-            </div>
-            <div class="row">
-              <h6 id = "extra-info-head">Software Projects</h6>
-              <ul id = "extra-info-text">
-                <li id = "extra-info-text">
-                  <h6>Chroma Ray Tracer</span></a> 
-                    <a  href="https://github.com/chroma-works/Chroma-RayTracer"><span class="iconify" data-icon="mdi-github" data-inline="false" style="color: #ffffff;"></span></a></h6>
-                    <i>CPU path tracer with all the well-known features and a real-time raster preview renderer. You can access my <a href="https://chroma-works.github.io/Chroma-RayTracer/">development blog</a> where I talk about my process, fails and some opt. tricks. </i>
-                </li>
-                <li id = "extra-info-text">
-                  <h6>DataViz course Best Project 2nd place: Moviz</span></a>
-                    <a  href="https://benpm.github.io/moviz/"><span class="iconify" data-icon="mdi-github" data-inline="false" style="color: #ffffff;"></span></a></h6>
-                    <i>We like movies and their stories, but as a collective, they tell a story about the industry, economy, and more.</i>
-                </li>
-                <li id = "extra-info-text">
-                  <h6>Chroma Engine</span></a> 
-                    <a  href="https://github.com/chroma-works/Chroma-Engine"><span class="iconify" data-icon="mdi-github" data-inline="false" style="color: #ffffff;"></span></a></h6>
-                    <i>A rasterized render engine I work on time to time.</i>
-                </li>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div id="index-banner" class="parallax-container">
-      <div class="section no-pad-bot anchor" id="research">
-        <div class="container row">
-          <br><br>
-          <br><br>
-          <div class= "col s12 l12" id="section-title">
-            <h3>Research</h3>
-          </div>
-        </div>
-      </div>
-      <div class="parallax image-wrapper"><img src="images/jets.jpg"></div>
-    </div>
-
-    <div class="container">
-      <div class="section">
-        <a href="publications.html"><h3 id="Link-header">See all Publications</h3></a></u>
-        <h4 id="extra-info-head">Recent Publications</h4>
-        <ul>
-          <li class="row" id="extra-info-text">
-              <div class="col s12 l12">
-                <img class="responsive-img" id="teaser-img" src="images/islands/t1.png">
-                <img class="responsive-img" id="teaser-img" src="images/islands/t2.png">
-                <img class="responsive-img" id="teaser-img" src="images/islands/t3.png">
-                <img class="responsive-img" id="teaser-img" src="images/islands/t4.png">
-              </div>
-              <p class="col s12 m12 l12" id = "extra-info-text">S. Zellmann, I. Wald, J. Barbosa, D. Serkan, <b>A. Sahistan</b>, U. Güdükbay
-                  "Hybrid Image-/Data-Parallel Rendering Using Island Parallelism" 
-                  <b>The 12th IEEE Symposium on Large Data Analysis and Visualization</b>
-      <a href= "research/islands-paper-compressed.pdf"> <i class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal0"><i class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a></p>
-          </li>
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#!" class="cornerName"><b> Alper Sahistan</b></a> <a href="https://twitter.com/alpers_tw"><span
+          class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #FFC107;"
+          data-width="1.5rem"></span></a>
+      <a href="https://github.com/alpers-git"><span class="iconify" data-icon="mdi-github" data-inline="false"
+          style="color: #FFC107;" data-width="1.5rem"></span></a>
+      <a href="https://gitlab.com/alpers-git"><span class="iconify" data-icon="mdi-gitlab" data-inline="false"
+          style="color: #FFC107;" data-width="1.5rem"></span></a>
+      <a href="https://www.researchgate.net/profile/Alper-Sahistan"><span class="iconify"
+          data-icon="fa-brands:researchgate" data-inline="false" style="color: #FFC107;" data-width="1.3rem"></span></a>
+      <a href="https://www.linkedin.com/in/alper-sahistan"><span class="iconify" data-icon="mdi-linkedin"
+          data-inline="false" style="color: #FFC107;" data-width="1.6rem"></span></a>
+      <a href="https://scholar.google.com/citations?hl=tr&user=dUs6hMIAAAAJ"><span class="iconify"
+          data-icon="academicons:google-scholar" data-inline="false" style="color: #FFC107;"
+          data-width="1.2rem"></span></a>
+      <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-light"
+          data-width="1rem">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a class="active" id="about-tab" href="#about">About</a></li>
+        <li><a id="research-tab" href="#research">Research</a></li>
+        <li><a id="contact-tab" href="#contact-footer">Contact</a></li>
+        <li><a href="resume.pdf" style="color: #FFC107;"><u>Resume</u></a></li>
+        <li><a href="cv.pdf" style="color: #FFC107;"><u>CV</u></a></li>
       </ul>
-        <ul>
-          <li class="row" id="extra-info-text">
-            <div class="col s12 l12">
-              <img class="responsive-img" id="teaser-img-2" src="images/gpu_streaming/t1.png">
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-sidebar">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#contact-footer">Contact</a></li>
+    <li><a href="resume.pdf">Resume.pdf</a></li>
+    <li><a href="cv.pdf">cv.pdf</a></li>
+  </ul>
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot anchor " id="about">
+      <br><br>
+      <br><br>
+      <br><br>
+      <div class="container">
+        <div class="row center-on-small-only">
+          <br><br>
+          <div class="col s12 l10" id="intro-text">
+            <img src="images/wow.jpeg" class="col s12 l3 object-fit-cover" id="intro-img">
+            <div id="about-text">
+              <h3>About</h3>
+              <h6>I'm Alper Sahistan(Şahıstan) a <b>PhD student</b> at <a href="https://www.cs.utah.edu/">University of
+                  Utah <b>School of Computing</b></a>. My areas of research include <b>ray-tracing, volume-rendering,
+                  visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
             </div>
-            <p class="col s12 m12 l12" id = "extra-info-text">S. Zellmann, I. Wald, <b>A. Sahistan</b>, M. Hellmann, W. Usher 
-              "Design and Evaluation of a GPU Streaming Framework for Visualizing Time-Varying AMR Data" 
-              <b>2022 Eurographics Symposium on Parallel Graphics and Visualization</b>
-              <a href= "research/paper-exajet-animated-compressed.pdf"> <i class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal1"><i class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a></p>
-          </li>
-        </ul>
-       <ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="parallax image-wrapper"><img src="images/VeachAjar.png"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="row">
+        <div class="col l8 s12">
+          <h5 id="extra-info-head">Further Information</h5>
+          <ul id="extra-info-text">
+            <li id="extra-info-text">
+              I have recieved my MS & BS degrees from <a href="https://w3.cs.bilkent.edu.tr/en/"> Bilkent University
+                <b>Department of Computer Engineering</b></a>
+            </li>
+            <li id="extra-info-text">
+              I'm currently collaborating with Prof. Valerio Pascucci, Dr. Ingo Wald, Dr. Stefan Zellmann, and Nate
+              Morricial on multiple scientific visualization oriented papers.
+            </li>
+            <li id="extra-info-text">
+              I'm also remotely-collaborating with Prof. Uğur Güdükbay and Serkan Demirci from Bilkent University.
+            </li>
+            <li id="extra-info-text">
+              I did my internship at <a href="https://www.taleworlds.com/en/Home">Taleworlds Entertainment</a>, where I
+              developed C# scripts and c++ geometry extraction tools. My work was credited in the game <a
+                href="https://www.taleworlds.com/tr/Games/Bannerlord">Mount&Blade II: Bannerlord</a>.
+            </li>
+          </ul>
+          <div class="row">
+            <h6 id="extra-info-head">
+               Advisor:
+             </h6><a id = "extra-info-text">Valerio Pascucci</a>
+           </div>
+          <div class="row">
+            <h6 id="extra-info-head">How to pronounce my name?</h6>
+            <p id="extra-info-text"><i>Allper Shahisthan</i></p>
+          </div>
+        </div>
+        <div class="col l4 s12">
+          <div class="row">
+            <h6 id="extra-info-head">Software Projects</h6>
+            <ul id="extra-info-text">
+              <li id="extra-info-text">
+                <h6>StrandStorm</span></a>
+                  <a href="https://github.com/alpers-git/StrandStorm"><span class="iconify" data-icon="mdi-github"
+                      data-inline="false" style="color: #ffffff;"></span></a>
+                </h6>
+                <i><a href="https://graphics.cs.utah.edu/courses/cs6610/spring2023/">CS6610</a> and
+                  <a href="https://graphics.cs.utah.edu/courses/cs6660/spring2023/">CS6660</a> conjoint project
+                  real-time <b>hair rendering and physics</b></i>
+              </li>
+              <li id="extra-info-text">
+                <h6>Chroma Ray Tracer</span></a>
+                  <a href="https://github.com/chroma-works/Chroma-RayTracer"><span class="iconify"
+                      data-icon="mdi-github" data-inline="false" style="color: #ffffff;"></span></a>
+                </h6>
+                <i>CPU path tracer with all the well-known features and a real-time preview renderer. <a
+                    href="https://chroma-works.github.io/Chroma-RayTracer/">Development blog</a> </i>
+              </li>
+              <li id="extra-info-text">
+                <h6>CuRLI</span></a>
+                  <a href="https://github.com/alpers-git/CuRLI_v1"><span class="iconify" data-icon="mdi-github"
+                      data-inline="false" style="color: #ffffff;"></span></a>
+                </h6>
+                <i>OpenGL renderer and physics implemented with ECS for <a
+                    href="https://graphics.cs.utah.edu/courses/cs6610/spring2023/">CS6610</a> and
+                  <a href="https://graphics.cs.utah.edu/courses/cs6660/spring2023/">CS6660</a>.</i>
+              </li>
+              <li id="extra-info-text">
+                <h6>CS6635 Best Project Finalist: DeltaVis</span></a>
+                  <a href="https://github.com/alpers-git/deltaVis"><span class="iconify" data-icon="mdi-github"
+                      data-inline="false" style="color: #ffffff;"></span></a>
+                </h6>
+                <i>A simple delta-tracking based volume renderer that uses RTX cores via NVIDIA OptiX.</i>
+              </li>
+              <li id="extra-info-text">
+                <h6>CS6630 Best Project 2nd place: Moviz</span></a>
+                  <a href="https://benpm.github.io/moviz/"><span class="iconify" data-icon="mdi-github"
+                      data-inline="false" style="color: #ffffff;"></span></a>
+                </h6>
+                <i>We like movies and their stories, but as a collective, they tell a story about the industry, economy,
+                  and more.</i>
+              </li>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot anchor" id="research">
+      <div class="container row">
+        <br><br>
+        <br><br>
+        <div class="col s12 l12" id="section-title">
+          <h3>Research</h3>
+        </div>
+      </div>
+    </div>
+    <div class="parallax image-wrapper"><img src="images/jets.jpg"></div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <a href="publications.html">
+        <h3 id="Link-header">See all Publications</h3>
+      </a></u>
+      <h4 id="extra-info-head">Recent Publications</h4>
+      <ul>
         <li class="row" id="extra-info-text">
-            <div class="col s12 l12">
-              <img class="responsive-img" id="teaser-img" src="images/quick_clusters/t2.jpg">
-              <img class="responsive-img" id="teaser-img-2" src="images/quick_clusters/t3.png">
-            </div>
-            <p class="col s12 m12 l12" id = "extra-info-text">N. Morrical, <b>A. Sahistan</b>, U. Gudukbay, I. Wald, V. Pascucci 
-              "Quick Clusters: A GPU-Parallel Partitioning for Efficient Path Tracing of Unstructured Volumetric Grids" 
-              <b>2022 IEEE Visualization Conference (VIS)</b><a href= "research/quick-clusters.pdf"> <i class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal2"><i class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a></p>
+          <div class="col s12 l12">
+            <img class="responsive-img" id="teaser-img" src="images/islands/t1.png">
+            <img class="responsive-img" id="teaser-img" src="images/islands/t2.png">
+            <img class="responsive-img" id="teaser-img" src="images/islands/t3.png">
+            <img class="responsive-img" id="teaser-img" src="images/islands/t4.png">
+          </div>
+          <p class="col s12 m12 l12" id="extra-info-text">S. Zellmann, I. Wald, J. Barbosa, D. Serkan, <b>A.
+              Sahistan</b>, U. Güdükbay
+            "Hybrid Image-/Data-Parallel Rendering Using Island Parallelism"
+            <b>The 12th IEEE Symposium on Large Data Analysis and Visualization</b>
+            <a href="research/islands-paper-compressed.pdf"> <i
+                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal0"><i
+                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
+          </p>
         </li>
       </ul>
-      </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modals -->
-    <div id="modal0" class="modal">
-      <div class="modal-content" id="citation-box">
-   
-               <h4>BibTeX citation</h4>
-   
-                 <div class="card-panel" id ="citation-text">
-   
-                   <p type="text" id="paper0">@inproceedings{Zellmann2022Islands,
-     author = {Zellmann, Stefan and Wald, Ingo and Barbosa, Joao and Demirci, Serkan and Sahistan, Alper and G\"{u}d\"{u}kbay, U\u{g}ur},
-     booktitle = {The 12th IEEE Symposium on Large Data Analysis and Visualization},
-     title = {Hybrid Image-/Data-Parallel Rendering Using Island Parallelism},
-     year = {2022}}</p>
-      </div>
-           <div class="row">
-             <div class="col m11"></div>
-             <a class="button col m1" onclick="copyToClipboard('paper0')"
-    style="position: absolute; right: 0;"><i class="material-icons">copy_all</i></a>
-           </div>
-         </div>
-    </div>
-    
-    <div id="modal1" class="modal">
-      <div class="modal-content" id="citation-box">
-   
-               <h4>BibTeX citation</h4>
-   
-                 <div class="card-panel" id ="citation-text">
-   
-                   <p type="text" id="paper1">inproceedings{Zellmann2022AMRAnimated,
-     author = {Zellmann, Stefan and Wald, Ingo and Sahistan, Alper and Hellmann, Matthias and Usher, Will},
-     booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},
-     editor = {Bujack, R. and Tierny, J. and Sadlo, F.},
-     title = {Design and Evaluation of a {GPU} Streaming Framework for Visualizing Time-Varying {AMR} Data},
-     year = {2022}}</p>
-           </div>
-           <div class="row">
-             <div class="col m11"></div>
-             <a class="button col m1" onclick="copyToClipboard('paper1')" style="position: absolute; right: 0;"><i class="material-icons">copy_all</i></a>
-           </div>
-         </div>
-    </div>
-
-    <div id="modal2" class="modal">
-      <div class="modal-content" id="citation-box">
-   
-               <h4>BibTeX citation</h4>
-   
-                 <div class="card-panel" id ="citation-text">
-   
-                   <p type="text" id="paper2">@inproceedings{Morrical2022QuickClusters,
-     author = {Morrical, Nate and Sahistan, Alper and G\"{u}d\"{u}kbay, U\u{g}ur and Wald, Ingo and Pascucci, Valerio},
-     booktitle = {2022 IEEE Visualization Conference (VIS)},
-     title = {Quick Clusters: A {GPU}-Parallel Partitioning for Efficient Path Tracing of Unstructured Volumetric Grids},
-     year = {2022}
-   }
-   
-   </p>
-           </div>
-           <div class="row">
-             <div class="col m11"></div>
-             <a class="button col m1" onclick="copyToClipboard('paper2')"
-    style="position: absolute; right: 0;"><i class="material-icons">copy_all</i></a>
-           </div>
-         </div>
-       </div>
-
-
-    <div id="index-banner" class="parallax-container">
-      <div class="section no-pad-bot">
-        <div class="container row">
-        </div>
-      </div>
-      <div class="parallax image-wrapper"><img src="images/other_dragon_2.png"></div>
-    </div>
-
-
-    <footer class="page-footer anchor" id="contact-footer">
-      <div class="container">
-        <h4 class="center" id="contact-footer">Feel free to contact me!</h4>
-        <div class="row center">
-          <div class="col l6 s12">
-            <h5 class="center" id="contact-footer"><i class="material-icons">mail</i> Email </h5>
-            <p><a href="mailto:alpersahistan@gmail.com">alpersahistan@gmail.com</a> OR
-            <a href="mailto:alper@cs.utah.edu">alper@cs.utah.edu</a> </p>
+      <ul>
+        <li class="row" id="extra-info-text">
+          <div class="col s12 l12">
+            <img class="responsive-img" id="teaser-img-2" src="images/gpu_streaming/t1.png">
           </div>
-          <div class="col l6 s12">
-            <h5 class="center"></a><span class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #222831;"></span> <a href="https://twitter.com/alpers_tw">Twitter </h5>
-            <p id="contact-footer">Note: Although, my tweets in English usually concern research, I may tweet on unrelated subjects in Turkish.</p>
+          <p class="col s12 m12 l12" id="extra-info-text">S. Zellmann, I. Wald, <b>A. Sahistan</b>, M. Hellmann, W.
+            Usher
+            "Design and Evaluation of a GPU Streaming Framework for Visualizing Time-Varying AMR Data"
+            <b>2022 Eurographics Symposium on Parallel Graphics and Visualization</b>
+            <a href="research/paper-exajet-animated-compressed.pdf"> <i
+                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal1"><i
+                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
+          </p>
+        </li>
+      </ul>
+      <ul>
+        <li class="row" id="extra-info-text">
+          <div class="col s12 l12">
+            <img class="responsive-img" id="teaser-img" src="images/quick_clusters/t2.jpg">
+            <img class="responsive-img" id="teaser-img-2" src="images/quick_clusters/t3.png">
           </div>
+          <p class="col s12 m12 l12" id="extra-info-text">N. Morrical, <b>A. Sahistan</b>, U. Gudukbay, I. Wald, V.
+            Pascucci
+            "Quick Clusters: A GPU-Parallel Partitioning for Efficient Path Tracing of Unstructured Volumetric Grids"
+            <b>2022 IEEE Visualization Conference (VIS)</b><a href="research/quick-clusters.pdf"> <i
+                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal2"><i
+                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="modal0" class="modal">
+    <div class="modal-content" id="citation-box">
+
+      <h4>BibTeX citation</h4>
+
+      <div class="card-panel" id="citation-text">
+
+        <p type="text" id="paper0">@inproceedings{Zellmann2022Islands,
+          author = {Zellmann, Stefan and Wald, Ingo and Barbosa, Joao and Demirci, Serkan and Sahistan, Alper and
+          G\"{u}d\"{u}kbay, U\u{g}ur},
+          booktitle = {The 12th IEEE Symposium on Large Data Analysis and Visualization},
+          title = {Hybrid Image-/Data-Parallel Rendering Using Island Parallelism},
+          year = {2022}}</p>
+      </div>
+      <div class="row">
+        <div class="col m11"></div>
+        <a class="button col m1" onclick="copyToClipboard('paper0')" style="position: absolute; right: 0;"><i
+            class="material-icons">copy_all</i></a>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal1" class="modal">
+    <div class="modal-content" id="citation-box">
+
+      <h4>BibTeX citation</h4>
+
+      <div class="card-panel" id="citation-text">
+
+        <p type="text" id="paper1">inproceedings{Zellmann2022AMRAnimated,
+          author = {Zellmann, Stefan and Wald, Ingo and Sahistan, Alper and Hellmann, Matthias and Usher, Will},
+          booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},
+          editor = {Bujack, R. and Tierny, J. and Sadlo, F.},
+          title = {Design and Evaluation of a {GPU} Streaming Framework for Visualizing Time-Varying {AMR} Data},
+          year = {2022}}</p>
+      </div>
+      <div class="row">
+        <div class="col m11"></div>
+        <a class="button col m1" onclick="copyToClipboard('paper1')" style="position: absolute; right: 0;"><i
+            class="material-icons">copy_all</i></a>
+      </div>
+    </div>
+  </div>
+
+  <div id="modal2" class="modal">
+    <div class="modal-content" id="citation-box">
+
+      <h4>BibTeX citation</h4>
+
+      <div class="card-panel" id="citation-text">
+
+        <p type="text" id="paper2">@inproceedings{Morrical2022QuickClusters,
+          author = {Morrical, Nate and Sahistan, Alper and G\"{u}d\"{u}kbay, U\u{g}ur and Wald, Ingo and Pascucci,
+          Valerio},
+          booktitle = {2022 IEEE Visualization Conference (VIS)},
+          title = {Quick Clusters: A {GPU}-Parallel Partitioning for Efficient Path Tracing of Unstructured Volumetric
+          Grids},
+          year = {2022}
+          }
+
+        </p>
+      </div>
+      <div class="row">
+        <div class="col m11"></div>
+        <a class="button col m1" onclick="copyToClipboard('paper2')" style="position: absolute; right: 0;"><i
+            class="material-icons">copy_all</i></a>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="index-banner" class="parallax-container">
+    <div class="section no-pad-bot">
+      <div class="container row">
+      </div>
+    </div>
+    <div class="parallax image-wrapper"><img src="images/other_dragon_2.png"></div>
+  </div>
+
+
+  <footer class="page-footer anchor" id="contact-footer">
+    <div class="container">
+      <h4 class="center" id="contact-footer">Feel free to contact me!</h4>
+      <div class="row center">
+        <div class="col l6 s12">
+          <h5 class="center" id="contact-footer"><i class="material-icons">mail</i> Email </h5>
+          <p><a href="mailto:alpersahistan@gmail.com">alpersahistan@gmail.com</a> OR
+            <a href="mailto:alper@cs.utah.edu">alper@cs.utah.edu</a>
+          </p>
+        </div>
+        <div class="col l6 s12">
+          <h5 class="center"></a><span class="iconify" data-icon="mdi-twitter" data-inline="false"
+              style="color: #222831;"></span> <a href="https://twitter.com/alpers_tw">Twitter </h5>
+          <p id="contact-footer"></p>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
 
   <!--JavaScript at end of body for optimized loading-->
 </body>
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <script src="js/main.js"></script>
+
 </html>

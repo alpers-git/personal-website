@@ -101,3 +101,23 @@ function copyToClipboard(id)
   }    
 }
 
+function showTeaser(event, teaserImage) {
+  const teaserPanel = document.querySelector('.teaser-panel');
+  console.log(teaserPanel);
+  if (teaserPanel) {
+    teaserPanel.style.display = 'block';
+    teaserPanel.style.backgroundImage = `url(${teaserImage})`;
+    teaserPanel.style.backgroundPosition = 'center';
+    teaserPanel.style.backgroundSize = 'cover';
+    teaserPanel.style.zIndex = 1;
+  }
+}
+
+function hideTeaser() {
+  const teaserPanel = document.querySelector('.teaser-panel');
+  teaserPanel.style.display = 'none';
+  teaserPanel.style.backgroundImage = '';
+  teaserPanel.style.zIndex = 0;
+}
+
+
