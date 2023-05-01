@@ -101,23 +101,32 @@ function copyToClipboard(id)
   }    
 }
 
-function showTeaser(event, teaserImage) {
-  const teaserPanel = document.querySelector('.teaser-panel');
-  console.log(teaserPanel);
-  if (teaserPanel) {
-    teaserPanel.style.display = 'block';
-    teaserPanel.style.backgroundImage = `url(${teaserImage})`;
-    teaserPanel.style.backgroundPosition = 'center';
-    teaserPanel.style.backgroundSize = 'cover';
-    teaserPanel.style.zIndex = 1;
-  }
-}
+const projectTitles = document.querySelectorAll('.project-title');
 
-function hideTeaser() {
-  const teaserPanel = document.querySelector('.teaser-panel');
-  teaserPanel.style.display = 'none';
-  teaserPanel.style.backgroundImage = '';
-  teaserPanel.style.zIndex = 0;
+let projectPanel = document.createElement('div');
+projectPanel.setAttribute('id', 'project-panel');
+document.body.appendChild(projectPanel);
+
+for (let i = 0; i < projectTitles.length; i++) {
+  let projectTitle = projectTitles[i];
+  let imageSrc = projectTitle.getAttribute('data-image');
+  let teaserImage = document.createElement('img');
+  teaserImage.setAttribute('src', imageSrc);
+  projectTitle.addEventListener('mouseenter', function(e) {
+    projectPanel.style.display = 'block';
+    projectPanel.innerHTML = '';
+    projectPanel.appendChild(teaserImage);
+    projectPanel.style.left = e.pageX + 'px';
+    projectPanel.style.top = e.pageY + 'px';
+  });
+  projectTitle.addEventListener('mousemove', function(e) {
+    
+  });
+  projectTitle.addEventListener('mouseleave', function() {
+    projectPanel.style.display = 'none';
+    projectPanel.style.left = e.pageX + 'px';
+    projectPanel.style.top = e.pageY + 'px';
+  });
 }
 
 
