@@ -106,13 +106,18 @@ const projectTitles = document.querySelectorAll('.project-title');
 let projectPanel = document.createElement('div');
 projectPanel.setAttribute('id', 'project-panel');
 document.body.appendChild(projectPanel);
+projectPanel.style.zIndex = "999"
 
 for (let i = 0; i < projectTitles.length; i++) {
+  
   let projectTitle = projectTitles[i];
   let imageSrc = projectTitle.getAttribute('data-image');
   let teaserImage = document.createElement('img');
   teaserImage.setAttribute('src', imageSrc);
   projectTitle.addEventListener('mouseenter', function(e) {
+    if (projectPanel.parenNode)
+      projectPanel.parentNode.removeChild(projectPanel);
+    projectTitle.appendChild(projectPanel);
     projectPanel.style.display = 'block';
     projectPanel.innerHTML = '';
     projectPanel.appendChild(teaserImage);
@@ -122,10 +127,11 @@ for (let i = 0; i < projectTitles.length; i++) {
   projectTitle.addEventListener('mousemove', function(e) {
     
   });
-  projectTitle.addEventListener('mouseleave', function() {
+  projectTitle.addEventListener('mouseleave', function(e) {
     projectPanel.style.display = 'none';
     projectPanel.style.left = e.pageX + 'px';
     projectPanel.style.top = e.pageY + 'px';
+
   });
 }
 
