@@ -83,8 +83,8 @@
             <img src="images/wow2.jpg" class="col s12 l3 object-fit-cover" id="intro-img">
             <div id="about-text">
               <h3>About</h3>
-              <h6>I'm Alper Sahistan(Şahıstan), a <b>PhD student</b> at <a href="https://www.sci.utah.edu/" target="_blank"><b>SCI Institute</b></a> in the <a href="https://www.cs.utah.edu/" target="_blank">University of
-                  Utah School of Computing</a>. My research areas include <b>ray tracing, volume rendering,
+              <h6>I'm Alper Sahistan(Şahıstan), a <b>PhD student</b> at <a href="https://www.sci.utah.edu/" target="_blank"><b>SCI Institute</b></a> in the <a href="https://www.utah.edu/" target="_blank">University of
+                  Utah</a>. My research areas include <b>ray tracing, volume rendering,
                   visualization and computer graphics</b>. I am also interested in HPC and computational geometry.</h6>
             </div>
           </div>
@@ -205,6 +205,38 @@
     <div class="section">
       <a  href="publications.html" class="waves-effect waves-light btn-large" style="background-color:#157ec4;"><i class="material-symbols-outlined right"> description </i>All Publications</a>
       <h4 id="extra-info-head">Recent Publications</h4>
+        <li class="row" id="extra-info-text">
+          <div class="col s12 l12">
+            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t1.png">
+            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t2.png">
+            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t3.png">
+            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t4.png">
+          </div>
+          <p class="col s12 m12 l12" id="extra-info-text"><b>A. Sahistan</b>, S. Zellmann, N. Morrical, V. Pascucci, I. Wald
+            "Multi-Density Woodcock Tracking: Efficient & High-Quality Rendering for Multi-Channel Volumes"
+            <b>EuroVis 2025 Eurographics Symposium on Parallel Graphics and Visualization (EGPGV)</b><a href="research/multi-densityWT.pdf" target="_blank"> <i
+                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal2"><i
+                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a> <a href="research/multi-densityWTsup.pdf" target="_blank" title="Supplemental material (PDF)">
+                  <i class="material-icons icon-light">sticky_note_2</i>
+                </a>
+                
+          </p>
+        </li>
+      </ul>
+      <ul>
+        <li class="row" id="extra-info-text">
+          <div class="col s12 l12">
+            <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/beyond/t1.png">
+          </div>
+          <p class="col s12 m12 l12" id="extra-info-text">S. Zellmann, Q. Wu, <b>A. Sahistan</b>, K.-L. Ma, I. Wald
+            "Beyond ExaBricks: GPU Volume Path Tracing of AMR Data"
+            <b>EuroVis 2024</b>
+            <a href="research/beyondExa.pdf" target="_blank"> <i
+                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal0"><i
+                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
+          </p>
+        </li>
+      </ul>
       <ul>
         <li class="row" id="extra-info-text">
           <div class="col s12 l12">
@@ -223,36 +255,6 @@
         </li>
       </ul>
       <ul>
-        <li class="row" id="extra-info-text">
-          <div class="col s12 l12">
-            <img class="responsive-img" id="teaser-img-2" src="images/rbfs/teaser.png">
-          </div>
-          <p class="col s12 m12 l12" id="extra-info-text">N. Morrical, S. Zellmann, <b>A. Sahistan</b>, P. Shriwise, V. Pascucci
-            "Attribute-Aware RBFs: Interactive Visualization of Time Series Particle Volumes Using RT Core Range Queries"
-            <b>2023 IEEE Visualization Conference (VIS)</b><a href="research/Attribute_Aware_RBFs.pdf" target="_blank"> <i
-                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal2"><i
-                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
-          </p>
-        </li>
-      </ul>
-      <ul>
-        <li class="row" id="extra-info-text">
-          <div class="col s12 l12">
-            <img class="responsive-img" id="teaser-img" src="images/islands/t1.png">
-            <img class="responsive-img" id="teaser-img" src="images/islands/t2.png">
-            <img class="responsive-img" id="teaser-img" src="images/islands/t3.png">
-            <img class="responsive-img" id="teaser-img" src="images/islands/t4.png">
-          </div>
-          <p class="col s12 m12 l12" id="extra-info-text">S. Zellmann, I. Wald, J. Barbosa, D. Serkan, <b>A.
-              Sahistan</b>, U. Güdükbay
-            "Hybrid Image-/Data-Parallel Rendering Using Island Parallelism"
-            <b>The 12th IEEE Symposium on Large Data Analysis and Visualization</b>
-            <a href="research/islands-paper-compressed.pdf" target="_blank"> <i
-                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal0"><i
-                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
-          </p>
-        </li>
-      </ul>
     </div>
   </div>
   </div>
@@ -266,12 +268,14 @@
 
       <div class="card-panel" id="citation-text">
 
-        <p type="text" id="paper0">@inproceedings{Zellmann2022Islands,
-          author = {Zellmann, Stefan and Wald, Ingo and Barbosa, Joao and Demirci, Serkan and Sahistan, Alper and
-          G\"{u}d\"{u}kbay, U\u{g}ur},
-          booktitle = {The 12th IEEE Symposium on Large Data Analysis and Visualization},
-          title = {Hybrid Image-/Data-Parallel Rendering Using Island Parallelism},
-          year = {2022}}</p>
+        <p type="text" id="paper0">@article{Zellmann2024Beyond,
+          author = {Zellmann, Stefan and Wu, Qi and Sahistan, Alper and Ma, Kwan-Liu and Wald, Ingo},
+          title = {Beyond ExaBricks: GPU Volume Path Tracing of AMR Data},
+          journal = {Computer Graphics Forum},
+          volume = {43},
+          number = {3},
+          doi = {https://doi.org/10.1111/cgf.15095},
+          year = {2024}}</p>
       </div>
       <div class="row">
         <div class="col m11"></div>
@@ -313,14 +317,13 @@
 
       <div class="card-panel" id="citation-text">
 
-        <p type="text" id="paper2">@inproceedings{Morrical2023RBF,
-          author={Morrical, Nate and Zellmann, Stefan and Sahistan, Alper and Shriwise, Patrick and Pascucci, Valerio},
-          booktitle={2023 IEEE Visualization Conference (VIS)}, 
-          title={Attribute-Aware RBFs: Interactive Visualization of Time Series Particle Volumes Using RT Core Range Queries}, 
-          year={2023},
-          volume={},
-          number={},
-          doi={10.1109/TVCG.2023.3327366}}
+        <p type="text" id="paper2">@inproceedings{Sahistan2025MDWT,
+          author={Sahistan, Alper and Zellmann, Stefan and Morrical, Nate and Pascucci, Valerio and Wald, Ingo},
+          title={Multi-Density Woodcock Tracking: Efficient & High-Quality Rendering for Multi-Channel Volumes}, 
+          year={2025},
+          month={jun},
+          booktitle = {Eurographics Symposium on Parallel Graphics and Visualization (to appear)},
+          doi={TBD}}
         </p>
       </div>
       <div class="row">
