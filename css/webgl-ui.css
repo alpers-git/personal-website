@@ -1,0 +1,114 @@
+/* ===============================
+   WebGL UI PANEL
+   =============================== */
+
+#ui {
+  background: rgba(17, 26, 33, 0.92);
+  border: 1px solid #29465a;
+  box-shadow: 0 0 16px rgba(0,0,0,0.75);
+  border-radius: 8px;
+
+  font-family: 'Roboto Condensed', sans-serif;
+  color: #ffffff;
+
+  min-width: 220px;
+}
+
+/* Section labels */
+#ui label {
+  display: block;
+  font-size: 0.9rem;
+  color: #FFC107;
+  margin-top: 10px;
+}
+
+/* ===============================
+   Physics dropdown (native select)
+   =============================== */
+
+#physicsMode {
+  width: 100%;
+  margin-top: 6px;
+
+  background-color: #222831;
+  color: #ffffff;
+
+  border: 1px solid #157ec4;
+  border-radius: 6px;
+
+  padding: 6px 10px;
+
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 0.95rem;
+
+  cursor: pointer;
+}
+
+#physicsMode:focus {
+  outline: none;
+  border-color: #FFC107;
+  box-shadow: 0 0 0 1px #FFC107;
+}
+
+/* ===============================
+   Materialize checkboxes (styled)
+   =============================== */
+
+#ui .ui-check {
+  margin-top: 8px;
+}
+
+/* label text */
+#ui .ui-check span {
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+/* checkbox box (unchecked) */
+#ui .ui-check input[type="checkbox"] + span:before {
+  border: 2px solid #157ec4;
+  background-color: transparent;
+}
+
+/* checkbox box (checked) */
+#ui .ui-check input[type="checkbox"]:checked + span:before {
+  border-right: 2px solid #FFC107;
+  border-bottom: 2px solid #FFC107;
+}
+
+/* checkmark */
+#ui .ui-check input[type="checkbox"]:checked + span:after {
+  border-right: 2px solid #FFC107;
+  border-bottom: 2px solid #FFC107;
+}
+
+/* hover */
+#ui .ui-check span:hover:before {
+  border-color: #FFC107;
+}
+
+/* ===============================
+   Button
+   =============================== */
+
+#clearRaysBtn {
+  margin-top: 12px;
+  width: 100%;
+  padding: 6px 0;
+
+  background-color: #FFC107;
+  color: #222831;
+
+  border: none;
+  border-radius: 4px;
+
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+
+  cursor: pointer;
+}
+
+#clearRaysBtn:hover {
+  background-color: #ffce3a;
+}

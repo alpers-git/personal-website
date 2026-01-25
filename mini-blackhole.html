@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebGL Canvas Overlay</title>
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+
+  <!-- Materialize -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <!-- Site + UI styles -->
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/webgl-ui.css" rel="stylesheet">
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #222831;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      z-index: 9999;
+    }
+
+    #webgl-canvas {
+      position: absolute;
+      top: 64px;
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - 64px);
+      z-index: 5;
+    }
+
+    #ui {
+      position: fixed;
+      top: 76px;
+      left: 12px;
+      z-index: 20;
+      padding: 12px 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-wrapper">
+      <a href="index.html" class="cornerName"><b>Alper Sahistan</b></a>
+      <a href="#" data-target="mobile-sidebar" class="sidenav-trigger">
+        <i class="material-icons icon-light">menu</i>
+      </a>
+
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#research">Research</a></li>
+        <li><a href="index.html#contact-footer">Contact</a></li>
+        <li><a href="cv.pdf" target="_blank" style="color:#FFC107;"><u>CV</u></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <ul class="sidenav" id="mobile-sidebar">
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#research">Research</a></li>
+    <li><a href="index.html#contact-footer">Contact</a></li>
+    <li><a href="cv.pdf">CV</a></li>
+  </ul>
+
+  <!-- WEBGL -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- UI -->
+  <div id="ui">
+    <label for="physicsMode">Physics</label>
+    <select id="physicsMode" class="browser-default">
+      <option value="relativistic">Relativistic</option>
+      <option value="newtonian">Newtonian</option>
+    </select>
+
+    <label class="ui-check">
+      <input type="checkbox" id="showGrid" />
+      <span>Show spacetime grid</span>
+    </label>
+
+    <label class="ui-check" id="dopplerRow">
+      <input type="checkbox" id="dopplerToggle" checked />
+      <span>Doppler color shift</span>
+    </label>
+
+    <label class="ui-check" id="timeDilationRow">
+      <input type="checkbox" id="timeDilationToggle" checked />
+      <span>Time dilation</span>
+    </label>
+
+    <button id="clearRaysBtn">CLEAR RAYS</button>
+  </div>
+
+  <!-- JS -->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      M.Sidenav.init(document.querySelectorAll('.sidenav'));
+    });
+  </script>
+
+  <script type="module">
+    import { initRayWebGL } from './webgl.js';
+
+    initRayWebGL(document.getElementById('webgl-canvas'));
+
+    const physicsMode = document.getElementById('physicsMode');
+    const dopplerRow = document.getElementById('dopplerRow');
+    const timeRow = document.getElementById('timeDilationRow');
+
+    function updatePhysicsUI() {
+      const isNewtonian = physicsMode.value === 'newtonian';
+      dopplerRow.style.display = isNewtonian ? 'none' : '';
+      timeRow.style.display = isNewtonian ? 'none' : '';
+    }
+
+    physicsMode.addEventListener('change', updatePhysicsUI);
+    updatePhysicsUI();
+  </script>
+
+</body>
+</html>
