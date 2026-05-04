@@ -38,6 +38,24 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+const mobileResearchToggle = document.querySelector('.mobile-research-dropdown-btn');
+const mobileResearchWrapper = document.querySelector('.research-tab-wrapper-mobile');
+
+if (mobileResearchToggle && mobileResearchWrapper) {
+  mobileResearchToggle.addEventListener('click', function (e) {
+    e.preventDefault();
+    const isOpen = mobileResearchWrapper.classList.toggle('is-open');
+    mobileResearchToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!mobileResearchWrapper.contains(e.target)) {
+      mobileResearchWrapper.classList.remove('is-open');
+      mobileResearchToggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
 function isElementInViewport (el) {
   //special bonus for those using jQuery
   if (typeof jQuery === "function" && el instanceof jQuery) {

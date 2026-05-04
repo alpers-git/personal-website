@@ -60,6 +60,10 @@ i.icon-light {
     color: #FFC107
 }
 
+nav .sidenav-trigger .icon-light {
+    color: #ffffff !important;
+}
+
 #citation-box {
     background-color: #ffc107;
     color: #222831;
@@ -102,13 +106,15 @@ nav {
 /* Research Tab Dropdown Styling */
 .research-tab-wrapper {
     position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
 }
 
 .research-tab-wrapper-mobile {
     position: relative;
+}
+
+.research-mobile-row {
+    display: flex;
+    align-items: center;
 }
 
 .research-dropdown-btn {
@@ -126,52 +132,126 @@ nav {
     height: 100%;
 }
 
+nav ul li.research-tab-wrapper>a:first-child {
+    padding-right: 2.4rem !important;
+}
+
+nav ul li.research-tab-wrapper>.research-dropdown-btn {
+    position: absolute;
+    top: 0;
+    right: 0.25rem;
+    height: 100%;
+    padding: 0 0.5rem !important;
+}
+
 .research-dropdown-btn i {
     font-size: 1.5rem !important;
     color: #ffffff !important;
+    line-height: 1 !important;
+    height: auto !important;
 }
 
 .research-dropdown-btn:hover i {
     color: #FFC107 !important;
 }
 
-/* Tooltip on hover */
-.research-dropdown-btn::after {
-    content: attr(title);
+.research-dropdown-menu {
     position: absolute;
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
+    top: 100%;
+    left: 0;
+    min-width: 12rem;
     background-color: #FFC107;
-    color: #222831;
-    padding: 4px 8px;
-    border-radius: 3px;
-    font-size: 0.75rem;
-    white-space: nowrap;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.2s ease;
     z-index: 1000;
-    font-weight: 600;
 }
 
-.research-dropdown-btn:hover::after {
+.research-tab-wrapper:hover .research-dropdown-menu,
+.research-tab-wrapper:focus-within .research-dropdown-menu {
+    opacity: 0.72;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.research-tab-wrapper:hover .research-dropdown-menu:hover,
+.research-tab-wrapper:hover .research-dropdown-menu:focus-within,
+.research-tab-wrapper:focus-within .research-dropdown-menu:hover,
+.research-tab-wrapper:focus-within .research-dropdown-menu:focus-within {
     opacity: 1;
 }
 
-#mobile-sidebar .research-tab-wrapper-mobile a {
-    display: inline-block;
-    vertical-align: middle;
+.research-dropdown-menu a {
+    display: block !important;
+    padding: 1rem 1.25rem !important;
+    color: #222831 !important;
+    font-size: 1rem !important;
+    font-weight: 700;
+    letter-spacing: 0.08rem;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.hide-on-med-and-down li .research-dropdown-menu a:hover,
+.hide-on-med-and-down li .research-dropdown-menu a:focus {
+    background-color: rgba(34, 40, 49, 0.16);
+    color: #11151a !important;
+}
+
+#mobile-sidebar .research-mobile-row a {
+    display: flex !important;
+    align-items: center;
+    height: 48px;
+    padding: 0 32px !important;
+    color: rgba(255, 255, 255, 0.87) !important;
+    font-size: 14px !important;
+    font-weight: 500;
+    line-height: 48px;
+}
+
+#mobile-sidebar .research-mobile-row>a:first-child {
+    flex: 1 1 auto;
 }
 
 #mobile-sidebar .research-dropdown-btn {
-    margin-left: 0.5rem !important;
+    flex: 0 0 auto;
+    height: 48px;
+    width: 48px;
+    padding: 0 12px !important;
+    margin-left: 0 !important;
 }
 
-#mobile-sidebar .research-dropdown-btn::after {
-    bottom: -30px;
-    left: 50%;
-    transform: translateX(-50%);
+#mobile-sidebar .research-dropdown-menu-mobile {
+    display: none;
+    background-color: rgba(12, 16, 23, 0.9);
+}
+
+#mobile-sidebar .research-tab-wrapper-mobile.is-open .research-dropdown-menu-mobile {
+    display: block;
+}
+
+#mobile-sidebar .research-dropdown-menu-mobile a {
+    display: block !important;
+    padding: 0.45rem 1rem 0.45rem 2rem !important;
+    margin: 0 !important;
+    color: rgba(255, 255, 255, 0.82) !important;
+    font-size: 13px !important;
+    font-weight: 400;
+    letter-spacing: 0.02rem;
+    line-height: 1.2;
+}
+
+#mobile-sidebar .research-dropdown-menu-mobile a:hover,
+#mobile-sidebar .research-dropdown-menu-mobile a:focus {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #ffffff !important;
+}
+
+#mobile-sidebar .research-tab-wrapper-mobile.is-open .mobile-research-dropdown-btn i {
+    color: rgba(255, 255, 255, 0.92) !important;
 }
 
 .hide-on-med-and-down {

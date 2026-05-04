@@ -57,7 +57,10 @@
         <li><a class="active" id="about-tab" href="#about">About</a></li>
         <li class="research-tab-wrapper">
           <a id="research-tab" href="#research">Research</a>
-          <a href="publications.html" class="research-dropdown-btn" title="All publications"><i class="material-icons">arrow_drop_down</i></a>
+          <button type="button" class="research-dropdown-btn" aria-label="Open publications menu"><i class="material-icons">arrow_drop_down</i></button>
+          <div class="research-dropdown-menu">
+            <a href="publications.html">All publications</a>
+          </div>
         </li>
         <li><a id="contact-tab" href="#contact-footer">Contact</a></li>
         <!-- <li><a href="resume.pdf" target="_blank" style="color: #FFC107;"><u>Resume</u></a></li> -->
@@ -74,8 +77,13 @@
   <ul class="sidenav" id="mobile-sidebar">
     <li><a href="#about">About</a></li>
     <li class="research-tab-wrapper-mobile">
-      <a href="#research">Research</a>
-      <a href="publications.html" class="research-dropdown-btn" title="All publications"><i class="material-icons">arrow_drop_down</i></a>
+      <div class="research-mobile-row">
+        <a href="#research">Research</a>
+        <button type="button" class="research-dropdown-btn mobile-research-dropdown-btn" aria-label="Open publications menu" aria-expanded="false" aria-controls="mobile-research-dropdown-menu"><i class="material-icons">arrow_drop_down</i></button>
+      </div>
+      <div id="mobile-research-dropdown-menu" class="research-dropdown-menu-mobile">
+        <a href="publications.html">All publications</a>
+      </div>
     </li>
     <li><a href="#contact-footer">Contact</a></li>
     <!-- <li><a href="resume.pdf">Resume.pdf</a></li> -->
