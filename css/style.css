@@ -99,6 +99,81 @@ nav {
     color: #ffffff !important;
 }
 
+/* Research Tab Dropdown Styling */
+.research-tab-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.research-tab-wrapper-mobile {
+    position: relative;
+}
+
+.research-dropdown-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px !important;
+    margin: 0 !important;
+    background: none !important;
+    border: none !important;
+    color: #ffffff !important;
+    cursor: pointer !important;
+    transition: color 0.3s ease !important;
+    position: relative;
+    height: 100%;
+}
+
+.research-dropdown-btn i {
+    font-size: 1.5rem !important;
+    color: #ffffff !important;
+}
+
+.research-dropdown-btn:hover i {
+    color: #FFC107 !important;
+}
+
+/* Tooltip on hover */
+.research-dropdown-btn::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #FFC107;
+    color: #222831;
+    padding: 4px 8px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+    font-weight: 600;
+}
+
+.research-dropdown-btn:hover::after {
+    opacity: 1;
+}
+
+#mobile-sidebar .research-tab-wrapper-mobile a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#mobile-sidebar .research-dropdown-btn {
+    margin-left: 0.5rem !important;
+}
+
+#mobile-sidebar .research-dropdown-btn::after {
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .hide-on-med-and-down {
     display: flex !important;
 }
