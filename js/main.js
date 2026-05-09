@@ -119,37 +119,67 @@ function copyToClipboard(id)
   }    
 }
 
-const projectTitles = document.querySelectorAll('.project-title');
+const previewTriggers = document.querySelectorAll('.project-title, .inline-preview-term');
 
-let projectPanel = document.createElement('div');
-projectPanel.setAttribute('id', 'project-panel');
-document.body.appendChild(projectPanel);
-projectPanel.style.zIndex = "999"
+if (previewTriggers.length > 0) {
+  const projectPanel = document.createElement('div');
+  const previewImage = document.createElement('img');
+  const previewOffset = 18;
 
-for (let i = 0; i < projectTitles.length; i++) {
-  
-  let projectTitle = projectTitles[i];
-  let imageSrc = projectTitle.getAttribute('data-image');
-  let teaserImage = document.createElement('img');
-  teaserImage.setAttribute('src', imageSrc);
-  projectTitle.addEventListener('mouseenter', function(e) {
-    if (projectPanel.parenNode)
-      projectPanel.parentNode.removeChild(projectPanel);
-    projectTitle.appendChild(projectPanel);
+  projectPanel.setAttribute('id', 'project-panel');
+  projectPanel.style.zIndex = '10000';
+  projectPanel.appendChild(previewImage);
+  document.body.appendChild(projectPanel);
+
+  function positionPreview(pageX, pageY) {
+    const viewportWidth = document.documentElement.clientWidth;
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const panelWidth = projectPanel.offsetWidth;
+    const panelHeight = projectPanel.offsetHeight;
+    const minLeft = window.scrollX + 12;
+    const minTop = window.scrollY + 12;
+    const maxLeft = window.scrollX + viewportWidth - panelWidth - 12;
+    const maxTop = window.scrollY + viewportHeight - panelHeight - 12;
+    const nextLeft = Math.min(pageX + previewOffset, maxLeft);
+    const nextTop = Math.min(pageY + previewOffset, maxTop);
+
+    projectPanel.style.left = Math.max(minLeft, nextLeft) + 'px';
+    projectPanel.style.top = Math.max(minTop, nextTop) + 'px';
+  }
+
+  function showPreview(trigger, pageX, pageY) {
+    const imageSrc = trigger.getAttribute('data-image');
+    const previewWidth = trigger.getAttribute('data-preview-width') || '200';
+
+    previewImage.setAttribute('src', imageSrc);
+    previewImage.setAttribute('alt', trigger.textContent.trim());
+    projectPanel.style.setProperty('--preview-width', previewWidth + 'px');
     projectPanel.style.display = 'block';
-    projectPanel.innerHTML = '';
-    projectPanel.appendChild(teaserImage);
-    projectPanel.style.left = e.pageX + 'px';
-    projectPanel.style.top = e.pageY + 'px';
-  });
-  projectTitle.addEventListener('mousemove', function(e) {
-    
-  });
-  projectTitle.addEventListener('mouseleave', function(e) {
-    projectPanel.style.display = 'none';
-    projectPanel.style.left = e.pageX + 'px';
-    projectPanel.style.top = e.pageY + 'px';
+    positionPreview(pageX, pageY);
+  }
 
+  function hidePreview() {
+    projectPanel.style.display = 'none';
+    previewImage.removeAttribute('src');
+  }
+
+  previewTriggers.forEach(function (trigger) {
+    trigger.addEventListener('mouseenter', function (e) {
+      showPreview(trigger, e.pageX, e.pageY);
+    });
+
+    trigger.addEventListener('mousemove', function (e) {
+      positionPreview(e.pageX, e.pageY);
+    });
+
+    trigger.addEventListener('mouseleave', hidePreview);
+
+    trigger.addEventListener('focus', function () {
+      const rect = trigger.getBoundingClientRect();
+      showPreview(trigger, window.scrollX + rect.right, window.scrollY + rect.bottom);
+    });
+
+    trigger.addEventListener('blur', hidePreview);
   });
 }
 

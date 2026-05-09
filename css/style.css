@@ -425,10 +425,32 @@ nav ul li.research-tab-wrapper>.research-dropdown-btn {
     top: 0;
     left: 0;
     display: none;
+    padding: 0.35rem;
+    background: rgba(17, 21, 26, 0.96);
+    border: 1px solid rgba(255, 193, 7, 0.35);
+    border-radius: 0.7rem;
+    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.32);
+    pointer-events: none;
+    overflow: hidden;
 }
 
 #project-panel img {
-    width: 200px;
+    display: block;
+    width: var(--preview-width, 200px);
+    border-radius: 0.45rem;
+}
+
+.inline-preview-term {
+    color: #ffc107;
+    cursor: help;
+    text-decoration: underline;
+    text-decoration-style: solid;
+    text-underline-offset: 0.16em;
+}
+
+.inline-preview-term:focus {
+    outline: 1px solid rgba(255, 193, 7, 0.75);
+    outline-offset: 0.12rem;
 }
 
 .project-title {
