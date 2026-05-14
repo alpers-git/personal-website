@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Simulation Demo</title>
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+	<link href="css/style.css" rel="stylesheet">
+	<link href="css/webgl-ui.css" rel="stylesheet">
+
+	<style>
+		html,
+		body {
+			height: 100%;
+			margin: 0;
+			overflow: hidden;
+			background: #222831;
+			font-family: 'Roboto Condensed', sans-serif;
+		}
+
+		nav {
+			position: fixed;
+			top: 0;
+			z-index: 9999;
+		}
+
+		#sim-canvas {
+			position: absolute;
+			top: 64px;
+			left: 0;
+			width: 100vw;
+			height: calc(100vh - 64px);
+			z-index: 5;
+			display: block;
+			background: #222831;
+			cursor: grab;
+			touch-action: none;
+		}
+
+		#sim-canvas.is-dragging {
+			cursor: grabbing;
+		}
+	</style>
+</head>
+<body>
+	<nav>
+		<div class="nav-wrapper">
+			<a href="index.html" class="cornerName"><b>Alper Sahistan</b></a>
+			<a href="#" data-target="mobile-sidebar" class="sidenav-trigger">
+				<i class="material-icons icon-light">menu</i>
+			</a>
+
+			<ul class="right hide-on-med-and-down">
+				<li><a href="index.html#about">About</a></li>
+				<li><a href="index.html#research">Research</a></li>
+				<li><a href="index.html#contact-footer">Contact</a></li>
+				<li><a href="cv.pdf" target="_blank" style="color:#FFC107;"><u>CV</u></a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<ul class="sidenav" id="mobile-sidebar">
+		<li><a href="index.html#about">About</a></li>
+		<li><a href="index.html#research">Research</a></li>
+		<li><a href="index.html#contact-footer">Contact</a></li>
+		<li><a href="cv.pdf">CV</a></li>
+	</ul>
+
+	<canvas id="sim-canvas"></canvas>
+
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			M.Sidenav.init(document.querySelectorAll('.sidenav'));
+		});
+	</script>
+
+	<script>
+		const canvas = document.getElementById('sim-canvas');
+		const gl = canvas.getContext('webgl2', {
+			antialias: false,
+			alpha: false,
+			depth: false,
+			stencil: false,
+			premultipliedAlpha: false,
+			preserveDrawingBuffer: false
+		});
+
+		if (!gl) {
+			console.error('WebGL2 unavailable. This page needs WebGL2 for the ray-marched volume renderer.');
+		} else {
+			const vertexSource = `#version 300 es
+			precision highp float;
+
+			const vec2 positions[3] = vec2[3](
+				vec2(-1.0, -1.0),
+				vec2( 3.0, -1.0),
+				vec2(-1.0,  3.0)
+			);
+
+			void main() {
+				gl_Position = vec4(positions[gl_VertexID], 0.0, 1.0);
+			}
+			`;
+
+			const fragmentSource = `#version 300 es
+			precision highp float;
+			precision highp sampler3D;
+
+			out vec4 fragColor;
+
+			const vec3 SITE_BACKGROUND_LINEAR = vec3(0.01188, 0.01699, 0.02624);
+
+			uniform vec2 uResolution;
+			uniform float uTime;
+			uniform vec2 uMouse;
+
+			uniform vec3 uCameraPos;
+			uniform vec3 uCameraTarget;
+			uniform vec3 uCameraUp;
+
+			uniform vec3 uLightDir;
+			uniform vec3 uEmitterPos;
+			uniform float uVolumeRadius;
+			uniform sampler3D uDensityTexture;
+			uniform int uUseSimVolume;
+			uniform vec3 uSimVolumeMin;
+			uniform vec3 uSimVolumeMax;
+			uniform int uDensityDisplayMode;
+			uniform vec3 uFogTintColor;
+			uniform float uFogTintStrength;
+
+			float saturate(float value) {
+				return clamp(value, 0.0, 1.0);
+			}
+
+			vec3 saturate(vec3 value) {
+				return clamp(value, vec3(0.0), vec3(1.0));
+			}
+
+			float hash(vec3 p) {
+				p = fract(p * 0.3183099 + vec3(0.1, 0.3, 0.7));
+				p *= 17.0;
+				return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+			}
+
+			float noise(vec3 p) {
+				vec3 i = floor(p);
+				vec3 f = fract(p);
+				f = f * f * (3.0 - 2.0 * f);
+
+				float n000 = hash(i + vec3(0.0, 0.0, 0.0));
+				float n100 = hash(i + vec3(1.0, 0.0, 0.0));
+				float n010 = hash(i + vec3(0.0, 1.0, 0.0));
+				float n110 = hash(i + vec3(1.0, 1.0, 0.0));
+				float n001 = hash(i + vec3(0.0, 0.0, 1.0));
+				float n101 = hash(i + vec3(1.0, 0.0, 1.0));
+				float n011 = hash(i + vec3(0.0, 1.0, 1.0));
+				float n111 = hash(i + vec3(1.0, 1.0, 1.0));
+
+				float nx00 = mix(n000, n100, f.x);
+				float nx10 = mix(n010, n110, f.x);
+				float nx01 = mix(n001, n101, f.x);
+				float nx11 = mix(n011, n111, f.x);
+				float nxy0 = mix(nx00, nx10, f.y);
+				float nxy1 = mix(nx01, nx11, f.y);
+				return mix(nxy0, nxy1, f.z);
+			}
+
+			float fbm(vec3 p) {
+				float sum = 0.0;
+				float amp = 0.5;
+				mat3 m = mat3(
+					0.00, 0.80, 0.60,
+					-0.80, 0.36, -0.48,
+					-0.60, -0.48, 0.64
+				);
+
+				for (int i = 0; i < 5; ++i) {
+					sum += amp * noise(p);
+					p = m * p * 2.02 + 0.19;
+					amp *= 0.5;
+				}
+
+				return sum;
+			}
+
+			bool rayBox(vec3 ro, vec3 rd, vec3 bmin, vec3 bmax, out float tNear, out float tFar) {
+				vec3 inv = 1.0 / rd;
+				vec3 t0 = (bmin - ro) * inv;
+				vec3 t1 = (bmax - ro) * inv;
+				vec3 tsmaller = min(t0, t1);
+				vec3 tbigger = max(t0, t1);
+				tNear = max(max(tsmaller.x, tsmaller.y), tsmaller.z);
+				tFar = min(min(tbigger.x, tbigger.y), tbigger.z);
+				return tFar > max(tNear, 0.0);
+			}
+
+			float phaseHenyeyGreenstein(float cosTheta, float g) {
+				float g2 = g * g;
+				return (1.0 - g2) / (4.0 * 3.14159265 * pow(1.0 + g2 - 2.0 * g * cosTheta, 1.5));
+			}
+
+			float sampleSimDensity(vec3 p) {
+				vec3 extent = max(uSimVolumeMax - uSimVolumeMin, vec3(0.0001));
+				vec3 uvw = (p - uSimVolumeMin) / extent;
+				if (any(lessThan(uvw, vec3(0.0))) || any(greaterThan(uvw, vec3(1.0)))) {
+					return 0.0;
+				}
+
+				// Fade near domain boundaries to avoid a visible box-shaped volume edge.
+				vec3 edgeDist = min(uvw, vec3(1.0) - uvw);
+				float edgeFade = smoothstep(0.0, 0.08, min(edgeDist.x, min(edgeDist.y, edgeDist.z)));
+
+				// Sample raw density (0-1 range from 8-bit packed value)
+				float rawDensity = texture(uDensityTexture, clamp(uvw, vec3(0.0), vec3(1.0))).r;
+				
+				// Debug display modes:
+				// 0 = normal (remapped with threshold)
+				// 1 = raw density (no threshold, direct visualization)
+				// 2 = aggressive threshold (debug too-dark rendering)
+				float finalDensity;
+				if (uDensityDisplayMode == 1) {
+					// Raw density: directly show 0-1 values without thresholding
+					finalDensity = rawDensity;
+				} else if (uDensityDisplayMode == 2) {
+					// Aggressive threshold (to test if remapping is the issue)
+					finalDensity = max(rawDensity - 0.5, 0.0) * 2.0;
+				} else {
+					// Default: convert the packed density into a smoother extinction response.
+					// This keeps thin fog visible while still preserving contrast in thicker regions.
+					finalDensity = 1.0 - exp(-max(rawDensity - 0.002, 0.0) * 16.0);
+				}
+				return finalDensity * edgeFade;
+			}
+
+			float sampleDensity(vec3 p) {
+				if (uUseSimVolume == 1) {
+					return saturate(sampleSimDensity(p));
+				}
+
+				// Analytic placeholder volume.
+				// Replace this with your real simulation field once the pipeline below is ready.
+				// The important part here is that the renderer already knows how to ray march,
+				// light, and composite a participating medium.
+				vec3 emitter = uEmitterPos;
+				float rising = max(p.y - emitter.y, 0.0);
+				float verticalFalloff = exp(-rising * 0.85);
+				float radial = length((p - emitter).xz);
+				float plume = exp(-radial * radial * 2.6) * verticalFalloff;
+
+				float shape = fbm(p * 1.5 + vec3(0.0, uTime * 0.18, 0.0));
+				shape = mix(0.55, 1.25, shape);
+
+				float baseFog = smoothstep(-0.65, 0.95, p.y);
+				baseFog *= exp(-max(p.y, 0.0) * 0.15);
+
+				return saturate(plume * 1.8 * shape + baseFog * 0.14);
+			}
+
+			float sampleLight(vec3 p, vec3 lightDir) {
+				// Cheap in-scatter shadowing: march toward the light in a few steps.
+				// If you later switch to a real grid-based simulation, keep this function
+				// and feed it your density lookup instead of the analytic placeholder above.
+				float transmittance = 1.0;
+				float stepSize = 0.18;
+				vec3 current = p;
+
+				for (int i = 0; i < 12; ++i) {
+					current += lightDir * stepSize;
+					float density = sampleDensity(current);
+					transmittance *= exp(-density * 0.45 * stepSize);
+				}
+
+				return transmittance;
+			}
+
+			void main() {
+				vec2 uv = (gl_FragCoord.xy / uResolution) * 2.0 - 1.0;
+				uv.x *= uResolution.x / uResolution.y;
+
+				vec3 forward = normalize(uCameraTarget - uCameraPos);
+				vec3 right = normalize(cross(forward, uCameraUp));
+				vec3 up = normalize(cross(right, forward));
+
+				float lens = 1.7;
+				vec3 rayDir = normalize(forward * lens + right * uv.x + up * uv.y);
+				vec3 rayOrigin = uCameraPos;
+
+				vec3 boxMin = vec3(-1.6, -0.65, -1.6);
+				vec3 boxMax = vec3( 1.6,  2.95,  1.6);
+
+				float tNear;
+				float tFar;
+				if (!rayBox(rayOrigin, rayDir, boxMin, boxMax, tNear, tFar)) {
+					fragColor = vec4(pow(SITE_BACKGROUND_LINEAR, vec3(1.0 / 2.2)), 1.0);
+					return;
+				}
+
+				tNear = max(tNear, 0.0);
+				float distanceInside = tFar - tNear;
+				float stepCount = 96.0;
+				float stepSize = distanceInside / stepCount;
+				float t = tNear;
+
+				vec3 color = vec3(0.0);
+				float transmittance = 1.0;
+				vec3 lightDir = normalize(uLightDir);
+				float phase = phaseHenyeyGreenstein(dot(rayDir, lightDir), 0.35);
+
+				for (int i = 0; i < 96; ++i) {
+					vec3 p = rayOrigin + rayDir * t;
+					float density = sampleDensity(p);
+
+					if (density > 0.0001) {
+						float light = sampleLight(p, lightDir);
+						float scatterCoeff = 1.55;
+						float absorbCoeff = 0.55;
+						float extinction = density * (scatterCoeff + absorbCoeff);
+						float alpha = 1.0 - exp(-extinction * stepSize);
+						vec3 baseColor = mix(vec3(0.92, 0.95, 1.00), vec3(1.00, 0.84, 0.62), 0.35);
+						float emitterDistance = length(p - uEmitterPos);
+						float emitterTintFalloff = pow(saturate(1.0 - emitterDistance / 1.35), 1.6);
+						float localTintStrength = uFogTintStrength * emitterTintFalloff;
+						baseColor = mix(baseColor, uFogTintColor, localTintStrength);
+						vec3 inscatter = baseColor * scatterCoeff * density * light * phase;
+						vec3 glowColor = mix(vec3(1.0, 0.62, 0.24), uFogTintColor, uFogTintStrength);
+						vec3 glow = glowColor * exp(-emitterDistance * 3.2) * 0.62;
+
+						color += transmittance * (inscatter + glow) * alpha;
+						transmittance *= 1.0 - alpha;
+						if (transmittance < 0.01) {
+							break;
+						}
+					}
+
+					t += stepSize;
+				}
+
+				vec3 finalColor = color + SITE_BACKGROUND_LINEAR * transmittance;
+				finalColor = pow(saturate(finalColor), vec3(1.0 / 2.2));
+				fragColor = vec4(finalColor, 1.0);
+			}
+			`;
+
+			function compileShader(type, source) {
+				const shader = gl.createShader(type);
+				gl.shaderSource(shader, source);
+				gl.compileShader(shader);
+
+				if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+					const message = gl.getShaderInfoLog(shader);
+					gl.deleteShader(shader);
+					throw new Error(message);
+				}
+
+				return shader;
+			}
+
+			function createProgram(vertexSource, fragmentSource) {
+				const program = gl.createProgram();
+				gl.attachShader(program, compileShader(gl.VERTEX_SHADER, vertexSource));
+				gl.attachShader(program, compileShader(gl.FRAGMENT_SHADER, fragmentSource));
+				gl.linkProgram(program);
+
+				if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+					const message = gl.getProgramInfoLog(program);
+					gl.deleteProgram(program);
+					throw new Error(message);
+				}
+
+				return program;
+			}
+
+			let program;
+			try {
+				program = createProgram(vertexSource, fragmentSource);
+			} catch (error) {
+				console.error('Shader compile error:', error);
+				throw error;
+			}
+
+			const vao = gl.createVertexArray();
+			gl.bindVertexArray(vao);
+
+			const uniformLocations = {
+				resolution: gl.getUniformLocation(program, 'uResolution'),
+				time: gl.getUniformLocation(program, 'uTime'),
+				mouse: gl.getUniformLocation(program, 'uMouse'),
+				cameraPos: gl.getUniformLocation(program, 'uCameraPos'),
+				cameraTarget: gl.getUniformLocation(program, 'uCameraTarget'),
+				cameraUp: gl.getUniformLocation(program, 'uCameraUp'),
+				lightDir: gl.getUniformLocation(program, 'uLightDir'),
+				emitterPos: gl.getUniformLocation(program, 'uEmitterPos'),
+				volumeRadius: gl.getUniformLocation(program, 'uVolumeRadius'),
+				densityTexture: gl.getUniformLocation(program, 'uDensityTexture'),
+				useSimVolume: gl.getUniformLocation(program, 'uUseSimVolume'),
+				simVolumeMin: gl.getUniformLocation(program, 'uSimVolumeMin'),
+				simVolumeMax: gl.getUniformLocation(program, 'uSimVolumeMax'),
+				densityDisplayMode: gl.getUniformLocation(program, 'uDensityDisplayMode'),
+				fogTintColor: gl.getUniformLocation(program, 'uFogTintColor'),
+				fogTintStrength: gl.getUniformLocation(program, 'uFogTintStrength')
+			};
+
+			const pointer = { x: 0.5, y: 0.5 };
+			const fogTint = {
+				startedAt: -1000,
+				duration: 1.2,
+				color: [0.1, 0.34, 0.72]
+			};
+			const cameraControl = {
+				isDragging: false,
+				pointerId: null,
+				lastX: 0,
+				lastY: 0,
+				yaw: 0.0,
+				pitch: 0.05,
+				radius: 4.3
+			};
+
+			function clamp(value, min, max) {
+				return Math.min(Math.max(value, min), max);
+			}
+
+			function updateEmitterPointer(event) {
+				pointer.x = event.clientX / window.innerWidth;
+				pointer.y = event.clientY / window.innerHeight;
+			}
+
+			canvas.addEventListener('pointerdown', (event) => {
+				cameraControl.isDragging = true;
+				cameraControl.pointerId = event.pointerId;
+				cameraControl.lastX = event.clientX;
+				cameraControl.lastY = event.clientY;
+				canvas.classList.add('is-dragging');
+				canvas.setPointerCapture(event.pointerId);
+				event.preventDefault();
+			});
+
+			canvas.addEventListener('pointermove', (event) => {
+				if (cameraControl.isDragging && event.pointerId === cameraControl.pointerId) {
+					const dx = event.clientX - cameraControl.lastX;
+					const dy = event.clientY - cameraControl.lastY;
+					cameraControl.yaw += dx * 0.006;
+					cameraControl.pitch = clamp(cameraControl.pitch + dy * 0.004, -0.65, 0.65);
+					cameraControl.lastX = event.clientX;
+					cameraControl.lastY = event.clientY;
+					event.preventDefault();
+					return;
+				}
+
+				updateEmitterPointer(event);
+			});
+
+			function endCameraDrag(event) {
+				if (!cameraControl.isDragging || event.pointerId !== cameraControl.pointerId) {
+					return;
+				}
+
+				cameraControl.isDragging = false;
+				cameraControl.pointerId = null;
+				canvas.classList.remove('is-dragging');
+				updateEmitterPointer(event);
+				if (canvas.hasPointerCapture(event.pointerId)) {
+					canvas.releasePointerCapture(event.pointerId);
+				}
+			}
+
+			canvas.addEventListener('pointerup', endCameraDrag);
+			canvas.addEventListener('pointercancel', endCameraDrag);
+			canvas.addEventListener('lostpointercapture', () => {
+				cameraControl.isDragging = false;
+				cameraControl.pointerId = null;
+				canvas.classList.remove('is-dragging');
+			});
+
+			canvas.addEventListener('dblclick', (event) => {
+				updateEmitterPointer(event);
+				const state = window.simState;
+				const emitter = state && state.emitters && state.emitters[0];
+				if (state && emitter && state.config && state.config.worldSize) {
+					const worldSize = state.config.worldSize;
+					emitter.position[0] = (pointer.x - 0.5) * worldSize[0] * 0.8;
+					emitter.position[2] = (0.5 - pointer.y) * worldSize[2] * 0.8;
+					if (window.queueEmitterRingBurst) {
+						window.queueEmitterRingBurst();
+					}
+					fogTint.startedAt = performance.now() * 0.001;
+				}
+				event.preventDefault();
+			});
+
+			function resizeCanvas() {
+				const ratio = Math.min(window.devicePixelRatio || 1, 2);
+				const width = Math.floor(window.innerWidth * ratio);
+				const height = Math.floor((window.innerHeight - 64) * ratio);
+
+				canvas.width = width;
+				canvas.height = height;
+				canvas.style.width = `${window.innerWidth}px`;
+				canvas.style.height = `${window.innerHeight - 64}px`;
+				gl.viewport(0, 0, width, height);
+			}
+
+			window.addEventListener('resize', resizeCanvas);
+			resizeCanvas();
+
+			gl.useProgram(program);
+			gl.uniform3f(uniformLocations.lightDir, -0.38, 0.86, 0.30);
+			gl.uniform3f(uniformLocations.emitterPos, 0.0, -0.58, 0.0);
+			gl.uniform1f(uniformLocations.volumeRadius, 1.6);
+			gl.uniform1i(uniformLocations.densityTexture, 0);
+			gl.uniform1i(uniformLocations.useSimVolume, 0);
+			gl.uniform3f(uniformLocations.fogTintColor, fogTint.color[0], fogTint.color[1], fogTint.color[2]);
+			gl.uniform1f(uniformLocations.fogTintStrength, 0.0);
+
+			let previousFrameTimeMs = 0;
+
+			function render(timeMs) {
+				const time = timeMs * 0.001;
+				const aspect = window.innerWidth / Math.max(window.innerHeight - 64, 1);
+				let frameDt = simState.runtime.deltaTime;
+				if (previousFrameTimeMs > 0) {
+					frameDt = (timeMs - previousFrameTimeMs) * 0.001;
+				}
+				previousFrameTimeMs = timeMs;
+
+				// Step the simulation with a fixed timestep
+				if (window.simState.config.gridDimensions && window.simState.config.gridDimensions[0] > 0) {
+					if (simState.emitters && simState.emitters.length > 0) {
+						const worldSize = simState.config.worldSize;
+						const emitter = simState.emitters[0];
+						if (!cameraControl.isDragging) {
+							const targetX = (pointer.x - 0.5) * worldSize[0] * 0.8;
+							const targetZ = (0.5 - pointer.y) * worldSize[2] * 0.8;
+							emitter.position[0] += (targetX - emitter.position[0]) * 0.22;
+							emitter.position[2] += (targetZ - emitter.position[2]) * 0.22;
+						}
+						emitter.position[1] = -0.75;
+					}
+					simState.runtime.time = time;
+					stepSimulation(frameDt);
+					simState.runtime.frame++;
+				}
+
+				const cameraTarget = [0.0, 0.55, 0.0];
+				const orbitCos = Math.cos(cameraControl.pitch);
+				const cameraPos = [
+					cameraTarget[0] + Math.sin(cameraControl.yaw) * orbitCos * cameraControl.radius,
+					cameraTarget[1] + Math.sin(cameraControl.pitch) * cameraControl.radius,
+					cameraTarget[2] + Math.cos(cameraControl.yaw) * orbitCos * cameraControl.radius
+				];
+				const cameraUp = [0.0, 1.0, 0.0];
+
+				gl.useProgram(program);
+				gl.uniform2f(uniformLocations.resolution, canvas.width, canvas.height);
+				gl.uniform1f(uniformLocations.time, time);
+				gl.uniform2f(uniformLocations.mouse, pointer.x, pointer.y);
+				const fogTintElapsed = time - fogTint.startedAt;
+				const fogTintStrength = fogTintElapsed < fogTint.duration
+					? Math.pow(1.0 - fogTintElapsed / fogTint.duration, 2.0)
+					: 0.0;
+				gl.uniform1f(uniformLocations.fogTintStrength, fogTintStrength);
+				gl.uniform3f(uniformLocations.cameraPos, cameraPos[0], cameraPos[1], cameraPos[2]);
+				gl.uniform3f(uniformLocations.cameraTarget, cameraTarget[0], cameraTarget[1], cameraTarget[2]);
+				gl.uniform3f(uniformLocations.cameraUp, cameraUp[0], cameraUp[1], cameraUp[2]);
+				if (simState.emitters && simState.emitters.length > 0) {
+					const emitter = simState.emitters[0];
+					gl.uniform3f(uniformLocations.emitterPos, emitter.position[0], emitter.position[1], emitter.position[2]);
+				}
+
+				const worldSize = simState.config.worldSize;
+				const worldMinY = simState.config.worldMinY || 0.0;
+				const halfX = worldSize[0] * 0.5;
+				const halfZ = worldSize[2] * 0.5;
+				gl.uniform3f(uniformLocations.simVolumeMin, -halfX, worldMinY, -halfZ);
+				gl.uniform3f(uniformLocations.simVolumeMax, halfX, worldMinY + worldSize[1], halfZ);
+				gl.uniform1i(uniformLocations.densityDisplayMode, simState.debug.displayMode);
+
+				const hasSimVolume = !!(simState.render.densityTexture && simState.render.volumeUploadReady);
+				gl.uniform1i(uniformLocations.useSimVolume, hasSimVolume ? 1 : 0);
+				if (hasSimVolume) {
+					gl.activeTexture(gl.TEXTURE0);
+					gl.bindTexture(gl.TEXTURE_3D, simState.render.densityTexture);
+				}
+
+				gl.drawArrays(gl.TRIANGLES, 0, 3);
+				requestAnimationFrame(render);
+			}
+
+			requestAnimationFrame(render);
+		}
+        
+		window.simState = {
+			config: {
+				worldSize: [0, 0, 0],
+				worldMinY: 0,
+				gridDimensions: [0, 0, 0],
+				buoyancyStrength: 0,
+				dragCoefficient: 0,
+				fogColorMode: "temprature"
+			},
+			emitters: [],
+			effects: {
+				ringBursts: [],
+				normalEmissionPausedUntil: 0
+			},
+			fields: {
+				density: null,
+				temperature: null,
+				velocity: null,
+				pressure: null
+			},
+			render: {
+				program: null,
+				vao: null,
+				uniforms: {},
+				densityTexture: null,
+				volumeData: null,
+				packedDensity: null,
+				volumeUploadReady: false
+			},
+			camera: {
+				position: [0, 0, 0],
+				target: [0, 0, 0],
+				up: [0, 1, 0]
+			},
+			runtime: {
+				time: 0,
+				deltaTime: 0,
+				frame: 0
+			},
+			debug: {
+				enabled: true,
+				mode: "density",
+				disablePressure: false,
+				displayMode: 0  // 0=normal, 1=raw density, 2=temperature field
+			}
+		};
+
+		const simState = window.simState;
+
+		window.queueEmitterRingBurst = function queueEmitterRingBurst() {
+			const emitter = simState.emitters && simState.emitters[0];
+			const worldSize = simState.config && simState.config.worldSize;
+			const worldMinY = simState.config && simState.config.worldMinY || 0.0;
+			if (!emitter || !worldSize || !simState.effects) {
+				return;
+			}
+
+			const radius = 0.82;
+			const thickness = 0.075;
+			const centerY = Math.min(
+				Math.max(emitter.position[1] + thickness * 2.0, worldMinY + thickness * 2.0),
+				worldMinY + worldSize[1] - thickness * 2.0
+			);
+
+			simState.effects.normalEmissionPausedUntil = simState.runtime.time + 0.26;
+			simState.effects.ringBursts.push({
+				center: [emitter.position[0], centerY, emitter.position[2]],
+				radius,
+				thickness,
+				age: 0,
+				duration: 0.95,
+				densityRate: 22.0,
+				temperatureRate: 6.5,
+				outwardVelocity: 100.2,
+				upVelocity: 100.4
+			});
+		};
+
+		// The functions below are intentionally empty. This is the architecture I want
+		// you to fill in next. Treat them as the checklist for a physically based fog
+		// solver that feeds the renderer above.
+		//
+		// Recommended order when you implement the real solver:
+		// 1. Define the simulation domain and emitter descriptors.
+		// 2. Allocate your scalar and vector fields.
+		// 3. Inject emitter energy, temperature, and density.
+		// 4. Advect the fields with the velocity field.
+		// 5. Apply buoyancy, vorticity confinement, and dissipation.
+		// 6. Solve pressure if you want the plume to feel incompressible.
+		// 7. Transfer the simulation state into a format the ray marcher can sample.
+		// 8. Keep a debug view so you can inspect the volume before rendering.
+
+		function createSimulationConfig() {
+			// TODO: Decide the simulation domain size, timestep, and physical constants.
+			// Put the emitter below the visible volume, then define its radius, temperature,
+			// density injection rate, and initial velocity.
+			//
+			// Example decisions to make:
+			// - How large should the world-space box be?
+			simState.config.worldSize = [3.0, 3.6, 3.0]; // width, height, depth in world units
+			simState.config.worldMinY = -0.75; // lower edge of the vertical simulation domain
+			simState.config.gridDimensions = [64, 64, 64]; // number of cells in x, y, z
+			// - What is the stable timestep for your solver?
+			simState.runtime.deltaTime = 0.016; // seconds per simulation step (e.g., 60 FPS)
+			// - How strong is buoyancy relative to drag?
+            simState.config.buoyancyStrength = 1.5; // arbitrary units
+            simState.config.dragCoefficient = 0.1; // arbitrary units
+			// - Do you want one emitter or a small bank of emitters?
+			simState.emitters = [{
+                position: [0.0, -0.52, 0.0], // world-space position of the emitter
+				radius: 0.32, // radius of the emitter in world units
+				emissionRate: 99.0, // density units emitted per second
+				initialTemperature: 2.2, // temperature units emitted
+				initialVelocity: [0.0, 2.6, 0.0] // initial velocity of emitted fluid
+			}];
+			// - Should the fog color depend on temperature or density?
+            simState.config.fogColorMode = "density"; // or "temperature"
+		}
+
+		function createEmitterDefinitions() {
+			const emitters = new Array(1);
+			emitters[0] = {
+				position: [0.0, -0.52, 0.0],
+				radius: 0.32,
+				emissionRate: 6.0,
+				initialTemperature: 5.2,
+				initialVelocity: [0.0, 2.6, 0.0],
+				turbulenceSeed: 1997
+			};
+
+			simState.emitters = emitters;
+			return emitters;
+		}
+
+		function allocateSimulationFields() {
+			const dims = simState.config.gridDimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const cellCount = nx * ny * nz;
+			const vectorCount = cellCount * 3;
+			const strideY = nx;
+			const strideZ = nx * ny;
+			const worldSize = simState.config.worldSize;
+
+			const createScalarField = () => ({
+				current: new Float32Array(cellCount),
+				next: new Float32Array(cellCount)
+			});
+
+			simState.fields = {
+				dimensions: [nx, ny, nz],
+				cellCount,
+				strideY,
+				strideZ,
+				cellSize: [
+					worldSize[0] / nx,
+					worldSize[1] / ny,
+					worldSize[2] / nz
+				],
+				invCellSize: [
+					nx / worldSize[0],
+					ny / worldSize[1],
+					nz / worldSize[2]
+				],
+				density: createScalarField(),
+				temperature: createScalarField(),
+				pressure: {
+					current: new Float32Array(cellCount),
+					next: new Float32Array(cellCount),
+					divergence: new Float32Array(cellCount)
+				},
+				velocity: {
+					current: new Float32Array(vectorCount),
+					next: new Float32Array(vectorCount)
+				},
+				debug: {
+					densitySlice: new Float32Array(nx * nz),
+					temperatureSlice: new Float32Array(nx * nz),
+					pressureSlice: new Float32Array(nx * nz),
+					velocitySlice: new Float32Array(nx * nz * 2)
+				}
+			};
+		}
+
+		function seedInitialFields() {
+			// TODO: Initialize the volume before the first simulation step.
+			// This is where you place a quiet baseline density, a warm emitter core, or any
+			// initial turbulence you want the plume to grow from.
+			//
+			// A good starting point is a small hot region near the emitter and low density
+			// everywhere else.
+            const { density, temperature, velocity } = simState.fields;
+            const emitter = simState.emitters[0];
+			const worldMinY = simState.config.worldMinY || 0.0;
+			const centerX = Math.floor(emitter.position[0] * simState.fields.invCellSize[0] + simState.fields.dimensions[0] / 2);
+			const centerY = Math.floor((emitter.position[1] - worldMinY) * simState.fields.invCellSize[1]);
+			const centerZ = Math.floor(emitter.position[2] * simState.fields.invCellSize[2] + simState.fields.dimensions[2] / 2);
+            const radiusInCells = Math.ceil(emitter.radius * simState.fields.invCellSize[0]);
+
+            for (let z = -radiusInCells; z <= radiusInCells; z++) {
+                for (let y = -radiusInCells; y <= radiusInCells; y++) {
+                    for (let x = -radiusInCells; x <= radiusInCells; x++) {
+                        const dx = x * simState.fields.cellSize[0];
+                        const dy = y * simState.fields.cellSize[1];
+                        const dz = z * simState.fields.cellSize[2];
+                        const distanceSquared = dx * dx + dy * dy + dz * dz;
+
+                        if (distanceSquared <= emitter.radius * emitter.radius) {
+							const ix = centerX + x;
+							const iy = centerY + y;
+							const iz = centerZ + z;
+							if (ix < 0 || iy < 0 || iz < 0 || ix >= simState.fields.dimensions[0] || iy >= simState.fields.dimensions[1] || iz >= simState.fields.dimensions[2]) {
+								continue;
+							}
+							const index = (iz * simState.fields.dimensions[1] + iy) * simState.fields.dimensions[0] + ix;
+                            density.current[index] = emitter.emissionRate;
+                            temperature.current[index] = emitter.initialTemperature;
+                            velocity.current[index * 3 + 0] = emitter.initialVelocity[0];
+                            velocity.current[index * 3 + 1] = emitter.initialVelocity[1];
+                            velocity.current[index * 3 + 2] = emitter.initialVelocity[2];
+                        }
+                    }
+                }
+            }  
+		}
+
+		function injectEmitterSource() {
+			const fields = simState.fields;
+			const emitters = simState.emitters;
+			const density = fields.density.current;
+			const temperature = fields.temperature.current;
+			const velocity = fields.velocity.current;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+			const cellSize = fields.cellSize;
+			const invCellSize = fields.invCellSize;
+			const cellX = cellSize[0];
+			const cellY = cellSize[1];
+			const cellZ = cellSize[2];
+			const invX = invCellSize[0];
+			const invY = invCellSize[1];
+			const invZ = invCellSize[2];
+			const dt = simState.runtime.deltaTime || 0.016;
+			const simTime = simState.runtime.time || 0.0;
+			const worldMinY = simState.config.worldMinY || 0.0;
+			const halfNx = nx * 0.5;
+			const halfNz = nz * 0.5;
+
+			for (let e = 0, emitterCount = emitters.length; e < emitterCount; e++) {
+				const emitter = emitters[e];
+				const radius = emitter.radius;
+				const radiusSq = radius * radius;
+
+				if (radiusSq <= 0) {
+					continue;
+				}
+
+				let centerX = Math.floor(emitter.position[0] * invX + halfNx);
+				let centerY = Math.floor((emitter.position[1] - worldMinY) * invY);
+				let centerZ = Math.floor(emitter.position[2] * invZ + halfNz);
+
+				if (centerX < 0) centerX = 0;
+				else if (centerX >= nx) centerX = nx - 1;
+				if (centerY < 0) centerY = 0;
+				else if (centerY >= ny) centerY = ny - 1;
+				if (centerZ < 0) centerZ = 0;
+				else if (centerZ >= nz) centerZ = nz - 1;
+
+				const radiusCellsX = Math.ceil(radius * invX);
+				const radiusCellsY = Math.ceil(radius * invY);
+				const radiusCellsZ = Math.ceil(radius * invZ);
+				const minX = centerX > radiusCellsX ? centerX - radiusCellsX : 0;
+				const maxX = centerX + radiusCellsX < nx ? centerX + radiusCellsX : nx - 1;
+				const minY = centerY > radiusCellsY ? centerY - radiusCellsY : 0;
+				const maxY = centerY + radiusCellsY < ny ? centerY + radiusCellsY : ny - 1;
+				const minZ = centerZ > radiusCellsZ ? centerZ - radiusCellsZ : 0;
+				const maxZ = centerZ + radiusCellsZ < nz ? centerZ + radiusCellsZ : nz - 1;
+				const invRadiusSq = 1.0 / radiusSq;
+				const pulse = 0.85 + 0.35 * Math.sin(simTime * 2.1 + e * 1.7);
+				const densityScale = emitter.emissionRate * dt * pulse;
+				const temperatureScale = emitter.initialTemperature * dt * pulse;
+				const sourceVelocity = emitter.initialVelocity;
+				const sourceVelocityX = sourceVelocity[0] + Math.sin(simTime * 1.7 + e * 2.3) * 0.12;
+				const sourceVelocityY = sourceVelocity[1];
+				const sourceVelocityZ = sourceVelocity[2] + Math.cos(simTime * 1.9 + e * 1.1) * 0.12;
+
+				for (let z = minZ; z <= maxZ; z++) {
+					const dz = (z - centerZ) * cellZ;
+					const dzSq = dz * dz;
+
+					for (let y = minY; y <= maxY; y++) {
+						const dy = (y - centerY) * cellY;
+						const yzSq = dy * dy + dzSq;
+						let index = z * strideZ + y * strideY + minX;
+
+						for (let x = minX; x <= maxX; x++, index++) {
+							const dx = (x - centerX) * cellX;
+							const distSq = dx * dx + yzSq;
+
+							if (distSq < radiusSq) {
+								const weight = 1.0 - distSq * invRadiusSq;
+								const densityAdd = densityScale * weight;
+								const newDensity = density[index] + densityAdd;
+								const velocityIndex = index * 3;
+
+								density[index] = newDensity;
+								temperature[index] += temperatureScale * weight;
+
+								if (densityAdd > 0.0) {
+									const momentumBlend = densityAdd / newDensity;
+									velocity[velocityIndex] += (sourceVelocityX - velocity[velocityIndex]) * momentumBlend;
+									velocity[velocityIndex + 1] += (sourceVelocityY - velocity[velocityIndex + 1]) * momentumBlend;
+									velocity[velocityIndex + 2] += (sourceVelocityZ - velocity[velocityIndex + 2]) * momentumBlend;
+
+									// Add a small rotational kick near the emitter to keep flow dynamic.
+									const invRadius = 1.0 / radius;
+									const swirl = 0.55 * weight * dt;
+									velocity[velocityIndex] += (-dz * invRadius) * swirl;
+									velocity[velocityIndex + 2] += (dx * invRadius) * swirl;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		function injectEmitterRingBursts() {
+			const bursts = simState.effects && simState.effects.ringBursts;
+			if (!bursts || bursts.length === 0) {
+				return;
+			}
+
+			const fields = simState.fields;
+			const density = fields.density.current;
+			const temperature = fields.temperature.current;
+			const velocity = fields.velocity.current;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+			const cellSize = fields.cellSize;
+			const invCellSize = fields.invCellSize;
+			const dt = simState.runtime.deltaTime || 0.016;
+			const worldMinY = simState.config.worldMinY || 0.0;
+			const halfNx = nx * 0.5;
+			const halfNz = nz * 0.5;
+
+			for (let b = bursts.length - 1; b >= 0; b--) {
+				const burst = bursts[b];
+				const radius = burst.radius;
+				const thickness = burst.thickness;
+				const reach = radius + thickness * 3.0;
+				const timeWeight = Math.max(0.0, 1.0 - burst.age / burst.duration);
+				const densityScale = burst.densityRate * dt * timeWeight;
+				const temperatureScale = burst.temperatureRate * dt * timeWeight;
+				const center = burst.center;
+
+				let centerX = Math.floor(center[0] * invCellSize[0] + halfNx);
+				let centerY = Math.floor((center[1] - worldMinY) * invCellSize[1]);
+				let centerZ = Math.floor(center[2] * invCellSize[2] + halfNz);
+				centerX = Math.min(Math.max(centerX, 0), nx - 1);
+				centerY = Math.min(Math.max(centerY, 0), ny - 1);
+				centerZ = Math.min(Math.max(centerZ, 0), nz - 1);
+
+				const radiusCellsX = Math.ceil(reach * invCellSize[0]);
+				const radiusCellsY = Math.ceil(reach * invCellSize[1]);
+				const radiusCellsZ = Math.ceil(reach * invCellSize[2]);
+				const minX = Math.max(centerX - radiusCellsX, 0);
+				const maxX = Math.min(centerX + radiusCellsX, nx - 1);
+				const minY = Math.max(centerY - radiusCellsY, 0);
+				const maxY = Math.min(centerY + radiusCellsY, ny - 1);
+				const minZ = Math.max(centerZ - radiusCellsZ, 0);
+				const maxZ = Math.min(centerZ + radiusCellsZ, nz - 1);
+				const innerRadius = radius - thickness * 1.35;
+				const hollowNormalWidth = thickness * 1.35;
+
+				for (let z = minZ; z <= maxZ; z++) {
+					const wz = (z - halfNz) * cellSize[2];
+
+					for (let y = minY; y <= maxY; y++) {
+						const wy = worldMinY + y * cellSize[1];
+						let index = z * strideZ + y * strideY + minX;
+
+						for (let x = minX; x <= maxX; x++, index++) {
+							const wx = (x - halfNx) * cellSize[0];
+							const dx = wx - center[0];
+							const dy = wy - center[1];
+							const dz = wz - center[2];
+							const planeRadius = Math.sqrt(dx * dx + dz * dz);
+							const normalDistance = dy;
+							const ringDistance = Math.sqrt(
+								(planeRadius - radius) * (planeRadius - radius) +
+								normalDistance * normalDistance
+							);
+
+							if (planeRadius < innerRadius && Math.abs(normalDistance) < hollowNormalWidth) {
+								density[index] *= 0.18;
+								temperature[index] *= 0.35;
+							}
+
+							if (ringDistance < thickness) {
+								const ringWeight = 1.0 - ringDistance / thickness;
+								const shapedWeight = ringWeight * ringWeight * timeWeight;
+								const densityAdd = densityScale * shapedWeight;
+								const newDensity = density[index] + densityAdd;
+								const velocityIndex = index * 3;
+								const invPlaneRadius = planeRadius > 0.0001 ? 1.0 / planeRadius : 0.0;
+								const outX = dx * invPlaneRadius;
+								const outZ = dz * invPlaneRadius;
+
+								density[index] = newDensity;
+								temperature[index] += temperatureScale * shapedWeight;
+								velocity[velocityIndex] += outX * burst.outwardVelocity * shapedWeight * dt;
+								velocity[velocityIndex + 1] += burst.upVelocity * shapedWeight * dt;
+								velocity[velocityIndex + 2] += outZ * burst.outwardVelocity * shapedWeight * dt;
+							}
+						}
+					}
+				}
+
+				burst.age += dt;
+				if (burst.age >= burst.duration) {
+					bursts.splice(b, 1);
+				}
+			}
+		}
+
+		function advectVelocityField() {
+			// Semi-Lagrangian advection: for each cell, trace backward along the velocity field
+			// and sample the velocity from where this cell's value came from.
+			const fields = simState.fields;
+			const velocity = fields.velocity.current;
+			const velocityNext = fields.velocity.next;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const cellSize = fields.cellSize;
+			const invCellSize = fields.invCellSize;
+			const dt = simState.runtime.deltaTime;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+			const worldMinY = simState.config.worldMinY || 0.0;
+
+			// Helper: trilinear interpolation of velocity at a world position
+			const sampleVelocity = (wx, wy, wz) => {
+				// Convert world position to grid coordinates
+				const gx = wx * invCellSize[0] + nx * 0.5;
+				const gy = (wy - worldMinY) * invCellSize[1];
+				const gz = wz * invCellSize[2] + nz * 0.5;
+
+				// Clamp to grid bounds
+				const ix = Math.max(0, Math.min(nx - 1.001, gx));
+				const iy = Math.max(0, Math.min(ny - 1.001, gy));
+				const iz = Math.max(0, Math.min(nz - 1.001, gz));
+
+				const i0 = Math.floor(ix);
+				const j0 = Math.floor(iy);
+				const k0 = Math.floor(iz);
+				const i1 = Math.min(i0 + 1, nx - 1);
+				const j1 = Math.min(j0 + 1, ny - 1);
+				const k1 = Math.min(k0 + 1, nz - 1);
+
+				const fx = ix - i0;
+				const fy = iy - j0;
+				const fz = iz - k0;
+
+				// Trilinear interpolation
+				const samples = [];
+				for (let kk = k0; kk <= k1; kk++) {
+					for (let jj = j0; jj <= j1; jj++) {
+						for (let ii = i0; ii <= i1; ii++) {
+							const idx = kk * strideZ + jj * strideY + ii;
+							const vx = velocity[idx * 3 + 0];
+							const vy = velocity[idx * 3 + 1];
+							const vz = velocity[idx * 3 + 2];
+							samples.push([vx, vy, vz]);
+						}
+					}
+				}
+
+				// Interpolate along x
+				const v00 = [
+					samples[0][0] * (1 - fx) + samples[1][0] * fx,
+					samples[0][1] * (1 - fx) + samples[1][1] * fx,
+					samples[0][2] * (1 - fx) + samples[1][2] * fx
+				];
+				const v01 = [
+					samples[2][0] * (1 - fx) + samples[3][0] * fx,
+					samples[2][1] * (1 - fx) + samples[3][1] * fx,
+					samples[2][2] * (1 - fx) + samples[3][2] * fx
+				];
+				const v10 = [
+					samples[4][0] * (1 - fx) + samples[5][0] * fx,
+					samples[4][1] * (1 - fx) + samples[5][1] * fx,
+					samples[4][2] * (1 - fx) + samples[5][2] * fx
+				];
+				const v11 = [
+					samples[6][0] * (1 - fx) + samples[7][0] * fx,
+					samples[6][1] * (1 - fx) + samples[7][1] * fx,
+					samples[6][2] * (1 - fx) + samples[7][2] * fx
+				];
+
+				// Interpolate along y
+				const v0 = [
+					v00[0] * (1 - fy) + v01[0] * fy,
+					v00[1] * (1 - fy) + v01[1] * fy,
+					v00[2] * (1 - fy) + v01[2] * fy
+				];
+				const v1 = [
+					v10[0] * (1 - fy) + v11[0] * fy,
+					v10[1] * (1 - fy) + v11[1] * fy,
+					v10[2] * (1 - fy) + v11[2] * fy
+				];
+
+				// Interpolate along z
+				return [
+					v0[0] * (1 - fz) + v1[0] * fz,
+					v0[1] * (1 - fz) + v1[1] * fz,
+					v0[2] * (1 - fz) + v1[2] * fz
+				];
+			};
+
+			// For each cell, trace backward and sample
+			for (let k = 0; k < nz; k++) {
+				for (let j = 0; j < ny; j++) {
+					for (let i = 0; i < nx; i++) {
+						const idx = k * strideZ + j * strideY + i;
+
+						// Current velocity at this cell
+						const vx = velocity[idx * 3 + 0];
+						const vy = velocity[idx * 3 + 1];
+						const vz = velocity[idx * 3 + 2];
+
+						// World position of this cell
+						const wx = (i - nx * 0.5) * cellSize[0];
+						const wy = worldMinY + j * cellSize[1];
+						const wz = (k - nz * 0.5) * cellSize[2];
+
+						// Backtrack position
+						const backX = wx - vx * dt;
+						const backY = wy - vy * dt;
+						const backZ = wz - vz * dt;
+
+						// Sample velocity at backtracked position
+						const sampled = sampleVelocity(backX, backY, backZ);
+						velocityNext[idx * 3 + 0] = sampled[0];
+						velocityNext[idx * 3 + 1] = sampled[1];
+						velocityNext[idx * 3 + 2] = sampled[2];
+					}
+				}
+			}
+
+			// Swap buffers
+			const temp = fields.velocity.current;
+			fields.velocity.current = fields.velocity.next;
+			fields.velocity.next = temp;
+		}
+
+		function advectScalarFields() {
+			// Semi-Lagrangian advection for density and temperature using the velocity field.
+			const fields = simState.fields;
+			const velocity = fields.velocity.current;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const cellSize = fields.cellSize;
+			const invCellSize = fields.invCellSize;
+			const dt = simState.runtime.deltaTime;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+			const worldMinY = simState.config.worldMinY || 0.0;
+
+			// Helper: trilinear interpolation of a scalar field
+			const sampleScalar = (field, wx, wy, wz) => {
+				const gx = wx * invCellSize[0] + nx * 0.5;
+				const gy = (wy - worldMinY) * invCellSize[1];
+				const gz = wz * invCellSize[2] + nz * 0.5;
+
+				const ix = Math.max(0, Math.min(nx - 1.001, gx));
+				const iy = Math.max(0, Math.min(ny - 1.001, gy));
+				const iz = Math.max(0, Math.min(nz - 1.001, gz));
+
+				const i0 = Math.floor(ix);
+				const j0 = Math.floor(iy);
+				const k0 = Math.floor(iz);
+				const i1 = Math.min(i0 + 1, nx - 1);
+				const j1 = Math.min(j0 + 1, ny - 1);
+				const k1 = Math.min(k0 + 1, nz - 1);
+
+				const fx = ix - i0;
+				const fy = iy - j0;
+				const fz = iz - k0;
+
+				const s000 = field[k0 * strideZ + j0 * strideY + i0];
+				const s100 = field[k0 * strideZ + j0 * strideY + i1];
+				const s010 = field[k0 * strideZ + j1 * strideY + i0];
+				const s110 = field[k0 * strideZ + j1 * strideY + i1];
+				const s001 = field[k1 * strideZ + j0 * strideY + i0];
+				const s101 = field[k1 * strideZ + j0 * strideY + i1];
+				const s011 = field[k1 * strideZ + j1 * strideY + i0];
+				const s111 = field[k1 * strideZ + j1 * strideY + i1];
+
+				const s00 = s000 * (1 - fx) + s100 * fx;
+				const s10 = s010 * (1 - fx) + s110 * fx;
+				const s01 = s001 * (1 - fx) + s101 * fx;
+				const s11 = s011 * (1 - fx) + s111 * fx;
+
+				const s0 = s00 * (1 - fy) + s10 * fy;
+				const s1 = s01 * (1 - fy) + s11 * fy;
+
+				return s0 * (1 - fz) + s1 * fz;
+			};
+
+			const density = fields.density.current;
+			const temperature = fields.temperature.current;
+			const densityNext = fields.density.next;
+			const temperatureNext = fields.temperature.next;
+
+			for (let k = 0; k < nz; k++) {
+				for (let j = 0; j < ny; j++) {
+					for (let i = 0; i < nx; i++) {
+						const idx = k * strideZ + j * strideY + i;
+
+						const vx = velocity[idx * 3 + 0];
+						const vy = velocity[idx * 3 + 1];
+						const vz = velocity[idx * 3 + 2];
+
+						const wx = (i - nx * 0.5) * cellSize[0];
+						const wy = worldMinY + j * cellSize[1];
+						const wz = (k - nz * 0.5) * cellSize[2];
+
+						const backX = wx - vx * dt;
+						const backY = wy - vy * dt;
+						const backZ = wz - vz * dt;
+
+						densityNext[idx] = sampleScalar(density, backX, backY, backZ);
+						temperatureNext[idx] = sampleScalar(temperature, backX, backY, backZ);
+					}
+				}
+			}
+
+			// Swap buffers
+			let temp = fields.density.current;
+			fields.density.current = fields.density.next;
+			fields.density.next = temp;
+
+			temp = fields.temperature.current;
+			fields.temperature.current = fields.temperature.next;
+			fields.temperature.next = temp;
+		}
+
+		function applyBuoyancyAndDrag() {
+			// Apply buoyancy based on temperature and drag to velocity.
+			const fields = simState.fields;
+			const velocity = fields.velocity.current;
+			const temperature = fields.temperature.current;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const dt = simState.runtime.deltaTime;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+
+			const buoyancy = simState.config.buoyancyStrength * dt;
+			const drag = simState.config.dragCoefficient * dt;
+			const ambientTemp = 0.0;
+			
+			let maxBuoyForce = 0, sumBuoyForce = 0, buoyCount = 0;
+
+			for (let k = 0; k < nz; k++) {
+				for (let j = 0; j < ny; j++) {
+					for (let i = 0; i < nx; i++) {
+						const idx = k * strideZ + j * strideY + i;
+						const tempDiff = temperature[idx] - ambientTemp;
+
+						// Apply upward buoyancy force
+						const buoyForce = buoyancy * tempDiff;
+						velocity[idx * 3 + 1] += buoyForce;
+						maxBuoyForce = Math.max(maxBuoyForce, Math.abs(buoyForce));
+						sumBuoyForce += Math.abs(buoyForce);
+						buoyCount++;
+
+						// Apply drag
+						velocity[idx * 3 + 0] *= (1.0 - drag);
+						velocity[idx * 3 + 1] *= (1.0 - drag);
+						velocity[idx * 3 + 2] *= (1.0 - drag);
+					}
+				}
+			}
+			
+			// Diagnostics: log buoyancy magnitude
+			if (simState.runtime.frame % 40 === 0) {
+				console.log(`Buoyancy: maxForce=${maxBuoyForce.toFixed(5)} avgForce=${(sumBuoyForce/buoyCount).toFixed(5)} dragFactor=${drag.toFixed(5)}`);
+			}
+		}
+
+		function solvePressure() {
+			// Jacobi iterative solver for pressure projection (incompressibility).
+			const fields = simState.fields;
+			const velocity = fields.velocity.current;
+				let pressure = fields.pressure.current;
+				let pressureNext = fields.pressure.next;
+			const divergence = fields.pressure.divergence;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+			const cellSize = fields.cellSize;
+			const invCellSize = fields.invCellSize;
+			const dt = simState.runtime.deltaTime;
+			// CRITICAL: Scale must be small enough not to over-correct buoyancy.
+			// Buoyancy adds force ~1.5 * 2.2 * 0.016 = 0.053 per cell.
+			// Pressure correction should not exceed this. Using 0.1 instead of 0.5.
+			const scale = 0.1 / Math.max(Math.max(cellSize[0], cellSize[1]), cellSize[2]);
+
+			// Clear pressure
+			for (let i = 0; i < fields.cellCount; i++) {
+				pressure[i] = 0.0;
+			}
+
+			// Compute divergence
+			for (let k = 0; k < nz; k++) {
+				for (let j = 0; j < ny; j++) {
+					for (let i = 0; i < nx; i++) {
+						const idx = k * strideZ + j * strideY + i;
+
+						let divx = 0.0, divy = 0.0, divz = 0.0;
+
+						// X gradient (central difference)
+						if (i < nx - 1) divx += velocity[(idx + 1) * 3 + 0];
+						if (i > 0) divx -= velocity[(idx - 1) * 3 + 0];
+
+						// Y gradient (central difference)
+						if (j < ny - 1) divy += velocity[(idx + strideY) * 3 + 1];
+						if (j > 0) divy -= velocity[(idx - strideY) * 3 + 1];
+
+						// Z gradient (central difference)
+						if (k < nz - 1) divz += velocity[(idx + strideZ) * 3 + 2];
+						if (k > 0) divz -= velocity[(idx - strideZ) * 3 + 2];
+
+						divergence[idx] = (divx / cellSize[0] + divy / cellSize[1] + divz / cellSize[2]) * 0.5;
+					}
+				}
+			}
+
+			// Jacobi iterations
+			const iterations = 20;
+			for (let iter = 0; iter < iterations; iter++) {
+				for (let k = 0; k < nz; k++) {
+					for (let j = 0; j < ny; j++) {
+						for (let i = 0; i < nx; i++) {
+							const idx = k * strideZ + j * strideY + i;
+
+							let psum = 0.0;
+							let pcount = 0;
+
+							if (i > 0) { psum += pressure[idx - 1]; pcount++; }
+							if (i < nx - 1) { psum += pressure[idx + 1]; pcount++; }
+							if (j > 0) { psum += pressure[idx - strideY]; pcount++; }
+							if (j < ny - 1) { psum += pressure[idx + strideY]; pcount++; }
+							if (k > 0) { psum += pressure[idx - strideZ]; pcount++; }
+							if (k < nz - 1) { psum += pressure[idx + strideZ]; pcount++; }
+
+							pressureNext[idx] = (psum - divergence[idx]) / pcount;
+						}
+					}
+				}
+
+					const temp = pressure;
+					pressure = pressureNext;
+					pressureNext = temp;
+					fields.pressure.current = pressure;
+					fields.pressure.next = pressureNext;
+			}
+
+			// Apply pressure gradient to velocity
+			for (let k = 0; k < nz; k++) {
+				for (let j = 0; j < ny; j++) {
+					for (let i = 0; i < nx; i++) {
+						const idx = k * strideZ + j * strideY + i;
+
+						let gradx = 0.0, grady = 0.0, gradz = 0.0;
+
+						if (i > 0 && i < nx - 1) gradx = (pressure[idx + 1] - pressure[idx - 1]) * 0.5;
+						else if (i < nx - 1) gradx = pressure[idx + 1] - pressure[idx];
+						else if (i > 0) gradx = pressure[idx] - pressure[idx - 1];
+
+						if (j > 0 && j < ny - 1) grady = (pressure[idx + strideY] - pressure[idx - strideY]) * 0.5;
+						else if (j < ny - 1) grady = pressure[idx + strideY] - pressure[idx];
+						else if (j > 0) grady = pressure[idx] - pressure[idx - strideY];
+
+						if (k > 0 && k < nz - 1) gradz = (pressure[idx + strideZ] - pressure[idx - strideZ]) * 0.5;
+						else if (k < nz - 1) gradz = pressure[idx + strideZ] - pressure[idx];
+						else if (k > 0) gradz = pressure[idx] - pressure[idx - strideZ];
+
+						velocity[idx * 3 + 0] -= gradx * scale * dt;
+						velocity[idx * 3 + 1] -= grady * scale * dt;
+						velocity[idx * 3 + 2] -= gradz * scale * dt;
+					}
+				}
+			}
+			
+			// Diagnostics: log pressure correction magnitude
+			if (simState.runtime.frame % 40 === 0) {
+				let gradyMaxAbs = 0, gradySumAbs = 0, gradyCount = 0;
+				for (let k = 0; k < nz; k++) {
+					for (let j = 0; j < ny; j++) {
+						for (let i = 0; i < nx; i++) {
+							const idx = k * strideZ + j * strideY + i;
+							let grady = 0.0;
+							if (j > 0 && j < ny - 1) grady = (pressure[idx + strideY] - pressure[idx - strideY]) * 0.5;
+							else if (j < ny - 1) grady = pressure[idx + strideY] - pressure[idx];
+							else if (j > 0) grady = pressure[idx] - pressure[idx - strideY];
+							const correction = grady * scale * dt;
+							gradyMaxAbs = Math.max(gradyMaxAbs, Math.abs(correction));
+							gradySumAbs += Math.abs(correction);
+							gradyCount++;
+						}
+					}
+				}
+				console.log(`Pressure: maxCorrection=${gradyMaxAbs.toFixed(4)} avgCorrection=${(gradySumAbs/gradyCount).toFixed(5)}`);
+			}
+		}
+
+		function dissipateFields() {
+			// Reduce density and temperature over time with exponential decay.
+			const fields = simState.fields;
+			const density = fields.density.current;
+			const temperature = fields.temperature.current;
+			const dt = simState.runtime.deltaTime;
+			const cellCount = fields.cellCount;
+
+			// Exponential decay rates (per second). Adjust these to control how long smoke lingers.
+			const densityDecayRate = 0.5;       // density half-life ~1.4 seconds
+			const temperatureDecayRate = 0.3;  // temperature decays faster
+
+			const densityFactor = Math.exp(-densityDecayRate * dt);
+			const temperatureFactor = Math.exp(-temperatureDecayRate * dt);
+
+			for (let i = 0; i < cellCount; i++) {
+				density[i] *= densityFactor;
+				temperature[i] *= temperatureFactor;
+			}
+		}
+
+		function buildRenderVolume() {
+			// Prepare the density field for rendering.
+			// Currently the renderer uses analytic FBM density, but you can modify sampleDensity()
+			// in the fragment shader to read from a 3D texture bound to this prepared data.
+			const fields = simState.fields;
+			const dims = fields.dimensions;
+			const density = fields.density.current;
+			const cellCount = fields.cellCount;
+			let packed = simState.render.packedDensity;
+			if (!packed || packed.length !== cellCount) {
+				packed = new Uint8Array(cellCount);
+				simState.render.packedDensity = packed;
+			}
+
+			// Pack density to normalized 8-bit for reliable cross-device 3D texture uploads.
+			const packScale = 500.0;
+			let peak = 0.0;
+			let activeVoxelCount = 0;
+			for (let i = 0; i < cellCount; i++) {
+				const v = density[i] * packScale;
+				const packedValue = v <= 0.0 ? 0 : (v >= 255.0 ? 255 : v | 0);
+				packed[i] = packedValue;
+				if (density[i] > peak) peak = density[i];
+				if (packedValue > 2) activeVoxelCount++;
+			}
+
+			simState.runtime.densityPeak = peak;
+			simState.runtime.activeVoxelCount = activeVoxelCount;
+
+			// Store volume metadata for potential GPU upload or debug inspection
+			simState.render.volumeData = {
+				width: dims[0],
+				height: dims[1],
+				depth: dims[2],
+				density: density,
+				packedDensity: packed
+			};
+		}
+
+		function uploadSimulationState() {
+			if (!gl || !simState.render.densityTexture || !simState.render.volumeData) {
+				simState.render.volumeUploadReady = false;
+				return;
+			}
+
+			const vol = simState.render.volumeData;
+			gl.activeTexture(gl.TEXTURE0);
+			gl.bindTexture(gl.TEXTURE_3D, simState.render.densityTexture);
+			gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+			gl.texSubImage3D(
+				gl.TEXTURE_3D,
+				0,
+				0,
+				0,
+				0,
+				vol.width,
+				vol.height,
+				vol.depth,
+				gl.RED,
+				gl.UNSIGNED_BYTE,
+				vol.packedDensity
+			);
+
+			simState.render.volumeUploadReady = true;
+		}
+
+		function initializeVolumeUploadResources() {
+			if (!gl || !simState.fields || !simState.fields.dimensions) {
+				return;
+			}
+
+			const dims = simState.fields.dimensions;
+			const width = dims[0] | 0;
+			const height = dims[1] | 0;
+			const depth = dims[2] | 0;
+
+			if (simState.render.densityTexture) {
+				gl.deleteTexture(simState.render.densityTexture);
+			}
+
+			const texture = gl.createTexture();
+			gl.bindTexture(gl.TEXTURE_3D, texture);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+			gl.texImage3D(
+				gl.TEXTURE_3D,
+				0,
+				gl.R8,
+				width,
+				height,
+				depth,
+				0,
+				gl.RED,
+				gl.UNSIGNED_BYTE,
+				null
+			);
+
+			simState.render.densityTexture = texture;
+			simState.render.volumeUploadReady = false;
+		}
+
+		function stepSimulation(dt) {
+			// TODO: This is the order I recommend you wire together:
+			// 1. injectEmitterSource()
+			// 2. applyBuoyancyAndDrag()
+			// 3. advectVelocityField()
+			// 4. advectScalarFields()
+			// 5. solvePressure()
+			// 6. dissipateFields()
+			// 7. uploadSimulationState()
+			// 8. buildRenderVolume()
+			//
+			// Keep the timestep stable and clamp it if the browser stutters.
+			const clampedDt = Math.min(Math.max(dt || simState.runtime.deltaTime, 1.0 / 240.0), 1.0 / 30.0);
+			simState.runtime.deltaTime = clampedDt;
+			if (simState.runtime.time >= simState.effects.normalEmissionPausedUntil) {
+				injectEmitterSource();
+			}
+			injectEmitterRingBursts();
+			applyBuoyancyAndDrag();
+			advectVelocityField();
+			advectScalarFields();
+			if (!simState.debug.disablePressure) {
+				solvePressure();
+			}
+			dissipateFields();
+			buildRenderVolume();
+			uploadSimulationState();
+			
+			// Diagnostics: log every 40 frames to understand force magnitudes
+			if (simState.runtime.frame % 40 === 0) {
+				const vel = simState.fields.velocity.current;
+				const temp = simState.fields.temperature.current;
+				const dens = simState.fields.density.current;
+				let vyMean = 0, tempMean = 0, densMean = 0, hotVoxels = 0;
+				for (let i = 0; i < dens.length; i++) {
+					densMean += dens[i];
+					tempMean += temp[i];
+					if (temp[i] > 0.1) hotVoxels++;
+					vyMean += vel[i * 3 + 1];
+				}
+				vyMean /= dens.length;
+				tempMean /= dens.length;
+				densMean /= dens.length;
+				const buoyMag = simState.config.buoyancyStrength * clampedDt;
+				const dragMag = simState.config.dragCoefficient * clampedDt;
+				console.log(`F${simState.runtime.frame} buoy=${buoyMag.toFixed(4)} drag=${dragMag.toFixed(4)} vyAvg=${vyMean.toFixed(4)} tempAvg=${tempMean.toFixed(4)} hotVox=${hotVoxels} denAvg=${densMean.toFixed(4)}`);
+			}
+		}
+
+		function debugDrawSimulationState() {
+			// TODO: Draw a low-cost debug view of your density or velocity fields.
+			// This makes it much easier to tell whether the solver is wrong or the renderer is.
+			//
+			// Useful debug modes:
+			// - density slice
+			// - velocity vectors
+			// - temperature heatmap
+			// - pressure residuals
+		}
+
+		// Initialize simulation before rendering starts
+		createSimulationConfig();
+		allocateSimulationFields();
+		seedInitialFields();
+		initializeVolumeUploadResources();
+		buildRenderVolume();
+		uploadSimulationState();
+	</script>
+</body>
+</html>
