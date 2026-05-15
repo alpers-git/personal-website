@@ -122,7 +122,6 @@
 
 			uniform vec2 uResolution;
 			uniform float uTime;
-			uniform vec2 uMouse;
 
 			uniform vec3 uCameraPos;
 			uniform vec3 uCameraTarget;
@@ -219,7 +218,6 @@
 
 				// Fade near domain boundaries to avoid a visible box-shaped volume edge.
 				vec3 edgeDist = min(uvw, vec3(1.0) - uvw);
-				float edgeFade = smoothstep(0.0, 0.08, min(edgeDist.x, min(edgeDist.y, edgeDist.z)));
 
 				// Sample raw density (0-1 range from 8-bit packed value)
 				float rawDensity = texture(uDensityTexture, clamp(uvw, vec3(0.0), vec3(1.0))).r;
@@ -240,7 +238,7 @@
 					// This keeps thin fog visible while still preserving contrast in thicker regions.
 					finalDensity = 1.0 - exp(-max(rawDensity - 0.002, 0.0) * 16.0);
 				}
-				return finalDensity * edgeFade;
+				return finalDensity;
 			}
 
 			float sampleDensity(vec3 p) {
@@ -248,10 +246,7 @@
 					return saturate(sampleSimDensity(p));
 				}
 
-				// Analytic placeholder volume.
-				// Replace this with your real simulation field once the pipeline below is ready.
-				// The important part here is that the renderer already knows how to ray march,
-				// light, and composite a participating medium.
+		
 				vec3 emitter = uEmitterPos;
 				float rising = max(p.y - emitter.y, 0.0);
 				float verticalFalloff = exp(-rising * 0.85);
@@ -275,7 +270,7 @@
 				float stepSize = 0.18;
 				vec3 current = p;
 
-				for (int i = 0; i < 12; ++i) {
+				for (int i = 0; i < 6; ++i) {
 					current += lightDir * stepSize;
 					float density = sampleDensity(current);
 					transmittance *= exp(-density * 0.45 * stepSize);
@@ -296,8 +291,8 @@
 				vec3 rayDir = normalize(forward * lens + right * uv.x + up * uv.y);
 				vec3 rayOrigin = uCameraPos;
 
-				vec3 boxMin = vec3(-1.6, -0.65, -1.6);
-				vec3 boxMax = vec3( 1.6,  2.95,  1.6);
+				vec3 boxMin = uSimVolumeMin;
+				vec3 boxMax = uSimVolumeMax;
 
 				float tNear;
 				float tFar;
@@ -338,7 +333,7 @@
 
 						color += transmittance * (inscatter + glow) * alpha;
 						transmittance *= 1.0 - alpha;
-						if (transmittance < 0.01) {
+						if (transmittance < 0.05) {
 							break;
 						}
 					}
@@ -395,7 +390,6 @@
 			const uniformLocations = {
 				resolution: gl.getUniformLocation(program, 'uResolution'),
 				time: gl.getUniformLocation(program, 'uTime'),
-				mouse: gl.getUniformLocation(program, 'uMouse'),
 				cameraPos: gl.getUniformLocation(program, 'uCameraPos'),
 				cameraTarget: gl.getUniformLocation(program, 'uCameraTarget'),
 				cameraUp: gl.getUniformLocation(program, 'uCameraUp'),
@@ -488,9 +482,6 @@
 				const state = window.simState;
 				const emitter = state && state.emitters && state.emitters[0];
 				if (state && emitter && state.config && state.config.worldSize) {
-					const worldSize = state.config.worldSize;
-					emitter.position[0] = (pointer.x - 0.5) * worldSize[0] * 0.8;
-					emitter.position[2] = (0.5 - pointer.y) * worldSize[2] * 0.8;
 					if (window.queueEmitterRingBurst) {
 						window.queueEmitterRingBurst();
 					}
@@ -525,6 +516,22 @@
 
 			let previousFrameTimeMs = 0;
 
+			function normalize(v) {
+				const len = Math.hypot(v[0], v[1], v[2]) || 1;
+				return [v[0] / len, v[1] / len, v[2] / len];
+			}
+
+			function cross(a, b) {
+				return [
+					a[1] * b[2] - a[2] * b[1],
+					a[2] * b[0] - a[0] * b[2],
+					a[0] * b[1] - a[1] * b[0]
+				];
+			}
+			function dot(a, b) {
+				return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+			}
+
 			function render(timeMs) {
 				const time = timeMs * 0.001;
 				const aspect = window.innerWidth / Math.max(window.innerHeight - 64, 1);
@@ -540,12 +547,54 @@
 						const worldSize = simState.config.worldSize;
 						const emitter = simState.emitters[0];
 						if (!cameraControl.isDragging) {
-							const targetX = (pointer.x - 0.5) * worldSize[0] * 0.8;
-							const targetZ = (0.5 - pointer.y) * worldSize[2] * 0.8;
-							emitter.position[0] += (targetX - emitter.position[0]) * 0.22;
-							emitter.position[2] += (targetZ - emitter.position[2]) * 0.22;
+							//Transform the target position from screen space to world space, taking into account the camera's orbit and zoom level
+							//Use view and projection matrices to unproject the screen space coordinates into world space
+							//view matrix
+							const cameraTarget = [0.0, 0.55, 0.0];
+							const orbitCos = Math.cos(cameraControl.pitch);
+							const cameraPos = [
+								cameraTarget[0] + Math.sin(cameraControl.yaw) * orbitCos * cameraControl.radius,
+								cameraTarget[1] + Math.sin(cameraControl.pitch) * cameraControl.radius,
+								cameraTarget[2] + Math.cos(cameraControl.yaw) * orbitCos * cameraControl.radius
+							];
+							const cameraUp = [0.0, 1.0, 0.0];
+							const forward = normalize([
+								cameraTarget[0] - cameraPos[0],
+								cameraTarget[1] - cameraPos[1],
+								cameraTarget[2] - cameraPos[2]
+							]);
+							const right = normalize(cross(forward, cameraUp));
+							const up = normalize(cross(right, forward));
+
+							const ndcX = pointer.x * 2.0 - 1.0;
+							const ndcY = 1.0 - pointer.y * 2.0;
+							const lens = 1.7;
+
+							const rayDir = normalize([
+								forward[0] * lens + right[0] * ndcX * aspect + up[0] * ndcY,
+								forward[1] * lens + right[1] * ndcX * aspect + up[1] * ndcY,
+								forward[2] * lens + right[2] * ndcX * aspect + up[2] * ndcY
+							]);
+
+							const planePoint = cameraTarget;
+							const planeNormal = forward;
+
+							const toPlane = [
+								planePoint[0] - cameraPos[0],
+								planePoint[1] - cameraPos[1],
+								planePoint[2] - cameraPos[2]
+							];
+
+							const denom = dot(rayDir, planeNormal);
+							const t = dot(toPlane, planeNormal) / denom;
+
+							const targetX = cameraPos[0] + rayDir[0] * t;
+							const targetY = cameraPos[1] + rayDir[1] * t;
+							const targetZ = cameraPos[2] + rayDir[2] * t;
+							emitter.position[0] += (targetX - emitter.position[0]) * 0.25;
+							emitter.position[1] += (targetY - emitter.position[1]) * 0.25;
+							emitter.position[2] += (targetZ - emitter.position[2]) * 0.25;
 						}
-						emitter.position[1] = -0.75;
 					}
 					simState.runtime.time = time;
 					stepSimulation(frameDt);
@@ -564,11 +613,12 @@
 				gl.useProgram(program);
 				gl.uniform2f(uniformLocations.resolution, canvas.width, canvas.height);
 				gl.uniform1f(uniformLocations.time, time);
-				gl.uniform2f(uniformLocations.mouse, pointer.x, pointer.y);
 				const fogTintElapsed = time - fogTint.startedAt;
-				const fogTintStrength = fogTintElapsed < fogTint.duration
-					? Math.pow(1.0 - fogTintElapsed / fogTint.duration, 2.0)
-					: 0.0;
+				const fogTintStrength = cameraControl.isDragging
+					? 1.0
+					: fogTintElapsed < fogTint.duration
+						? Math.pow(1.0 - fogTintElapsed / fogTint.duration, 2.0)
+						: 0.0;
 				gl.uniform1f(uniformLocations.fogTintStrength, fogTintStrength);
 				gl.uniform3f(uniformLocations.cameraPos, cameraPos[0], cameraPos[1], cameraPos[2]);
 				gl.uniform3f(uniformLocations.cameraTarget, cameraTarget[0], cameraTarget[1], cameraTarget[2]);
@@ -699,9 +749,11 @@
 			//
 			// Example decisions to make:
 			// - How large should the world-space box be?
-			simState.config.worldSize = [3.0, 3.6, 3.0]; // width, height, depth in world units
-			simState.config.worldMinY = -0.75; // lower edge of the vertical simulation domain
-			simState.config.gridDimensions = [64, 64, 64]; // number of cells in x, y, z
+			simState.config.worldSize = [6.5, 4.0, 6.5]; // width, height, depth in world units
+			simState.config.worldMinY = -1.750; // lower edge of the vertical simulation domain
+			simState.config.gridDimensions = [simState.config.worldSize[0] * 12, 
+											simState.config.worldSize[1] * 12, 
+											simState.config.worldSize[2] * 12]; // number of cells in x, y, z
 			// - What is the stable timestep for your solver?
 			simState.runtime.deltaTime = 0.016; // seconds per simulation step (e.g., 60 FPS)
 			// - How strong is buoyancy relative to drag?
