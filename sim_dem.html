@@ -31,6 +31,19 @@
 			z-index: 9999;
 		}
 
+		@media (max-width: 768px) {
+			.cornerName,
+			nav .right {
+				display: none !important;
+			}
+		}
+
+		@media (min-width: 769px) {
+			.sidenav-trigger {
+				display: none !important;
+			}
+		}
+
 		#sim-canvas {
 			position: absolute;
 			top: 64px;
@@ -46,6 +59,84 @@
 
 		#sim-canvas.is-dragging {
 			cursor: grabbing;
+		}
+
+		#ui {
+			position: fixed;
+			bottom: 24px;
+			right: 24px;
+			z-index: 9999;
+			padding: 14px 18px;
+			max-height: calc(100vh - 90px);
+			overflow-y: auto;
+		}
+
+		#ui label {
+			color: #FFC107;
+			font-size: 0.85rem;
+		}
+
+		#ui-toggle-btn {
+			display: none;
+		}
+
+		#ui-body input[type="range"] {
+			width: 100%;
+			margin-top: 6px;
+			accent-color: #FFC107;
+			cursor: pointer;
+			touch-action: none;
+		}
+
+		#ui-body .val-label {
+			font-size: 0.8rem;
+			color: #aaa;
+			margin-top: 2px;
+		}
+
+		@media (max-width: 768px) {
+			#ui {
+				left: 0;
+				right: 0;
+				bottom: 0;
+				border-radius: 14px 14px 0 0;
+				padding: 0;
+				max-height: 55vh;
+				overflow: hidden;
+			}
+
+			#ui-toggle-btn {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+				padding: 12px 18px;
+				background: none;
+				border: none;
+				cursor: pointer;
+				color: #FFC107;
+				font-family: 'Roboto Condensed', sans-serif;
+				font-size: 0.95rem;
+				font-weight: 700;
+				letter-spacing: 0.05em;
+			}
+
+			#ui-body {
+				padding: 0 18px 16px;
+				overflow-y: auto;
+				max-height: calc(55vh - 46px);
+				transition: max-height 0.25s ease;
+			}
+
+			#ui-body.collapsed {
+				max-height: 0;
+				overflow: hidden;
+				padding: 0 18px;
+			}
+
+			#ui-body input[type="range"] {
+				height: 28px;
+			}
 		}
 	</style>
 </head>
@@ -75,12 +166,59 @@
 
 	<canvas id="sim-canvas"></canvas>
 
+	<div id="ui">
+		<button id="ui-toggle-btn" aria-expanded="true" aria-controls="ui-body">
+			<span>Simulation Controls</span>
+			<i class="material-icons" id="ui-toggle-icon">expand_more</i>
+		</button>
+
+		<div id="ui-body">
+			<label for="emitterTempSlider">Emitter Heat</label>
+			<input type="range" id="emitterTempSlider" min="0" max="20" step="0.5" value="15">
+			<div id="emitterTempValue" class="val-label">+15.0 above ambient</div>
+
+			<label for="emitterDensitySlider" style="margin-top:12px;display:block;">Emitter Density</label>
+			<input type="range" id="emitterDensitySlider" min="0.5" max="15" step="0.5" value="3">
+			<div id="emitterDensityValue" class="val-label">3.0</div>
+
+			<label for="emitterSpeedSlider" style="margin-top:12px;display:block;">Emitter Speed</label>
+			<input type="range" id="emitterSpeedSlider" min="0.1" max="4" step="0.1" value="1.6">
+			<div id="emitterSpeedValue" class="val-label">1.6 m/s</div>
+
+			<label for="emitterRadiusSlider" style="margin-top:12px;display:block;">Emitter Radius</label>
+			<input type="range" id="emitterRadiusSlider" min="0.05" max="0.6" step="0.05" value="0.3">
+			<div id="emitterRadiusValue" class="val-label">0.30</div>
+
+			<label for="buoyancySlider" style="margin-top:12px;display:block;">Buoyancy</label>
+			<input type="range" id="buoyancySlider" min="0" max="6" step="0.1" value="1.5">
+			<div id="buoyancyValue" class="val-label">1.5</div>
+
+			<label for="swirlSlider" style="margin-top:12px;display:block;">Turbulence</label>
+			<input type="range" id="swirlSlider" min="0" max="4" step="0.1" value="3.6">
+			<div id="swirlValue" class="val-label">3.6</div>
+
+			<label style="margin-top:14px;display:flex;align-items:center;gap:8px;cursor:pointer;">
+				<input type="checkbox" id="shimmerToggle" checked style="accent-color:#FFC107;width:18px;height:18px;cursor:pointer;flex-shrink:0;">
+				<span style="color:#fff;font-size:0.9rem;">Heat Shimmer</span>
+			</label>
+		</div>
+	</div>
+
 	<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 	<script>
 		document.addEventListener('DOMContentLoaded', () => {
 			M.Sidenav.init(document.querySelectorAll('.sidenav'));
+
+			const toggleBtn = document.getElementById('ui-toggle-btn');
+			const uiBody = document.getElementById('ui-body');
+			const toggleIcon = document.getElementById('ui-toggle-icon');
+			toggleBtn.addEventListener('click', () => {
+				const collapsed = uiBody.classList.toggle('collapsed');
+				toggleIcon.textContent = collapsed ? 'expand_less' : 'expand_more';
+				toggleBtn.setAttribute('aria-expanded', String(!collapsed));
+			});
 		});
 	</script>
 
@@ -131,12 +269,14 @@
 			uniform vec3 uEmitterPos;
 			uniform float uVolumeRadius;
 			uniform sampler3D uDensityTexture;
+			uniform sampler3D uTemperatureTexture;
 			uniform int uUseSimVolume;
 			uniform vec3 uSimVolumeMin;
 			uniform vec3 uSimVolumeMax;
 			uniform int uDensityDisplayMode;
 			uniform vec3 uFogTintColor;
 			uniform float uFogTintStrength;
+			uniform int uShimmerEnabled;
 
 			float saturate(float value) {
 				return clamp(value, 0.0, 1.0);
@@ -204,10 +344,7 @@
 				return tFar > max(tNear, 0.0);
 			}
 
-			float phaseHenyeyGreenstein(float cosTheta, float g) {
-				float g2 = g * g;
-				return (1.0 - g2) / (4.0 * 3.14159265 * pow(1.0 + g2 - 2.0 * g * cosTheta, 1.5));
-			}
+
 
 			float sampleSimDensity(vec3 p) {
 				vec3 extent = max(uSimVolumeMax - uSimVolumeMin, vec3(0.0001));
@@ -261,13 +398,29 @@
 
 				return saturate(plume * 1.8 * shape + baseFog * 0.14);
 			}
+			float sampleTemperature(vec3 p) {
+				if (uUseSimVolume == 1) {
+					vec3 extent = max(uSimVolumeMax - uSimVolumeMin, vec3(0.0001));
+					vec3 uvw = (p - uSimVolumeMin) / extent;
+					if (any(lessThan(uvw, vec3(0.0))) || any(greaterThan(uvw, vec3(1.0)))) {
+						return 0.0;
+					}
+					return texture(uTemperatureTexture, clamp(uvw, vec3(0.0), vec3(1.0))).r;
+				}
+
+				// // Placeholder procedural temperature field that creates a gradient from the emitter position.
+				// float distanceFromEmitter = length(p - uEmitterPos);
+				// return exp(-distanceFromEmitter * 1.8);
+				return 0.0;
+			}
+
 
 			float sampleLight(vec3 p, vec3 lightDir) {
 				// Cheap in-scatter shadowing: march toward the light in a few steps.
 				// If you later switch to a real grid-based simulation, keep this function
 				// and feed it your density lookup instead of the analytic placeholder above.
 				float transmittance = 1.0;
-				float stepSize = 0.18;
+				float stepSize = 0.08;
 				vec3 current = p;
 
 				for (int i = 0; i < 6; ++i) {
@@ -277,6 +430,38 @@
 				}
 
 				return transmittance;
+			}
+			vec3 gradientAt(vec3 p) {
+				float delta = 0.008;
+				float dx = sampleDensity(p + vec3(delta, 0, 0)) - sampleDensity(p - vec3(delta, 0, 0));
+				float dy = sampleDensity(p + vec3(0, delta, 0)) - sampleDensity(p - vec3(0, delta, 0));
+				float dz = sampleDensity(p + vec3(0, 0, delta)) - sampleDensity(p - vec3(0, 0, delta));
+				return (vec3(dx, dy, dz)/(2.0*delta));
+			}
+			float phaseHenyeyGreenstein(float cosTheta, float g) {
+				float g2 = g * g;
+				return (1.0 - g2) / (4.0 * 3.14159265 * pow(1.0 + g2 - 2.0 * g * cosTheta, 1.5));
+			}
+
+			vec3 tempratureGradientAt(vec3 p) {
+				float delta = 0.08;
+				float dx = sampleTemperature(p + vec3(delta, 0, 0)) - sampleTemperature(p - vec3(delta, 0, 0));
+				float dy = sampleTemperature(p + vec3(0, delta, 0)) - sampleTemperature(p - vec3(0, delta, 0));
+				float dz = sampleTemperature(p + vec3(0, 0, delta)) - sampleTemperature(p - vec3(0, 0, delta));
+				return (vec3(dx, dy, dz)/(2.0*delta));
+			}
+
+			vec3 backgroundPattern(vec3 rd) {
+				float t = clamp(rd.y * 0.5 + 0.5, 0.0, 1.0);
+				vec3 horizon = vec3(0.03, 0.06, 0.12);
+				vec3 zenith  = vec3(0.06, 0.16, 0.38);
+				vec3 sky = mix(horizon, zenith, t * t);
+
+				vec2 uv = rd.xy / (abs(rd.z) + 0.12);
+				float hline = smoothstep(0.92, 1.0, abs(fract(uv.y * 7.0) - 0.5) * 2.0);
+				float vline = smoothstep(0.92, 1.0, abs(fract(uv.x * 7.0) - 0.5) * 2.0);
+				float grid = max(hline, vline);
+				return mix(sky, sky + vec3(0.04, 0.08, 0.15), grid);
 			}
 
 			void main() {
@@ -297,29 +482,36 @@
 				float tNear;
 				float tFar;
 				if (!rayBox(rayOrigin, rayDir, boxMin, boxMax, tNear, tFar)) {
-					fragColor = vec4(pow(SITE_BACKGROUND_LINEAR, vec3(1.0 / 2.2)), 1.0);
+					fragColor = vec4(pow(backgroundPattern(rayDir), vec3(1.0 / 2.2)), 1.0);
 					return;
 				}
 
 				tNear = max(tNear, 0.0);
 				float distanceInside = tFar - tNear;
-				float stepCount = 96.0;
+				float stepCount = 150.0;
 				float stepSize = distanceInside / stepCount;
 				float t = tNear;
 
 				vec3 color = vec3(0.0);
 				float transmittance = 1.0;
 				vec3 lightDir = normalize(uLightDir);
-				float phase = phaseHenyeyGreenstein(dot(rayDir, lightDir), 0.35);
+				float phase = phaseHenyeyGreenstein(dot(rayDir, lightDir), 0.65);
 
-				for (int i = 0; i < 96; ++i) {
+				for (int i = 0; i < int(stepCount); ++i) {
 					vec3 p = rayOrigin + rayDir * t;
+
+					if (uShimmerEnabled == 1) {
+						vec3 tempGradient = tempratureGradientAt(p);
+						float shimmerStr = 0.09955 * smoothstep(0.0, 0.75, sampleTemperature(p));
+						rayDir = (rayDir + tempGradient * shimmerStr);
+					}
+
 					float density = sampleDensity(p);
 
 					if (density > 0.0001) {
 						float light = sampleLight(p, lightDir);
-						float scatterCoeff = 1.55;
-						float absorbCoeff = 0.55;
+						float scatterCoeff = 5.8;
+						float absorbCoeff = 0.2;
 						float extinction = density * (scatterCoeff + absorbCoeff);
 						float alpha = 1.0 - exp(-extinction * stepSize);
 						vec3 baseColor = mix(vec3(0.92, 0.95, 1.00), vec3(1.00, 0.84, 0.62), 0.35);
@@ -337,11 +529,9 @@
 							break;
 						}
 					}
-
 					t += stepSize;
 				}
-
-				vec3 finalColor = color + SITE_BACKGROUND_LINEAR * transmittance;
+				vec3 finalColor = color + backgroundPattern(rayDir) * transmittance;
 				finalColor = pow(saturate(finalColor), vec3(1.0 / 2.2));
 				fragColor = vec4(finalColor, 1.0);
 			}
@@ -402,14 +592,16 @@
 				simVolumeMax: gl.getUniformLocation(program, 'uSimVolumeMax'),
 				densityDisplayMode: gl.getUniformLocation(program, 'uDensityDisplayMode'),
 				fogTintColor: gl.getUniformLocation(program, 'uFogTintColor'),
-				fogTintStrength: gl.getUniformLocation(program, 'uFogTintStrength')
+				fogTintStrength: gl.getUniformLocation(program, 'uFogTintStrength'),
+				temperatureTexture: gl.getUniformLocation(program, 'uTemperatureTexture'),
+				shimmerEnabled: gl.getUniformLocation(program, 'uShimmerEnabled')
 			};
 
 			const pointer = { x: 0.5, y: 0.5 };
 			const fogTint = {
 				startedAt: -1000,
 				duration: 1.2,
-				color: [0.1, 0.34, 0.72]
+				color: [0.85, 0.08, 0.08]
 			};
 			const cameraControl = {
 				isDragging: false,
@@ -506,10 +698,11 @@
 			resizeCanvas();
 
 			gl.useProgram(program);
-			gl.uniform3f(uniformLocations.lightDir, -0.38, 0.86, 0.30);
+			gl.uniform3f(uniformLocations.lightDir, -0.38, -0.86, 0.30);
 			gl.uniform3f(uniformLocations.emitterPos, 0.0, -0.58, 0.0);
 			gl.uniform1f(uniformLocations.volumeRadius, 1.6);
 			gl.uniform1i(uniformLocations.densityTexture, 0);
+			gl.uniform1i(uniformLocations.temperatureTexture, 1);
 			gl.uniform1i(uniformLocations.useSimVolume, 0);
 			gl.uniform3f(uniformLocations.fogTintColor, fogTint.color[0], fogTint.color[1], fogTint.color[2]);
 			gl.uniform1f(uniformLocations.fogTintStrength, 0.0);
@@ -635,12 +828,15 @@
 				gl.uniform3f(uniformLocations.simVolumeMin, -halfX, worldMinY, -halfZ);
 				gl.uniform3f(uniformLocations.simVolumeMax, halfX, worldMinY + worldSize[1], halfZ);
 				gl.uniform1i(uniformLocations.densityDisplayMode, simState.debug.displayMode);
+				gl.uniform1i(uniformLocations.shimmerEnabled, simState.config.shimmerEnabled ? 1 : 0);
 
 				const hasSimVolume = !!(simState.render.densityTexture && simState.render.volumeUploadReady);
 				gl.uniform1i(uniformLocations.useSimVolume, hasSimVolume ? 1 : 0);
 				if (hasSimVolume) {
 					gl.activeTexture(gl.TEXTURE0);
 					gl.bindTexture(gl.TEXTURE_3D, simState.render.densityTexture);
+					gl.activeTexture(gl.TEXTURE1);
+					gl.bindTexture(gl.TEXTURE_3D, simState.render.temperatureTexture);
 				}
 
 				gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -648,8 +844,60 @@
 			}
 
 			requestAnimationFrame(render);
+
+			document.getElementById('emitterTempSlider').addEventListener('input', function () {
+				const delta = parseFloat(this.value);
+				document.getElementById('emitterTempValue').textContent = '+' + delta.toFixed(1) + ' above ambient';
+				const s = window.simState;
+				if (!s || !s.emitters) return;
+				const base = s.config.ambientTemperature ?? 0.0;
+				s.emitters.forEach(e => { e.initialTemperature = base + delta; });
+			});
+
+			document.getElementById('emitterDensitySlider').addEventListener('input', function () {
+				const val = parseFloat(this.value);
+				document.getElementById('emitterDensityValue').textContent = val.toFixed(1);
+				const s = window.simState;
+				if (!s || !s.emitters) return;
+				s.emitters.forEach(e => { e.emissionRate = val; });
+			});
+
+			document.getElementById('emitterSpeedSlider').addEventListener('input', function () {
+				const val = parseFloat(this.value);
+				document.getElementById('emitterSpeedValue').textContent = val.toFixed(1) + ' m/s';
+				const s = window.simState;
+				if (!s || !s.emitters) return;
+				s.emitters.forEach(e => { e.initialVelocity = [e.initialVelocity[0], val, e.initialVelocity[2]]; });
+			});
+
+			document.getElementById('emitterRadiusSlider').addEventListener('input', function () {
+				const val = parseFloat(this.value);
+				document.getElementById('emitterRadiusValue').textContent = val.toFixed(2);
+				const s = window.simState;
+				if (!s || !s.emitters) return;
+				s.emitters.forEach(e => { e.radius = val; });
+			});
+
+			document.getElementById('buoyancySlider').addEventListener('input', function () {
+				const val = parseFloat(this.value);
+				document.getElementById('buoyancyValue').textContent = val.toFixed(1);
+				const s = window.simState;
+				if (s && s.config) s.config.buoyancyStrength = val;
+			});
+
+			document.getElementById('swirlSlider').addEventListener('input', function () {
+				const val = parseFloat(this.value);
+				document.getElementById('swirlValue').textContent = val.toFixed(1);
+				const s = window.simState;
+				if (s && s.config) s.config.swirlStrength = val;
+			});
+
+			document.getElementById('shimmerToggle').addEventListener('change', function () {
+				const s = window.simState;
+				if (s && s.config) s.config.shimmerEnabled = this.checked;
+			});
 		}
-        
+
 		window.simState = {
 			config: {
 				worldSize: [0, 0, 0],
@@ -708,7 +956,7 @@
 			}
 
 			const radius = 0.82;
-			const thickness = 0.075;
+			const thickness = 0.105;
 			const centerY = Math.min(
 				Math.max(emitter.position[1] + thickness * 2.0, worldMinY + thickness * 2.0),
 				worldMinY + worldSize[1] - thickness * 2.0
@@ -757,15 +1005,17 @@
 			// - What is the stable timestep for your solver?
 			simState.runtime.deltaTime = 0.016; // seconds per simulation step (e.g., 60 FPS)
 			// - How strong is buoyancy relative to drag?
-            simState.config.buoyancyStrength = 1.5; // arbitrary units
-            simState.config.dragCoefficient = 0.1; // arbitrary units
-			// - Do you want one emitter or a small bank of emitters?
+            simState.config.buoyancyStrength = 1.5;
+            simState.config.dragCoefficient = 0.1;
+            simState.config.swirlStrength = 3.6;
+            simState.config.ambientTemperature = 0.0;
+            simState.config.shimmerEnabled = true;
 			simState.emitters = [{
-                position: [0.0, -0.52, 0.0], // world-space position of the emitter
-				radius: 0.32, // radius of the emitter in world units
-				emissionRate: 99.0, // density units emitted per second
-				initialTemperature: 2.2, // temperature units emitted
-				initialVelocity: [0.0, 2.6, 0.0] // initial velocity of emitted fluid
+                position: [0.0, -0.52, 0.0],
+				radius: 0.3,
+				emissionRate: 3.0,
+				initialTemperature: simState.config.ambientTemperature + 15.0,
+				initialVelocity: [0.0, 1.6, 0.0]
 			}];
 			// - Should the fog color depend on temperature or density?
             simState.config.fogColorMode = "density"; // or "temperature"
@@ -775,10 +1025,10 @@
 			const emitters = new Array(1);
 			emitters[0] = {
 				position: [0.0, -0.52, 0.0],
-				radius: 0.32,
-				emissionRate: 6.0,
-				initialTemperature: 5.2,
-				initialVelocity: [0.0, 2.6, 0.0],
+				radius: 0.33,
+				emissionRate: 5.0,
+				initialTemperature: simState.config.ambientTemperature + 10.5,
+				initialVelocity: [0.0, 1.6, 0.0],
 				turbulenceSeed: 1997
 			};
 
@@ -935,13 +1185,18 @@
 				const minZ = centerZ > radiusCellsZ ? centerZ - radiusCellsZ : 0;
 				const maxZ = centerZ + radiusCellsZ < nz ? centerZ + radiusCellsZ : nz - 1;
 				const invRadiusSq = 1.0 / radiusSq;
-				const pulse = 0.85 + 0.35 * Math.sin(simTime * 2.1 + e * 1.7);
+				const pulse = 0.75 + 0.45 * Math.sin(simTime * 2.1 + e * 1.7) * Math.sin(simTime * 0.6 + e * 0.9);
 				const densityScale = emitter.emissionRate * dt * pulse;
 				const temperatureScale = emitter.initialTemperature * dt * pulse;
 				const sourceVelocity = emitter.initialVelocity;
-				const sourceVelocityX = sourceVelocity[0] + Math.sin(simTime * 1.7 + e * 2.3) * 0.12;
-				const sourceVelocityY = sourceVelocity[1];
-				const sourceVelocityZ = sourceVelocity[2] + Math.cos(simTime * 1.9 + e * 1.1) * 0.12;
+				const sourceVelocityX = sourceVelocity[0]
+					+ Math.sin(simTime * 1.7 + e * 2.3) * 0.45
+					+ Math.sin(simTime * 3.3 + e * 0.8) * 0.18;
+				const sourceVelocityY = sourceVelocity[1]
+					+ Math.abs(Math.sin(simTime * 1.1 + e * 1.5)) * 0.3;
+				const sourceVelocityZ = sourceVelocity[2]
+					+ Math.cos(simTime * 1.9 + e * 1.1) * 0.45
+					+ Math.cos(simTime * 2.7 + e * 1.4) * 0.18;
 
 				for (let z = minZ; z <= maxZ; z++) {
 					const dz = (z - centerZ) * cellZ;
@@ -973,7 +1228,7 @@
 
 									// Add a small rotational kick near the emitter to keep flow dynamic.
 									const invRadius = 1.0 / radius;
-									const swirl = 0.55 * weight * dt;
+									const swirl = (simState.config.swirlStrength ?? 1.4) * weight * dt;
 									velocity[velocityIndex] += (-dz * invRadius) * swirl;
 									velocity[velocityIndex + 2] += (dx * invRadius) * swirl;
 								}
@@ -1318,6 +1573,7 @@
 			const fields = simState.fields;
 			const velocity = fields.velocity.current;
 			const temperature = fields.temperature.current;
+			const density = fields.density.current;
 			const dims = fields.dimensions;
 			const nx = dims[0] | 0;
 			const ny = dims[1] | 0;
@@ -1328,7 +1584,7 @@
 
 			const buoyancy = simState.config.buoyancyStrength * dt;
 			const drag = simState.config.dragCoefficient * dt;
-			const ambientTemp = 0.0;
+			const ambientTemp = simState.config.ambientTemperature || 0.0;
 			
 			let maxBuoyForce = 0, sumBuoyForce = 0, buoyCount = 0;
 
@@ -1338,8 +1594,9 @@
 						const idx = k * strideZ + j * strideY + i;
 						const tempDiff = temperature[idx] - ambientTemp;
 
-						// Apply upward buoyancy force
-						const buoyForce = buoyancy * tempDiff;
+						// Scale by density so empty cells don't accumulate buoyant velocity.
+						const densityWeight = Math.min(density[idx] * 20.0, 1.0);
+						const buoyForce = buoyancy * tempDiff * densityWeight;
 						velocity[idx * 3 + 1] += buoyForce;
 						maxBuoyForce = Math.max(maxBuoyForce, Math.abs(buoyForce));
 						sumBuoyForce += Math.abs(buoyForce);
@@ -1363,8 +1620,8 @@
 			// Jacobi iterative solver for pressure projection (incompressibility).
 			const fields = simState.fields;
 			const velocity = fields.velocity.current;
-				let pressure = fields.pressure.current;
-				let pressureNext = fields.pressure.next;
+			let pressure = fields.pressure.current;
+			let pressureNext = fields.pressure.next;
 			const divergence = fields.pressure.divergence;
 			const dims = fields.dimensions;
 			const nx = dims[0] | 0;
@@ -1498,34 +1755,41 @@
 			const cellCount = fields.cellCount;
 
 			// Exponential decay rates (per second). Adjust these to control how long smoke lingers.
-			const densityDecayRate = 0.5;       // density half-life ~1.4 seconds
-			const temperatureDecayRate = 0.3;  // temperature decays faster
+			const densityDecayRate = 0.47;
+			const temperatureDecayRate = 0.35;
 
 			const densityFactor = Math.exp(-densityDecayRate * dt);
 			const temperatureFactor = Math.exp(-temperatureDecayRate * dt);
 
+			const ambientTemp = simState.config.ambientTemperature || 0.0;
 			for (let i = 0; i < cellCount; i++) {
 				density[i] *= densityFactor;
-				temperature[i] *= temperatureFactor;
+				temperature[i] = ambientTemp + (temperature[i] - ambientTemp) * temperatureFactor;
 			}
 		}
 
 		function buildRenderVolume() {
 			// Prepare the density field for rendering.
-			// Currently the renderer uses analytic FBM density, but you can modify sampleDensity()
-			// in the fragment shader to read from a 3D texture bound to this prepared data.
 			const fields = simState.fields;
 			const dims = fields.dimensions;
 			const density = fields.density.current;
+			const temperature = fields.temperature.current;
 			const cellCount = fields.cellCount;
 			let packed = simState.render.packedDensity;
+			let packedTemperature = simState.render.packedTemperature;
 			if (!packed || packed.length !== cellCount) {
 				packed = new Uint8Array(cellCount);
 				simState.render.packedDensity = packed;
 			}
+			if (!packedTemperature || packedTemperature.length !== cellCount) {
+				packedTemperature = new Uint8Array(cellCount);
+				simState.render.packedTemperature = packedTemperature;
+			}
 
-			// Pack density to normalized 8-bit for reliable cross-device 3D texture uploads.
+			// Pack density to normalized 8-bit
 			const packScale = 500.0;
+			const ambientForPack = simState.config.ambientTemperature ?? 0.0;
+			const tempDisplayRange = 6.0; // degrees above ambient that map to full 255
 			let peak = 0.0;
 			let activeVoxelCount = 0;
 			for (let i = 0; i < cellCount; i++) {
@@ -1534,6 +1798,8 @@
 				packed[i] = packedValue;
 				if (density[i] > peak) peak = density[i];
 				if (packedValue > 2) activeVoxelCount++;
+				const tNorm = (temperature[i] - ambientForPack) / tempDisplayRange;
+				packedTemperature[i] = tNorm <= 0.0 ? 0 : (tNorm >= 1.0 ? 255 : (tNorm * 255) | 0);
 			}
 
 			simState.runtime.densityPeak = peak;
@@ -1545,7 +1811,9 @@
 				height: dims[1],
 				depth: dims[2],
 				density: density,
-				packedDensity: packed
+				packedDensity: packed,
+				temperature: temperature,
+				packedTemperature: packedTemperature
 			};
 		}
 
@@ -1572,6 +1840,25 @@
 				gl.UNSIGNED_BYTE,
 				vol.packedDensity
 			);
+
+			gl.activeTexture(gl.TEXTURE1);
+			gl.bindTexture(gl.TEXTURE_3D, simState.render.temperatureTexture);
+			gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+			gl.texSubImage3D(
+				gl.TEXTURE_3D,
+				0,
+				0,
+				0,
+				0,
+				vol.width,
+				vol.height,
+				vol.depth,
+				gl.RED,
+				gl.UNSIGNED_BYTE,
+				vol.packedTemperature
+			);
+
+			
 
 			simState.render.volumeUploadReady = true;
 		}
@@ -1613,19 +1900,78 @@
 
 			simState.render.densityTexture = texture;
 			simState.render.volumeUploadReady = false;
+
+			if (simState.render.temperatureTexture) {
+				gl.deleteTexture(simState.render.temperatureTexture);
+			}
+
+			const tempTexture = gl.createTexture();
+			gl.activeTexture(gl.TEXTURE1);
+			gl.bindTexture(gl.TEXTURE_3D, tempTexture);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+			gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+			gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+			gl.texImage3D(gl.TEXTURE_3D, 0, gl.R8, width, height, depth, 0, gl.RED, gl.UNSIGNED_BYTE, null);
+			simState.render.temperatureTexture = tempTexture;
+		}
+
+		function diffuseTemperature() {
+			const fields = simState.fields;
+			const temp = fields.temperature.current;
+			const tempNext = fields.temperature.next;
+			const density = fields.density.current;
+			const dims = fields.dimensions;
+			const nx = dims[0] | 0;
+			const ny = dims[1] | 0;
+			const nz = dims[2] | 0;
+			const strideY = fields.strideY | 0;
+			const strideZ = fields.strideZ | 0;
+			const cellSize = fields.cellSize;
+			const dt = simState.runtime.deltaTime;
+
+			const alpha = 0.029;
+			const invDx2 = 1.0 / (cellSize[0] * cellSize[0]);
+			const invDy2 = 1.0 / (cellSize[1] * cellSize[1]);
+			const invDz2 = 1.0 / (cellSize[2] * cellSize[2]);
+			const kx = alpha * dt * invDx2;
+			const ky = alpha * dt * invDy2;
+			const kz = alpha * dt * invDz2;
+
+			for (let k = 0; k < nz; k++) {
+				for (let j = 0; j < ny; j++) {
+					for (let i = 0; i < nx; i++) {
+						const idx = k * strideZ + j * strideY + i;
+						const T = temp[idx];
+						// Only diffuse where fluid is present — prevents heat leaking
+						// into empty cells and pre-accelerating them via buoyancy.
+						if (density[idx] < 0.001) {
+							tempNext[idx] = T;
+							continue;
+						}
+						const amb = simState.config.ambientTemperature || 0.0;
+						const Txp = i < nx - 1 ? temp[idx + 1]       : amb;
+						const Txn = i > 0      ? temp[idx - 1]       : amb;
+						const Typ = j < ny - 1 ? temp[idx + strideY] : amb;
+						const Tyn = j > 0      ? temp[idx - strideY] : amb;
+						const Tzp = k < nz - 1 ? temp[idx + strideZ] : amb;
+						const Tzn = k > 0      ? temp[idx - strideZ] : amb;
+						const laplacian = (Txp + Txn - 2.0 * T) * kx
+						                + (Typ + Tyn - 2.0 * T) * ky
+						                + (Tzp + Tzn - 2.0 * T) * kz;
+						tempNext[idx] = T + laplacian;
+					}
+				}
+			}
+
+			const swap = fields.temperature.current;
+			fields.temperature.current = fields.temperature.next;
+			fields.temperature.next = swap;
 		}
 
 		function stepSimulation(dt) {
-			// TODO: This is the order I recommend you wire together:
-			// 1. injectEmitterSource()
-			// 2. applyBuoyancyAndDrag()
-			// 3. advectVelocityField()
-			// 4. advectScalarFields()
-			// 5. solvePressure()
-			// 6. dissipateFields()
-			// 7. uploadSimulationState()
-			// 8. buildRenderVolume()
-			//
 			// Keep the timestep stable and clamp it if the browser stutters.
 			const clampedDt = Math.min(Math.max(dt || simState.runtime.deltaTime, 1.0 / 240.0), 1.0 / 30.0);
 			simState.runtime.deltaTime = clampedDt;
@@ -1640,28 +1986,29 @@
 				solvePressure();
 			}
 			dissipateFields();
+			diffuseTemperature();
 			buildRenderVolume();
 			uploadSimulationState();
 			
 			// Diagnostics: log every 40 frames to understand force magnitudes
-			if (simState.runtime.frame % 40 === 0) {
-				const vel = simState.fields.velocity.current;
-				const temp = simState.fields.temperature.current;
-				const dens = simState.fields.density.current;
-				let vyMean = 0, tempMean = 0, densMean = 0, hotVoxels = 0;
-				for (let i = 0; i < dens.length; i++) {
-					densMean += dens[i];
-					tempMean += temp[i];
-					if (temp[i] > 0.1) hotVoxels++;
-					vyMean += vel[i * 3 + 1];
-				}
-				vyMean /= dens.length;
-				tempMean /= dens.length;
-				densMean /= dens.length;
-				const buoyMag = simState.config.buoyancyStrength * clampedDt;
-				const dragMag = simState.config.dragCoefficient * clampedDt;
-				console.log(`F${simState.runtime.frame} buoy=${buoyMag.toFixed(4)} drag=${dragMag.toFixed(4)} vyAvg=${vyMean.toFixed(4)} tempAvg=${tempMean.toFixed(4)} hotVox=${hotVoxels} denAvg=${densMean.toFixed(4)}`);
-			}
+			// if (simState.runtime.frame % 40 === 0) {
+			// 	const vel = simState.fields.velocity.current;
+			// 	const temp = simState.fields.temperature.current;
+			// 	const dens = simState.fields.density.current;
+			// 	let vyMean = 0, tempMean = 0, densMean = 0, hotVoxels = 0;
+			// 	for (let i = 0; i < dens.length; i++) {
+			// 		densMean += dens[i];
+			// 		tempMean += temp[i];
+			// 		if (temp[i] > 0.1) hotVoxels++;
+			// 		vyMean += vel[i * 3 + 1];
+			// 	}
+			// 	vyMean /= dens.length;
+			// 	tempMean /= dens.length;
+			// 	densMean /= dens.length;
+			// 	const buoyMag = simState.config.buoyancyStrength * clampedDt;
+			// 	const dragMag = simState.config.dragCoefficient * clampedDt;
+			// 	console.log(`F${simState.runtime.frame} buoy=${buoyMag.toFixed(4)} drag=${dragMag.toFixed(4)} vyAvg=${vyMean.toFixed(4)} tempAvg=${tempMean.toFixed(4)} hotVox=${hotVoxels} denAvg=${densMean.toFixed(4)}`);
+			// }
 		}
 
 		function debugDrawSimulationState() {
