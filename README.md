@@ -1,4 +1,4 @@
-personal website
+My personal publication list, and personal website. Had a large AI refactor over a cursed HTML codebase. I bet its still shit...
 
 ## Adding a publication
 
