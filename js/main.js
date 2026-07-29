@@ -1,186 +1,286 @@
-document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('.sidenav');
-    var instances = M.Sidenav.init(elems, {});
+/* Shared behaviour for every page: nav, smooth scrolling and hover previews. */
 
-    document.body.classList.add("page_loaded");
+document.addEventListener('DOMContentLoaded', function () {
+  const burger = document.querySelector('.nav-burger');
 
-    // device detection
-    /*if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) 
-    || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) { 
-
-      document.getElementById("intro-img").id = "mobile-intro-img";
-      document.getElementById("intro-text").id = "mobile-intro-text";
-      console.log("here");
-    }*/
-  });
-
-  (function($){
-    $(function(){
-  
-      $('.sidenav').sidenav();
-      $('.parallax').parallax();
-  
-    }); // end of document ready
-  })(jQuery); // end of jQuery name space
-
-  $(document).ready(function(){
-    $('.modal').modal();
-  });
-
-  
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
-
-const mobileResearchToggle = document.querySelector('.mobile-research-dropdown-btn');
-const mobileResearchWrapper = document.querySelector('.research-tab-wrapper-mobile');
-
-if (mobileResearchToggle && mobileResearchWrapper) {
-  mobileResearchToggle.addEventListener('click', function (e) {
-    e.preventDefault();
-    const isOpen = mobileResearchWrapper.classList.toggle('is-open');
-    mobileResearchToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-  });
-
-  document.addEventListener('click', function (e) {
-    if (!mobileResearchWrapper.contains(e.target)) {
-      mobileResearchWrapper.classList.remove('is-open');
-      mobileResearchToggle.setAttribute('aria-expanded', 'false');
+  function setBurgerState(open) {
+    if (burger) {
+      burger.classList.toggle('is-active', open);
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
     }
-  });
-}
-
-function isElementInViewport (el) {
-  //special bonus for those using jQuery
-  if (typeof jQuery === "function" && el instanceof jQuery) {
-    el = el[0];
   }
-  var rect = el.getBoundingClientRect();
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-  );
-}
 
-// listen for the scroll event
-$(document).on("scroll", function() {
-  // check if the anchor elements are visible
-  $(".anchor").each(function (idx, el) {
-    if ( isElementInViewport(el) ) {
-      // update the URL hash
-      if (window.history.pushState) {
-        var urlHash = "#" + $(el).attr("id");
-        window.history.pushState(null, null, urlHash);
-
-        if(urlHash == "#about")
-          document.getElementById("about-tab").className = "active";
-        else
-          document.getElementById("about-tab").className = "";
-
-        if(urlHash == "#research")
-        document.getElementById("research-tab").className = "active";
-        else
-          document.getElementById("research-tab").className = "";
-
-        if(urlHash == "#contact-footer")
-        document.getElementById("contact-tab").className = "active";
-        else
-          document.getElementById("contact-tab").className = "";
-      }
+  // Drawer opens from the right so it lines up with the button, which sits at
+  // the right end of the bar and stays above the panel once it is open.
+  const sidenavs = M.Sidenav.init(document.querySelectorAll('.sidenav'), {
+    edge: 'right',
+    inDuration: 320,
+    outDuration: 240,
+    onOpenStart: function (el) {
+      el.classList.add('is-open');
+      setBurgerState(true);
+    },
+    onCloseStart: function () {
+      setBurgerState(false);
+    },
+    onCloseEnd: function (el) {
+      // Removed only once the panel is gone, so the entries stay visible
+      // while it slides out instead of blinking away first.
+      el.classList.remove('is-open');
     }
   });
+
+  // Materialize's own trigger handler only ever opens. Intercept in the
+  // capture phase so a second tap on the X closes instead of doing nothing.
+  if (burger && sidenavs.length > 0) {
+    burger.addEventListener('click', function (event) {
+      if (sidenavs[0].isOpen) {
+        event.preventDefault();
+        event.stopPropagation();
+        sidenavs[0].close();
+      }
+    }, true);
+  }
+
+  M.Parallax.init(document.querySelectorAll('.parallax'), {});
+
+  document.body.classList.add('page_loaded');
 });
 
+/* --------------------------------------------------------------------------
+   Tap feedback for the amber nav controls.
 
-function copyToClipboard(id) 
-{
-  var r = document.createRange();
-  r.selectNode(document.getElementById(id));
-  if (!navigator.clipboard){
-    document.execCommand('copy');
-  } 
-  else{
-    navigator.clipboard.writeText(r).then(
-        function(){
-          alert("Copied!"); // success 
-        })
-      .catch(
-         function() {
-          alert("failed to copy!"); // error
-      });
-  }    
-}
+   These sit at their accent colour at rest and must return to it afterwards, so
+   a press cannot be expressed with :active (gone the moment you lift) or with a
+   sticky state class (never returns). Instead the press adds .is-pressed and a
+   timer removes it, giving a brief flash that always settles back to amber.
+   -------------------------------------------------------------------------- */
 
-const previewTriggers = document.querySelectorAll('.project-title, .inline-preview-term');
+(function () {
+  const FLASH_MS = 320;
+  const SELECTOR = '.nav-burger, .cornerName, .nav-social, .nav-fx-icon, .nav-social-toggle';
 
-if (previewTriggers.length > 0) {
-  const projectPanel = document.createElement('div');
-  const previewImage = document.createElement('img');
-  const previewOffset = 18;
+  document.querySelectorAll(SELECTOR).forEach(function (el) {
+    let timer = null;
 
-  projectPanel.setAttribute('id', 'project-panel');
-  projectPanel.style.zIndex = '10000';
-  projectPanel.appendChild(previewImage);
-  document.body.appendChild(projectPanel);
+    // pointerdown so touch and mouse both flash immediately on contact.
+    el.addEventListener('pointerdown', function () {
+      el.classList.add('is-pressed');
+      window.clearTimeout(timer);
+      timer = window.setTimeout(function () {
+        el.classList.remove('is-pressed');
+      }, FLASH_MS);
+    });
+  });
+})();
 
-  function positionPreview(pageX, pageY) {
+/* --------------------------------------------------------------------------
+   Social strip reveal (mobile widths only; above 992px CSS keeps it open).
+   -------------------------------------------------------------------------- */
+
+(function () {
+  const toggle = document.querySelector('.nav-social-toggle');
+  const strip = document.getElementById('nav-socials');
+
+  if (!toggle || !strip) {
+    return;
+  }
+
+  function setOpen(open) {
+    strip.classList.toggle('is-open', open);
+    toggle.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Hide social links' : 'Show social links');
+  }
+
+  toggle.addEventListener('click', function (event) {
+    event.preventDefault();
+    setOpen(!strip.classList.contains('is-open'));
+  });
+
+  // Collapse again when attention moves elsewhere.
+  document.addEventListener('click', function (event) {
+    if (!strip.contains(event.target) && !toggle.contains(event.target)) {
+      setOpen(false);
+    }
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      setOpen(false);
+    }
+  });
+})();
+
+/* --------------------------------------------------------------------------
+   Smooth scrolling for in-page anchors.
+   `#` and `#!` are placeholders (menu trigger, dead links) and must be skipped
+   or querySelector throws on the invalid selector.
+   -------------------------------------------------------------------------- */
+
+document.addEventListener('click', function (event) {
+  const link = event.target.closest('a[href^="#"]');
+
+  if (!link) {
+    return;
+  }
+
+  const href = link.getAttribute('href');
+
+  if (href === '#' || href === '#!' || href.length < 2) {
+    return;
+  }
+
+  const target = document.getElementById(href.slice(1));
+
+  if (!target) {
+    return;
+  }
+
+  event.preventDefault();
+  target.scrollIntoView({ behavior: 'smooth' });
+});
+
+/* --------------------------------------------------------------------------
+   Highlight the nav entry for whichever section is on screen.
+   -------------------------------------------------------------------------- */
+
+(function () {
+  const sections = Array.prototype.slice.call(document.querySelectorAll('.anchor[id]'));
+
+  if (sections.length === 0) {
+    return;
+  }
+
+  const tabs = {
+    about: document.getElementById('about-tab'),
+    research: document.getElementById('research-tab'),
+    'contact-footer': document.getElementById('contact-tab')
+  };
+
+  let activeId = null;
+  let queued = false;
+
+  function activate(id) {
+    if (id === activeId) {
+      return;
+    }
+
+    activeId = id;
+
+    Object.keys(tabs).forEach(function (key) {
+      if (tabs[key]) {
+        tabs[key].classList.toggle('active', key === id);
+      }
+    });
+
+    if (window.history.replaceState) {
+      window.history.replaceState(null, '', '#' + id);
+    }
+  }
+
+  function documentTop(element) {
+    return element.getBoundingClientRect().top + window.scrollY;
+  }
+
+  function update() {
+    queued = false;
+
+    // The last section is the footer, which is too short to ever reach the
+    // middle of the viewport — so bottom-of-page always means "contact".
+    const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+
+    if (atBottom) {
+      activate(sections[sections.length - 1].id);
+      return;
+    }
+
+    const line = window.scrollY + window.innerHeight * 0.4;
+    let current = sections[0];
+
+    sections.forEach(function (section) {
+      if (documentTop(section) <= line) {
+        current = section;
+      }
+    });
+
+    activate(current.id);
+  }
+
+  function requestUpdate() {
+    if (!queued) {
+      queued = true;
+      window.requestAnimationFrame(update);
+    }
+  }
+
+  window.addEventListener('scroll', requestUpdate, { passive: true });
+  window.addEventListener('resize', requestUpdate);
+  window.addEventListener('load', requestUpdate);
+  update();
+})();
+
+/* --------------------------------------------------------------------------
+   Hover/focus image preview for project titles and inline terms.
+   -------------------------------------------------------------------------- */
+
+(function () {
+  const triggers = document.querySelectorAll('[data-image]');
+
+  if (triggers.length === 0) {
+    return;
+  }
+
+  const panel = document.createElement('div');
+  const image = document.createElement('img');
+  const OFFSET = 18;
+  const MARGIN = 12;
+
+  panel.id = 'project-panel';
+  panel.appendChild(image);
+  document.body.appendChild(panel);
+
+  function position(pageX, pageY) {
     const viewportWidth = document.documentElement.clientWidth;
     const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-    const panelWidth = projectPanel.offsetWidth;
-    const panelHeight = projectPanel.offsetHeight;
-    const minLeft = window.scrollX + 12;
-    const minTop = window.scrollY + 12;
-    const maxLeft = window.scrollX + viewportWidth - panelWidth - 12;
-    const maxTop = window.scrollY + viewportHeight - panelHeight - 12;
-    const nextLeft = Math.min(pageX + previewOffset, maxLeft);
-    const nextTop = Math.min(pageY + previewOffset, maxTop);
+    const minLeft = window.scrollX + MARGIN;
+    const minTop = window.scrollY + MARGIN;
+    const maxLeft = window.scrollX + viewportWidth - panel.offsetWidth - MARGIN;
+    const maxTop = window.scrollY + viewportHeight - panel.offsetHeight - MARGIN;
 
-    projectPanel.style.left = Math.max(minLeft, nextLeft) + 'px';
-    projectPanel.style.top = Math.max(minTop, nextTop) + 'px';
+    panel.style.left = Math.max(minLeft, Math.min(pageX + OFFSET, maxLeft)) + 'px';
+    panel.style.top = Math.max(minTop, Math.min(pageY + OFFSET, maxTop)) + 'px';
   }
 
-  function showPreview(trigger, pageX, pageY) {
-    const imageSrc = trigger.getAttribute('data-image');
-    const previewWidth = trigger.getAttribute('data-preview-width') || '200';
-
-    previewImage.setAttribute('src', imageSrc);
-    previewImage.setAttribute('alt', trigger.textContent.trim());
-    projectPanel.style.setProperty('--preview-width', previewWidth + 'px');
-    projectPanel.style.display = 'block';
-    positionPreview(pageX, pageY);
+  function show(trigger, pageX, pageY) {
+    image.setAttribute('src', trigger.getAttribute('data-image'));
+    image.setAttribute('alt', trigger.textContent.trim());
+    panel.style.setProperty('--preview-width', (trigger.getAttribute('data-preview-width') || '200') + 'px');
+    panel.style.display = 'block';
+    position(pageX, pageY);
   }
 
-  function hidePreview() {
-    projectPanel.style.display = 'none';
-    previewImage.removeAttribute('src');
+  function hide() {
+    panel.style.display = 'none';
+    image.removeAttribute('src');
   }
 
-  previewTriggers.forEach(function (trigger) {
-    trigger.addEventListener('mouseenter', function (e) {
-      showPreview(trigger, e.pageX, e.pageY);
+  triggers.forEach(function (trigger) {
+    trigger.addEventListener('mouseenter', function (event) {
+      show(trigger, event.pageX, event.pageY);
     });
 
-    trigger.addEventListener('mousemove', function (e) {
-      positionPreview(e.pageX, e.pageY);
+    trigger.addEventListener('mousemove', function (event) {
+      position(event.pageX, event.pageY);
     });
 
-    trigger.addEventListener('mouseleave', hidePreview);
+    trigger.addEventListener('mouseleave', hide);
 
     trigger.addEventListener('focus', function () {
       const rect = trigger.getBoundingClientRect();
-      showPreview(trigger, window.scrollX + rect.right, window.scrollY + rect.bottom);
+      show(trigger, window.scrollX + rect.right, window.scrollY + rect.bottom);
     });
 
-    trigger.addEventListener('blur', hidePreview);
+    trigger.addEventListener('blur', hide);
   });
-}
-
-
+})();

@@ -1,577 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-  <link href="css/style.css" rel="stylesheet" media="screen,projection">
-  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!--Import materialize.css-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AŞ's Publications</title>
 
-  <!--Let browser know website is optimized for mobile-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
 
-  <title>AŞ's Publications</title>
+  <!--Import materialize.css first so our own styles can override it-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
   <nav>
     <div class="nav-wrapper">
-      <a href="index.html" class="cornerName"><b> Alper Sahistan</b></a> 
-      <a href="https://github.com/alpers-git" target="_blank"><span class="iconify" data-icon="mdi-github" data-inline="false"
-        style="color: #FFC107;" data-width="1.5rem"></span></a>
-      <a href="https://gitlab.com/alpers-git" target="_blank"><span class="iconify" data-icon="mdi-gitlab" data-inline="false"
-        style="color: #FFC107;" data-width="1.5rem"></span></a>
-      <a href="https://twitter.com/alpers_tw" target="_blank"><span class="iconify" data-icon="mdi-twitter" data-inline="false"
-          style="color: #FFC107;" data-width="1.5rem"></span></a>
-      <a href="https://www.researchgate.net/profile/Alper-Sahistan" target="_blank"><span class="iconify"
-          data-icon="fa-brands:researchgate" data-inline="false" style="color: #FFC107;" data-width="1.3rem"></span></a>
-      <a href="https://scholar.google.com/citations?hl=tr&user=dUs6hMIAAAAJ" target="_blank"><span class="iconify"
-          data-icon="academicons:google-scholar" data-inline="false" style="color: #FFC107;"
-          data-width="1.2rem"></span></a>
-      <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-light"
-          data-width="1rem">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a id="home" href="index.html">Home</a></li>
-        <!-- <li><a href="resume.pdf" style="color: #FFC107;"><u>Resume</u></a></li> -->
-        <li><a href="cv.pdf" target="_blank" style="color: #FFC107;"><u>CV</u></a></li>
+      <a href="index.html" class="cornerName"><b>Alper Sahistan</b></a>
+
+      <!-- Mobile only: reveals the social strip. Hidden above 992px, where the
+           icons are always on show. -->
+      <button type="button" class="nav-social-toggle" aria-label="Show social links" aria-expanded="false"
+        aria-controls="nav-socials"><i class="material-icons">chevron_right</i></button>
+
+      <div class="nav-socials" id="nav-socials">
+        <a class="nav-social" href="https://github.com/alpers-git" target="_blank" rel="noopener noreferrer"
+          title="GitHub"><span class="iconify" data-icon="mdi-github" data-inline="false" data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://gitlab.com/alpers-git" target="_blank" rel="noopener noreferrer"
+          title="GitLab"><span class="iconify" data-icon="mdi-gitlab" data-inline="false" data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://twitter.com/alpers_tw" target="_blank" rel="noopener noreferrer"
+          title="Twitter"><span class="iconify" data-icon="mdi-twitter" data-inline="false"
+            data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://www.researchgate.net/profile/Alper-Sahistan" target="_blank"
+          rel="noopener noreferrer" title="ResearchGate"><span class="iconify" data-icon="fa-brands:researchgate"
+            data-inline="false" data-width="1.3rem"></span></a>
+        <a class="nav-social" href="https://scholar.google.com/citations?hl=tr&amp;user=dUs6hMIAAAAJ" target="_blank"
+          rel="noopener noreferrer" title="Google Scholar"><span class="iconify" data-icon="academicons:google-scholar"
+            data-inline="false" data-width="1.2rem"></span></a>
+      </div>
+
+      <ul class="right hide-on-med-and-down nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a class="nav-cv" href="cv.pdf" target="_blank">CV</a></li>
       </ul>
     </div>
   </nav>
 
+  <!-- Outside <nav> on purpose: see .nav-burger in css/style.css -->
+  <button type="button" class="sidenav-trigger nav-burger" data-target="mobile-sidebar" aria-label="Menu"
+    aria-controls="mobile-sidebar" aria-expanded="false">
+    <span class="nav-burger__box"><span class="nav-burger__bar"></span></span>
+  </button>
 
-
-  <ul class="sidenav" id="mobile-sidebar">
+  <ul class="sidenav right-aligned" id="mobile-sidebar">
     <li><a href="index.html">Home</a></li>
-    <!-- <li><a href="resume.pdf">Resume.pdf</a></li> -->
+    <li><a href="index.html#research">Recent works</a></li>
+    <li><a href="publications.html" aria-current="page">All publications</a></li>
     <li><a href="cv.pdf" target="_blank">cv.pdf</a></li>
   </ul>
-  <div class="section">
-    <!--insert generated html after here-->
-    <!-- Full Pubs -->
-    <div class="col s12 m12">
-      <h2>2026</h2>
-      <hr>
-       <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t1.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t2.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t5.png">
-                </div>
-              </div>
-              <span class="card-title">Materializing Inter-Channel Relationships with Multi-Density Woodcock Tracking</span>
-              <p><i>IEEE Transactions on Visualization and Computer Graphics (to appear)</i></p>
-              <p>Authors: <b>A. Sahistan</b>, S. Zellmann, H. Miao, N. Morrical, V. Pascucci, I. Wald</p>
-            </div>
-            <div class="card-action">
-              <a href="research/authorsMDWT.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal8"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-              <a href="https://github.com/alpers-git/MDWTracker" target="_blank"><span class="iconify" data-icon="mdi-github" data-inline="false"
-                    style="color: #ffc107;" data-width="1.5rem"></span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal8" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper8">
-@article{Sahistan2026MatMDWT,
-          author = {Sahistan, Alper and Zellmann, Stefan and Miao, Haichao and Morrical, Nate and Pascucci, Valerio and Wald, Ingo},
-          journal={IEEE Transactions on Visualization and Computer Graphics}, 
-          title={Materializing Inter-Channel Relationships with Multi-Density Woodcock Tracking}, 
-          year={2026},
-          doi={10.1109/TVCG.2026.3653310},
-          volume={},
-          number={},
-          }
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper8')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/FAIR_framework/t1.png">
-                </div>
-              </div>
-              <span class="card-title">Expanding Access to Science Participation: A FAIR Framework for Petascale Data Visualization and Analytics</span>
-              <p><i>IEEE Transactions on Visualization and Computer Graphics (to appear)</i></p>
-              <p>Authors: A. Panta, <b>A. Sahistan</b>, X. Huang, A. A. Gooch, G. Scorzelli, H. Torres, P. Klein, G. A. Ovando-Montejo, P. Lindstrom, V. Pascucci</p>
-            </div>
-            <div class="card-action">
-              <a href="research/TVCG_Web_Based_Vis.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal9"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal9" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper9">
-@article{Panta2026FAIRPetascale,
-  author = {Panta, Aashish and Sahistan, Alper and Huang, Xuan and Gooch, Amy A. and Scorzelli, Giorgio and Torres, Hector and Klein, Patrice and Ovando-Montejo, Gustavo A. and Lindstrom, Peter and Pascucci, Valerio},
-  journal={IEEE Transactions on Visualization and Computer Graphics (to appear)},
-  title={Expanding Access to Science Participation: A FAIR Framework for Petascale Data Visualization and Analytics},
-  year={2026},
-  volume={},
-  number={}
-}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper9')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
-      <h2>2025</h2>
-      <hr>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t1.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t2.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t3.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/mdwt/t4.png">
-                </div>
-              </div>
-              <span class="card-title">Multi-Density Woodcock Tracking: Efficient & High-Quality Rendering for Multi-Channel Volumes</span>
-              <p><i>Eurographics Symposium on Parallel Graphics and Visualization </i></p>
-              <p>Authors: <b>A. Sahistan</b>, S. Zellmann, N. Morrical, V. Pascucci, I. Wald</p>
-            </div>
-            <div class="card-action">
-              <a href="research/multi-densityWT.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal7"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-              <a href="https://github.com/alpers-git/MDWTracker" target="_blank"><span class="iconify" data-icon="mdi-github" data-inline="false"
-                    style="color: #ffc107;" data-width="1.5rem"></span></a>
-                    <a href="research/multi-densityWTsup.pdf" target="_blank" title="Supplemental material (PDF)">
-                      <i class="material-icons icon-light">sticky_note_2</i>
-                    </a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal7" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper7">
-@inproceedings{sahistan2025MDWT,
-booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},
-title = {{Multi-Density Woodcock Tracking: Efficient \& High-Quality Rendering for Multi-Channel Volumes}},
-author = {Sahistan, Alper and Zellmann, Stefan and Morrical, Nate and Pascucci, Valerio and Wald, Ingo},
-year = {2025},
-publisher = {The Eurographics Association},
-DOI = {10.2312/pgv.20251150}
-}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper7')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
 
-      <h2>2024</h2>
-      <hr>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/beyond/t1.png">
-                </div>
-              </div>
-              <span class="card-title">Beyond ExaBricks: GPU Volume Path Tracing of AMR Data</span>
-              <p><i>EuroVis 2024</i></p>
-              <p>Authors: S. Zellmann, Q. Wu, <b>A. Sahistan</b>, K.-L. Ma, I. Wald</p>
-            </div>
-            <div class="card-action">
-              <a href="research/beyondExa.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal6"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal6" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper6">
-@article{Zellmann2024Beyond,
-  author = {Zellmann, Stefan and Wu, Qi and Sahistan, Alper and Ma, Kwan-Liu and Wald, Ingo},
-  title = {Beyond ExaBricks: GPU Volume Path Tracing of AMR Data},
-  journal = {Computer Graphics Forum},
-  volume = {43},
-  number = {3},
-  doi = {https://doi.org/10.1111/cgf.15095},
-  year = {2024}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper6')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/Visualization_Large_Nontrivially/t1.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/Visualization_Large_Nontrivially/t2.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/Visualization_Large_Nontrivially/t3.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/Visualization_Large_Nontrivially/t4.png">
-                </div>
-              </div>
-              <span class="card-title">Visualization of Large Non-Trivially Partitioned Unstructured Data with Native Distribution on High-Performance Computing Systems</span>
-              <p><i>IEEE Transactions on Visualization and Computer Graphics</i></p>
-              <p>Authors: <b>A. Sahistan</b>, S. Demirci, I. Wald, S. Zellmann, J. Barbosa, N. Morrical, U. Gudukbay</p>
-            </div>
-            <div class="card-action">
-              <a href="research/Visualization_Large_Nontrivially.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal5"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-              <a href="https://github.com/ingowald/deepCompositing" target="_blank"><span class="iconify" data-icon="mdi-github" data-inline="false"
-                    style="color: #ffc107;" data-width="1.5rem"></span></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal5" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper5">
-@article{Sahistan2024VisNonTrivialPart,
-  author={Sahistan, Alper and Demirci, Serkan and Wald, Ingo and Zellmann, Stefan and Barbosa, João and Morrical, Nate and Güdükbay, Uğur},
-  journal={IEEE Transactions on Visualization and Computer Graphics}, 
-  title={Visualization of Large Non-Trivially Partitioned Unstructured Data with Native Distribution on High-Performance Computing Systems}, 
-  year={2024},
-  volume={},
-  number={},
-  pages={1-14},
-  doi={10.1109/TVCG.2024.3427335}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper5')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
+  <main class="page-body">
+    <div class="page-section">
+      <h1 class="section-head">Publications</h1>
 
-      <h2>2023</h2>
-      <hr>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/rbfs/teaser.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/rbfs/t2.png">
-                </div>
-              </div>
-              <span class="card-title">Attribute-Aware RBFs: Interactive Visualization of Time Series Particle Volumes Using RT Core Range Queries</span>
-              <p><i>2023 IEEE Visualization Conference (VIS)</i></p>
-              <p>Authors: N. Morrical, S. Zellmann, <b>A. Sahistan</b>, P. Shriwise, V. Pascucci</p>
-            </div>
-            <div class="card-action">
-              <a href="research/Attribute_Aware_RBFs.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal4"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal4" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper4">
-@inproceedings{Morrical2023RBF,
-  author={Morrical, Nate and Zellmann, Stefan and Sahistan, Alper and Shriwise, Patrick and Pascucci, Valerio},
-  booktitle={2023 IEEE Visualization Conference (VIS)}, 
-  title={Attribute-Aware RBFs: Interactive Visualization of Time Series Particle Volumes Using RT Core Range Queries}, 
-  year={2023},
-  volume={},
-  number={},
-  doi={10.1109/TVCG.2023.3327366}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper4')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
-      <h2>2022</h2>
-      <hr>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/islands/t1.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/islands/t2.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/islands/t3.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/islands/t4.png">
-                </div>
-              </div>
-              <span class="card-title">Hybrid Image-/Data-Parallel Rendering Using Island Parallelism</span>
-              <p><i>The 12th IEEE Symposium on Large Data Analysis and Visualization</i></p>
-              <p>Authors: S. Zellmann, I. Wald, J. Barbosa, S. Demirci, <b>A. Sahistan</b>, U. Gudukbay</p>
-            </div>
-            <div class="card-action">
-              <a href="research/islands-paper-compressed.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal0"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal0" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper0">
-@inproceedings{Zellmann2022Islands,
-year = {2022},
-month = {oct},
-title = {Hybrid Image-/Data-Parallel Rendering Using Island Parallelism},
-booktitle = {The 12th IEEE Symposium on Large Data Analysis and Visualization},
-author = {Zellmann, Stefan and Wald, Ingo and Barbosa, Joao and Demirci, Serkan and Sahistan, Alper and
-G\"ud\"ukbay, U\^gur}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper0')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/quick_clusters/t2.jpg">
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/quick_clusters/t3.png">
-                </div>
-              </div>
-              <span class="card-title">Quick Clusters: A GPU-Parallel Partitioning for Efficient Path Tracing of
-                Unstructured Volumetric Grids</span>
-              <p><i>2022 IEEE Visualization Conference (VIS)</i></p>
-              <p>Authors: N. Morrical, <b>A. Sahistan</b>, U. Gudukbay, I. Wald, V. Pascucci</p>
-            </div>
-            <div class="card-action">
-              <a href="research/quick-clusters.pdf" target="_blank" title="Author's version (PDF)"> <i class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal1"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal1" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper1">
-@inproceedings{Morrical2022QuickClusters,
-year = {2022},
-month = {oct},
-title = {Quick Clusters: A GPU-Parallel Partitioning for Efficient Path Tracing of Unstructured Volumetric
-Grids},
-booktitle = {2022 IEEE Visualization Conference (VIS)},
-author = {Morrical, Nate and Sahistan, Alper and G\"ud\"ukbay, U\^gur and Wald, Ingo and Pascucci,
-Valerio}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper1')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img-2" src="images/gpu_streaming/t1.png">
-                </div>
-              </div>
-              <span class="card-title">Design and Evaluation of a GPU Streaming Framework for Visualizing Time-Varying
-                AMR Data</span>
-              <p><i>Eurographics Symposium on Parallel Graphics and Visualization</i></p>
-              <p>Authors: S. Zellmann, I. Wald, <b>A. Sahistan</b>, M. Hellmann, W. Usher</p>
-            </div>
-            <div class="card-action">
-              <a href="research/paper-exajet-animated-compressed.pdf" target="_blank" title="Author's version (PDF)"> <i
-                  class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal2"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal2" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper2">
-@inproceedings{Zellmann2022AMRAnimated,
-year = {2022},
-month = {jun},
-author = {Zellmann, Stefan and Wald, Ingo and Sahistan, Alper and Hellmann, Matthias and Usher, Will},
-title = {Design and Evaluation of a {GPU} Streaming Framework for Visualizing Time-Varying {AMR} Data},
-editor = {Bujack, R. and Tierny, J. and Sadlo, F.},
-booktitle = {Eurographics Symposium on Parallel Graphics and Visualization}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper2')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
-      </div>
+      <noscript>
+        <p class="pub-noscript">
+          This list is generated from a single data file and needs JavaScript to render. The complete list is also
+          available on <a href="https://scholar.google.com/citations?hl=tr&amp;user=dUs6hMIAAAAJ" target="_blank"
+            rel="noopener noreferrer">Google Scholar</a>.
+        </p>
+      </noscript>
 
-      <h2>2021</h2>
-      <hr>
-      <div class="row">
-        <div class="col s12 m12">
-          <div class="card" style="background-color:#1c415b;">
-            <div class="card-content white-text">
-              <div class="row">
-                <div class="col s6 m6">
-                  <!--Teaser Images here-->
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/raytraced_shell/t1.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/raytraced_shell/t2.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/raytraced_shell/t3.png">
-                  <img class="responsive-img for-large-screens" id="teaser-img" src="images/raytraced_shell/t4.png">
-                </div>
-              </div>
-              <span class="card-title">Ray-traced Shell Traversal of Tetrahedral Meshes for Direct Volume
-                Visualization</span>
-              <p><i>2021 IEEE Visualization Conference (VIS) Short Papers</i></p>
-              <p>Authors: <b>A. Sahistan</b>, S. Demirci, N. Morrical, S. Zellmann, A. Aman, I. Wald, U. Gudukbay</p>
-            </div>
-            <div class="card-action">
-              <a href="research/tetMarch-preprint.pdf" target="_blank" title="Author's version (PDF)"> <i class="material-icons icon-light">picture_as_pdf</i></a>
-              <a class=" modal-trigger" href="#modal3"><i class="icon-light"
-                  style="font-family: Source Code Pro; text-transform: none">BibTeX</i></a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- Modal -->
-      <div id="modal3" class="modal">
-        <div class="modal-content" id="citation-box">
-          <h4>BibTeX citation</h4>
-          <div class="card-panel" id="citation-text">
-            <p type="text" id="paper3">
-@inproceedings{Sahistan2021ShellToShell,
-doi = {10.1109/VIS49827.2021.9623298},
-year = {2021},
-month = {oct},
-title = {Ray-traced Shell Traversal of Tetrahedral Meshes for Direct Volume Visualization},
-booktitle = {2021 IEEE Visualization Conference (VIS) Short Papers},
-author = {Sahistan, Alper and Demirci, Serkan and Morrical, Nathan and Zellmann, Stefan and Aman, Aytek
-and Wald, Ingo and G\"ud\"ukbay, U\^gur}}
-            </p>
-          </div>
-          <div class="row">
-            <div class="col m11"></div>
-            <a class="button col m1" onclick="copyToClipboard('paper3')" style="position: absolute; right: 0;"><i
-                class="material-icons">copy_all</i></a>
-          </div>
-        </div>
+      <!-- Both rendered from js/publications-data.js -->
+      <nav class="year-nav" data-publication-years aria-label="Jump to year"></nav>
+      <div class="pub-list" data-publications="all"></div>
+
+      <div class="copyright-note">
+        <h5>Copyright&copy; Notice:</h5>
+        <p>This material is presented to ensure timely dissemination of scholarly and technical work. Copyright and all
+          rights therein are retained by authors or by other copyright holders. All persons copying this information are
+          expected to adhere to the terms and constraints invoked by each author's copyright and other copyright
+          holders. In most cases, these works may not be reposted without the explicit permission of the copyright
+          holder.</p>
       </div>
     </div>
+  </main>
 
-    <!--insert generated html before here-->
-
-<!-- create a div for copyrigt notice -->
-<div class="footer">
-  <!-- set the test color for the header white -->
-  <h5 style="color: white;">Copyright© Notice:</h5>
-    <p>This material is presented to ensure timely dissemination of scholarly and technical work. Copyright and all rights therein are retained by authors or by other copyright holders. All persons copying this information are expected to adhere to the terms and constraints invoked by each author's copyright and other copyright holders. In most cases, these works may not be reposted without the explicit permission of the copyright holder.</p>
-</div>
-  </div>
-
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="js/publications-data.js"></script>
+  <script src="js/publications.js"></script>
+  <script src="js/main.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script src="js/main.js"></script>
 
 </html>

@@ -1,423 +1,1071 @@
+/* ==========================================================================
+   Site styles.
+
+   Loaded *after* materialize.min.css on every page, so plain selectors win
+   on their own specificity and `!important` is only needed where Materialize
+   itself uses it.
+
+   Conventions:
+     - colours, spacing and radii come from the tokens in :root
+     - components are classes (.pub-card, .info-list, ...), never ids
+     - ids are reserved for scroll anchors and JS hooks
+   ========================================================================== */
+
+:root {
+    --bg: #222831;
+    --bg-elevated: #2b323d;
+    --surface: #1c415b;
+    --surface-hover: #235071;
+    --accent: #ffc107;
+    --accent-bright: #ffd451;
+    --accent-soft: rgba(255, 193, 7, 0.61);
+    --accent-dim: rgba(255, 193, 7, 0.3);
+    --blue: #157ec4;
+    --blue-light: #57b4f5;
+    --text: #ffffff;
+    --text-muted: rgba(255, 255, 255, 0.72);
+    --ink: #222831;
+
+    /* Two affordances, two colours, no overlap:
+         --link  (blue)  = it navigates somewhere
+         --accent (amber) = it reveals an image on hover, or it is a control
+       Links never use amber and preview terms never use blue, so the two are
+       always distinguishable. --link-on-accent is for links sitting on the
+       amber panels, where blue-on-amber has no contrast. */
+    --link: #57b4f5;
+    --link-hover: #9ad4ff;
+    --link-on-accent: #0d3d5f;
+
+    --radius-sm: 0.35rem;
+    --radius-md: 0.6rem;
+    --radius-lg: 1rem;
+
+    /* The site's signature silhouette: tight top corners, generously rounded
+       bottom ones. It comes from the About / Research panels, and --shape-control
+       is the same profile scaled down for buttons and pills. */
+    /* Held per corner, not just as a shorthand, so anything that has to line up
+       with a panel edge — the About portrait shares the panel's whole left side —
+       can reference the same corner instead of repeating a literal that then
+       drifts when the shape is retuned. Edit these four; --shape-panel and every
+       element following it update together. */
+    --shape-corner-tl: 0.5rem;
+    --shape-corner-tr: 0.5rem;
+    --shape-corner-br: 2rem;
+    --shape-corner-bl: 1rem;
+
+    --shape-panel: var(--shape-corner-tl) var(--shape-corner-tr) var(--shape-corner-br) var(--shape-corner-bl);
+    --shape-control: 0.25rem 0.25rem 1rem 0.25rem;
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+    --shadow-md: 0 10px 24px rgba(0, 0, 0, 0.32);
+    --shadow-lg: 0 0 2rem rgba(0, 0, 0, 0.8);
+
+    --nav-height: 64px;
+    --content-max: 1600px;
+
+    --ease: 0.2s ease;
+
+    /* Three typefaces, three jobs. Anything that does not fit one of these
+       roles should inherit rather than pick its own family.
+         heading — titles and headings, always 600
+         body    — running prose
+         ui      — navigation, captions, metadata, interface labels */
+    --font-heading: 'Space Grotesk', 'Roboto Condensed', sans-serif;
+    --font-body: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    --font-ui: 'Roboto Condensed', 'Roboto', sans-serif;
+    --font-mono: 'Source Code Pro', 'Consolas', monospace;
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* Prose is the default; headings and UI opt out below. */
 body {
-    background-color: #222831;
-    margin: 0em;
-    padding: 0em;
-    font-family: 'Roboto Condensed', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    overflow-x: hidden;
 }
 
-ul {
-    list-style: none;
+/* Every heading, everywhere — including the ones Materialize would otherwise
+   leave at its own family and weight. */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
-li#extra-info-text {
-    padding: 0.0rem 0rem 0.5rem 1.5rem;
-    background: url('../images/tri.png') no-repeat;
-    background-size: 0.8rem;
-    background-position-y: 0.3rem;
-    background-position-x: 0.2rem;
-    list-style: none;
+/* Captions, metadata and interface labels. */
+nav,
+.sidenav,
+.pub-card__venue,
+.pub-card__authors,
+.pub-action,
+.year-nav,
+.pub-browse-all,
+.nav-dropdown__menu,
+.email-part + a,
+.copyright-note {
+    font-family: var(--font-ui);
 }
 
-a,
-p {
+/* One colour for every link on the site. */
+a {
+    color: var(--link);
     text-decoration: none;
-    color: #ffffff;
+    transition: color var(--ease), text-decoration-color var(--ease);
+}
+
+/* Gated on a real hovering pointer. `a:hover` is specificity (0,1,1) and so
+   outranks single-class rules like .cornerName (0,1,0); on touch, where :hover
+   latches after a tap, it would repaint those elements in the link colour and
+   leave them there. Guarding it here fixes that for every such element at once
+   rather than one exception at a time. */
+@media (hover: hover) and (pointer: fine) {
+    a:hover {
+        color: var(--link-hover);
+    }
+}
+
+a:focus-visible {
+    color: var(--link-hover);
+}
+
+p {
+    color: var(--text);
+}
+
+:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Materialize ships `button:focus{outline:none;background-color:#2ab7a9}`,
+   which paints a teal block behind EVERY focused <button> on the page — the
+   hamburger, the BibTeX triggers, the copy button. Nothing here wants that,
+   and every button of ours is transparent by design, so neutralise it once at
+   the base layer. Component rules (.pub-action:focus-visible etc.) carry more
+   specificity and still win where an accent fill is intended. */
+button:focus {
+    background-color: transparent;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* Parallax images must be free to overflow the container — Materialize sizes
+   them with min-width/min-height and clamping the width stretches them. */
+.parallax-container .parallax img {
+    max-width: none;
 }
 
 h2 {
-    padding-top: 0.5em;
-    padding-left: 0.3em;
-    color: #FFC107;
+    color: var(--accent);
 }
 
 hr {
+    height: 0;
+    margin: 0.6rem 0 1.4rem;
     border: none;
-    border-top: 0.2em dashed #FFC107;
-    color: #FFC107;
-    background-color: #222831;
-    height: 0.02em;
-    width: 99%;
+    border-top: 0.18rem dashed var(--accent);
 }
 
-h3 {
-    color: #222831;
-}
-
-#extra-info-head {
-    color: #157ec4;
-}
-
-#Link-header {
-    color: #ffc1079c;
-    text-decoration: underline;
-}
-
-#extra-info-text {
-    color: #ffffff;
-}
-
+.icon-light,
 i.icon-light {
-    color: #FFC107
+    color: var(--accent);
 }
 
-nav .sidenav-trigger .icon-light {
-    color: #ffffff !important;
+/* Pages without a hero need to clear the fixed nav themselves. */
+.page-body {
+    padding-top: calc(var(--nav-height) + 1rem);
 }
 
-#citation-box {
-    background-color: #ffc107;
-    color: #222831;
+/* Utility wrapper for the long-form sections. */
+/* Scales with the viewport rather than sitting at a fixed 1100px, which left a
+   lot of dead margin on a laptop. The cap stops line lengths running away on
+   very wide displays. */
+.page-section {
+    width: min(94%, var(--content-max));
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
 }
 
-#citation-text {
-    background-color: #222831;
-    white-space: pre-wrap;
+.section-head {
+    color: var(--blue);
+    margin-bottom: 0.6rem;
+}
+
+.text-muted {
+    color: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Navigation
+   -------------------------------------------------------------------------- */
+
+/* `body >` on purpose: this is the page's own bar, and a bare `nav` selector
+   reaches every <nav> on the page — including the year rail on the publications
+   page, which was inheriting the 64px height, the 2% padding, the glow and the
+   letter-spacing from here. The site bar is a direct child of <body> on all four
+   pages, so this scopes cleanly with no markup change. */
+body > nav {
     display: flex;
-    font-weight: 300;
-    font-family: 'Source Code Pro', monospace;
-    font-size: small;
-}
-
-
-nav {
-    display: flex;
-    /*justify-content: space-between;*/
     align-items: center;
-    font-weight: 600;
-    letter-spacing: 0.1rem !important;
-    font-family: 'Roboto Condensed' !important;
     position: fixed;
+    top: 0;
     width: 100%;
-    box-sizing: border-box;
-    padding: 0% 2%;
-    background-color: #222831 !important;
-    box-shadow: 0px 0px 25px rgba(233, 255, 254, 0.5) !important;
-    z-index: 1;
+    height: var(--nav-height);
+    padding: 0 2%;
+    background-color: var(--bg);
+    box-shadow: 0 0 25px rgba(233, 255, 254, 0.35);
+    font-family: var(--font-ui);
+    font-weight: 600;
+    letter-spacing: 0.1rem;
+    z-index: 999;
 }
 
-.sidenav {
-    background-color: #222831 !important;
+nav .nav-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    line-height: normal;
 }
 
-#mobile-sidebar li a {
-    color: #ffffff !important;
+/* The sidenav trigger is positioned by its own rules below, so it is excluded
+   here — otherwise this would override Materialize's display:none for it. */
+nav .nav-wrapper > a:not(.sidenav-trigger) {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.35rem;
 }
 
-/* Research Tab Dropdown Styling */
-.research-tab-wrapper {
-    position: relative;
+/* Amber at rest and amber again afterwards. Hover only brightens the amber
+   rather than swapping colour, and a tap flashes white for FLASH_MS (js/main.js
+   adds .is-pressed on pointerdown and clears it on a timer) before settling
+   back — the colour is never left changed by an interaction. */
+.cornerName {
+    margin-right: 0.75rem;
+    color: var(--accent);
+    font-size: 1.5rem;
+    white-space: nowrap;
 }
 
-.research-tab-wrapper-mobile {
-    position: relative;
+/* Hover feedback is gated on a real hovering pointer. On touch, :hover sticks
+   after a tap until you tap elsewhere, which left the name plate stuck at the
+   brightened amber once the press flash had finished. */
+@media (hover: hover) and (pointer: fine) {
+    .cornerName:hover {
+        color: var(--accent-bright);
+    }
 }
 
-.research-mobile-row {
+.cornerName:focus-visible {
+    color: var(--accent-bright);
+}
+
+.cornerName.is-pressed {
+    color: var(--text);
+}
+
+/* Social strip. Above 992px it is simply always open. Below that it collapses
+   behind the caret next to the name and the icons fan out to the right one at a
+   time — see the media query further down. */
+.nav-socials {
     display: flex;
     align-items: center;
 }
 
-.research-dropdown-btn {
+.nav-socials .nav-social {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.35rem;
+}
+
+.nav-social-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.75rem;
+    height: var(--nav-height);
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+}
+
+.nav-social-toggle i {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-social-toggle.is-open i {
+    transform: rotate(180deg);
+}
+
+.nav-social-toggle.is-pressed {
+    color: var(--text);
+}
+
+/* Social icons in the nav all share the accent colour, and flash the same way
+   as the name plate on tap (js/main.js drives .is-pressed). */
+.nav-social .iconify {
+    color: var(--accent);
+    transition: color var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .nav-social:hover .iconify {
+        color: var(--accent-bright);
+    }
+}
+
+.nav-social:focus-visible .iconify {
+    color: var(--accent-bright);
+}
+
+.nav-social.is-pressed .iconify,
+.nav-fx-icon.is-pressed .iconify {
+    color: var(--text);
+}
+
+/* One breakpoint for the whole site: desktop links above 992px, hamburger
+   below. Matches Materialize's .hide-on-med-and-down so the two can never
+   both show (or both hide) at the same width. */
+/* Animated hamburger -> close button.
+
+   The button lives outside <nav> as a direct child of <body>. A child of the
+   nav can never paint above the drawer: `nav` is a positioned element with a
+   z-index, so it forms a stacking context and traps its children at the nav's
+   own level. Sitting at body level lets the button take a z-index above both
+   the drawer (999) and its overlay (997), so it rides on top of the open panel
+   instead of being swallowed by it. */
+.nav-burger {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: var(--nav-height);
+    padding: 0;
+    border: none;
+    background: none;
+    /* Amber at rest, including while the panel is open (see .is-pressed). */
+    color: var(--accent);
+    cursor: pointer;
+    /* Must stay above .sidenav (10000) and .sidenav-overlay (9999) — those are
+       raised to clear the demo pages' nav, and this has to clear them in turn
+       or the open panel paints over the X. */
+    z-index: 10001;
+}
+
+@media only screen and (max-width: 992px) {
+    .nav-burger {
+        display: inline-flex;
+    }
+}
+
+.nav-burger__box {
+    position: relative;
+    display: block;
+    width: 26px;
+    height: 20px;
+}
+
+/* All three bars paint with `currentColor`, so the colour is set in exactly one
+   place — the `color` on .nav-burger and its state rules below. */
+.nav-burger__bar,
+.nav-burger__bar::before,
+.nav-burger__bar::after {
+    position: absolute;
+    left: 0;
+    width: 26px;
+    height: 2.5px;
+    background-color: currentColor;
+    border-radius: 2px;
+    transition: transform 0.34s cubic-bezier(0.65, 0.05, 0.36, 1),
+                background-color 0.2s ease,
+                width 0.34s cubic-bezier(0.65, 0.05, 0.36, 1);
+}
+
+.nav-burger__bar {
+    top: 50%;
+    margin-top: -1.25px;
+}
+
+.nav-burger__bar::before {
+    content: '';
+    top: -8px;
+}
+
+.nav-burger__bar::after {
+    content: '';
+    top: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .nav-burger:hover {
+        color: var(--accent-bright);
+    }
+}
+
+.nav-burger:focus-visible {
+    color: var(--accent-bright);
+}
+
+/* Stays amber while open — the morph to an X already signals the state, so the
+   colour does not need to carry it too. */
+.nav-burger.is-active {
+    color: var(--accent);
+}
+
+/* Declared after .is-active so the tap flash wins over it (both are (0,2,0),
+   so load order decides). */
+.nav-burger.is-pressed {
+    color: var(--text);
+}
+
+/* No UA focus ring — the morph is the feedback. */
+.nav-burger:focus {
+    outline: none;
+}
+
+.nav-burger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -4px;
+}
+
+/* The middle bar collapses while the outer two rotate into an X. It cannot use
+   opacity or scaleX: both would apply to the pseudo-elements too and take the
+   X's arms with it. */
+.nav-burger.is-active .nav-burger__bar {
+    width: 0;
+    background-color: transparent;
+}
+
+.nav-burger.is-active .nav-burger__bar::before {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.nav-burger.is-active .nav-burger__bar::after {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Collapsed social strip below the desktop breakpoint.
+
+   The icons used to be simply hidden here, which made them unreachable on a
+   phone. Now they collapse to zero width behind the caret and fan out to the
+   right on tap, each one a beat after the last. max-width (not display or
+   width:auto) is what animates, since it is the only one of the three that can
+   transition from nothing to content-sized. */
+@media only screen and (max-width: 992px) {
+    .nav-social-toggle {
+        display: inline-flex;
+    }
+
+    .nav-socials {
+        max-width: 0;
+        overflow: hidden;
+        transition: max-width 0.44s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-socials.is-open {
+        max-width: 62vw;
+    }
+
+    .nav-socials .nav-social {
+        opacity: 0;
+        transform: translateX(-14px);
+        transition: opacity 0.3s ease, transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-socials.is-open .nav-social {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .nav-socials.is-open .nav-social:nth-child(1) { transition-delay: 0.08s; }
+    .nav-socials.is-open .nav-social:nth-child(2) { transition-delay: 0.14s; }
+    .nav-socials.is-open .nav-social:nth-child(3) { transition-delay: 0.20s; }
+    .nav-socials.is-open .nav-social:nth-child(4) { transition-delay: 0.26s; }
+    .nav-socials.is-open .nav-social:nth-child(5) { transition-delay: 0.32s; }
+}
+
+@media only screen and (max-width: 600px) {
+    .cornerName {
+        font-size: 1.2rem;
+        margin-right: 0.15rem;
+    }
+
+    /* Tighter so five icons plus the name and the hamburger still fit on a
+       narrow phone without the strip being clipped. */
+    .nav-socials .nav-social {
+        padding: 0 0.2rem;
+    }
+
+    .nav-socials.is-open {
+        max-width: 58vw;
+    }
+}
+
+nav ul.nav-links {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+nav ul.nav-links li {
+    display: flex;
+    align-items: center;
+    height: var(--nav-height);
+}
+
+nav ul.nav-links li > a {
+    display: flex;
+    align-items: center;
+    height: 2.25rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-sm);
+    /* Same blue as body links — #157ec4 was too dim against the dark bar. */
+    color: var(--link);
+    font-size: 1.125rem;
+    line-height: 1;
+    transition: background-color var(--ease), color var(--ease);
+}
+
+nav ul.nav-links li > a:hover,
+nav ul.nav-links li > a:focus-visible,
+nav ul.nav-links li > a.active {
+    background-color: #000000;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* CV keeps its amber emphasis, but as an outlined pill rather than amber text —
+   so it reads as a control, and "amber text" stays reserved for preview terms.
+   The selector carries enough specificity to beat the generic nav-link rule
+   above without needing !important.
+
+   Deliberately --radius-sm, matching the other nav items rather than the
+   --shape-control silhouette: that shape belongs to the page content, and CV
+   should sit with its neighbours in the bar. Inherited from the rule above, so
+   no border-radius is declared here at all. */
+nav ul.nav-links li > a.nav-cv {
+    border: 1px solid var(--accent-dim);
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+}
+
+nav ul.nav-links li > a.nav-cv:hover,
+nav ul.nav-links li > a.nav-cv:focus-visible {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink);
+}
+
+.nav-fx-icon .iconify {
+    width: 1.6em;
+    height: 1.6em;
+    color: var(--blue-light);
+    filter: drop-shadow(0 0 4px var(--blue-light)) drop-shadow(0 0 8px rgba(58, 143, 212, 0.67));
+}
+
+/* Marks the page you are already on. */
+nav ul.nav-links li > a[aria-current='page'] {
+    background-color: #000000;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* Desktop nav dropdown ---------------------------------------------------- */
+
+/* Only ever rendered inside `nav ul.nav-links`, which Materialize hides at
+   992px, so there is no mobile counterpart to keep in sync — the drawer uses a
+   flat list of links instead. */
+.nav-dropdown {
+    position: relative;
+}
+
+nav ul.nav-links li.nav-dropdown > a {
+    padding-right: 2.1rem;
+}
+
+.nav-dropdown__toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.25rem;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0 4px !important;
-    margin: 0 !important;
-    background: none !important;
-    border: none !important;
-    color: #ffffff !important;
-    cursor: pointer !important;
-    transition: color 0.3s ease !important;
-    position: relative;
-    height: 100%;
+    height: 2.25rem;
+    padding: 0 0.25rem;
+    border: none;
+    background: none;
+    color: var(--link);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: color var(--ease), transform var(--ease);
 }
 
-nav ul li.research-tab-wrapper>a:first-child {
-    padding-right: 2.4rem !important;
+.nav-dropdown__toggle i {
+    font-size: 1.5rem;
+    line-height: 1;
 }
 
-nav ul li.research-tab-wrapper>.research-dropdown-btn {
-    position: absolute;
-    top: 0;
-    right: 0.25rem;
-    height: 100%;
-    padding: 0 0.5rem !important;
+.nav-dropdown:hover .nav-dropdown__toggle,
+.nav-dropdown:focus-within .nav-dropdown__toggle {
+    color: var(--accent);
 }
 
-.research-dropdown-btn i {
-    font-size: 1.5rem !important;
-    color: #ffffff !important;
-    line-height: 1 !important;
-    height: auto !important;
-}
-
-.research-dropdown-btn:hover i {
-    color: #FFC107 !important;
-}
-
-.research-dropdown-menu {
+.nav-dropdown__menu {
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;
     min-width: 12rem;
-    background-color: #FFC107;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    padding: 0.35rem;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.2s ease;
+    transform: translateY(-0.4rem);
+    transition: opacity var(--ease), transform var(--ease), visibility var(--ease);
     z-index: 1000;
 }
 
-.research-tab-wrapper:hover .research-dropdown-menu,
-.research-tab-wrapper:focus-within .research-dropdown-menu {
-    opacity: 0.72;
+.nav-dropdown:hover .nav-dropdown__menu,
+.nav-dropdown:focus-within .nav-dropdown__menu {
+    opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    transform: translateY(0);
 }
 
-.research-tab-wrapper:hover .research-dropdown-menu:hover,
-.research-tab-wrapper:hover .research-dropdown-menu:focus-within,
-.research-tab-wrapper:focus-within .research-dropdown-menu:hover,
-.research-tab-wrapper:focus-within .research-dropdown-menu:focus-within {
-    opacity: 1;
-}
-
-.research-dropdown-menu a {
-    display: block !important;
-    padding: 1rem 1.25rem !important;
-    color: #222831 !important;
-    font-size: 1rem !important;
-    font-weight: 700;
-    letter-spacing: 0.08rem;
+.nav-dropdown__menu a {
+    display: block;
+    padding: 0.6rem 0.9rem;
+    border-radius: var(--radius-sm);
+    color: var(--link);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
     line-height: 1.4;
     white-space: nowrap;
 }
 
-.hide-on-med-and-down li .research-dropdown-menu a:hover,
-.hide-on-med-and-down li .research-dropdown-menu a:focus {
-    background-color: rgba(34, 40, 49, 0.16);
-    color: #11151a !important;
+.nav-dropdown__menu a:hover,
+.nav-dropdown__menu a:focus-visible {
+    background-color: rgba(255, 193, 7, 0.14);
+    color: var(--accent);
 }
 
-#mobile-sidebar .research-mobile-row a {
-    display: flex !important;
-    align-items: center;
-    height: 48px;
-    padding: 0 32px !important;
-    color: rgba(255, 255, 255, 0.87) !important;
-    font-size: 14px !important;
-    font-weight: 500;
-    line-height: 48px;
+/* Sidenav (mobile) -------------------------------------------------------- */
+
+/* The top strip is left clear so the close button has room to sit on the
+   panel without covering the first entry.
+
+   The drawer is stacked above every nav on the site — the WebGL demo pages
+   raise their own nav to 9999 to clear their canvas UI, so Materialize's
+   default 999 would leave the panel sliding in behind the bar there. */
+.sidenav {
+    padding-top: var(--nav-height);
+    background-color: var(--bg);
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.45);
+    z-index: 10000;
 }
 
-#mobile-sidebar .research-mobile-row>a:first-child {
-    flex: 1 1 auto;
+.sidenav-overlay {
+    background-color: rgba(10, 13, 18, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 9999;
 }
 
-#mobile-sidebar .research-dropdown-btn {
-    flex: 0 0 auto;
-    height: 48px;
-    width: 48px;
-    padding: 0 12px !important;
-    margin-left: 0 !important;
+/* Entries fan in one after another once the panel is open. */
+.sidenav > li {
+    opacity: 0;
+    transform: translateX(28px);
 }
 
-#mobile-sidebar .research-dropdown-menu-mobile {
-    display: none;
-    background-color: rgba(12, 16, 23, 0.9);
+.sidenav.is-open > li {
+    animation: sidenav-item-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-#mobile-sidebar .research-tab-wrapper-mobile.is-open .research-dropdown-menu-mobile {
-    display: block;
-}
+.sidenav.is-open > li:nth-child(1) { animation-delay: 0.05s; }
+.sidenav.is-open > li:nth-child(2) { animation-delay: 0.10s; }
+.sidenav.is-open > li:nth-child(3) { animation-delay: 0.15s; }
+.sidenav.is-open > li:nth-child(4) { animation-delay: 0.20s; }
+.sidenav.is-open > li:nth-child(5) { animation-delay: 0.25s; }
+.sidenav.is-open > li:nth-child(6) { animation-delay: 0.30s; }
 
-#mobile-sidebar .research-dropdown-menu-mobile a {
-    display: block !important;
-    padding: 0.45rem 1rem 0.45rem 2rem !important;
-    margin: 0 !important;
-    color: rgba(255, 255, 255, 0.82) !important;
-    font-size: 13px !important;
-    font-weight: 400;
-    letter-spacing: 0.02rem;
-    line-height: 1.2;
-}
-
-#mobile-sidebar .research-dropdown-menu-mobile a:hover,
-#mobile-sidebar .research-dropdown-menu-mobile a:focus {
-    background-color: rgba(255, 255, 255, 0.06);
-    color: #ffffff !important;
-}
-
-#mobile-sidebar .research-tab-wrapper-mobile.is-open .mobile-research-dropdown-btn i {
-    color: rgba(255, 255, 255, 0.92) !important;
-}
-
-.hide-on-med-and-down {
-    display: flex !important;
-}
-
-.hide-on-med-and-down li a {
-    color: #157ec4;
-    font-size: 18px;
-    font-family: 'Roboto Condensed' !important;
-}
-
-.cornerName {
-    color: #FFC107;
-    font-family: 'Roboto Condensed';
-    font-size: 1.5rem;
-}
-
-.hide-on-med-and-down li a:hover,
-.active {
-    background-color: black;
-    color: #FFC107;
-    font-weight: 700;
-    transition: all ease 0.4s;
-    box-sizing: border-box;
-    border-radius: 5px 5px 5px 5px;
-}
-
-#intro-img {
-    display: flex;
-    justify-self: center;
-    max-width: 30%;
-    padding: 0.25rem;
-    background-color: #222831;
-    box-sizing: border-box;
-    border-radius: 0.5rem 0.0rem 0.0rem 2rem;
-    object-fit: cover;
-    /*box-shadow: 0 0 2rem rgba(0, 0, 0, 0.8);*/
-}
-
-#intro-text {
-    display: flex;
-    padding: 0.0rem !important;
-    background-color: #ffc1079c;
-    box-sizing: border-box;
-    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.8);
-    border-radius: 0.5rem 0.5rem 2rem 2rem;
-}
-
-#about-text {
-    margin: 0rem 1rem 0rem 1rem;
-}
-
-.br-on-mobile {
-    display: none;
-}
-
-@media screen and (min-width: 600px) {
-    .br-on-mobile {
-        display: static;
+@keyframes sidenav-item-in {
+    from {
+        opacity: 0;
+        transform: translateX(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 
-/*#about .row
-{
+/* Materialize styles these as `.sidenav li>a{color:rgba(0,0,0,0.87)}` —
+   specificity (0,1,2). Anything looser than that (e.g. `.sidenav a`) loses and
+   the labels render near-black on the dark panel. `li a` matches that weight
+   and wins on load order, while still reaching links nested deeper than one
+   level — which a `li > a` child combinator would miss. */
+.sidenav li a,
+.sidenav li a i,
+.sidenav li a .material-icons,
+.sidenav li a .iconify {
+    color: var(--text);
+}
+
+.sidenav li a {
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+.sidenav li a:hover,
+.sidenav li a:focus,
+.sidenav li a:focus-visible,
+.sidenav li a.active,
+.sidenav li.active > a {
+    background-color: rgba(255, 193, 7, 0.14);
+    color: var(--accent);
+}
+
+.sidenav li a:hover i,
+.sidenav li a:hover .material-icons,
+.sidenav li a:hover .iconify,
+.sidenav li a.active i,
+.sidenav li a.active .material-icons {
+    color: var(--accent);
+}
+
+/* Separator between entries — not above the first one, which already sits
+   below the strip reserved for the close button. */
+.sidenav > li + li {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Ripple and the mobile tap flash both default to a teal-grey. */
+.sidenav .waves-effect .waves-ripple {
+    background-color: rgba(255, 193, 7, 0.25);
+}
+
+.sidenav a {
+    -webkit-tap-highlight-color: rgba(255, 193, 7, 0.18);
+}
+
+.nav-burger {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Materialize tints the whole <li> when it holds the active link. */
+.sidenav li {
+    background-color: transparent;
+}
+
+.sidenav li a[aria-current='page'] {
+    background-color: rgba(255, 193, 7, 0.14);
+    color: var(--accent);
+    font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   Hero / banners
+   -------------------------------------------------------------------------- */
+
+/* Banners centre their content vertically and clear the fixed nav, instead of
+   relying on a stack of <br> tags to push things down. */
+.parallax-container.banner {
     display: flex;
-    flex-wrap: wrap;
-}*/
-
-#mobile-intro-img {
-    transform: translate(7.5rem, -2.3rem);
-    display: block;
-    padding: 0.25rem;
-    height: 8rem;
-    width: auto;
-    background-color: #222831;
-    box-sizing: border-box;
-    border-radius: 0.5rem;
-    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.8);
+    align-items: center;
+    height: auto;
+    min-height: min(500px, 80vh);
+    padding-top: var(--nav-height);
 }
 
-#mobile-intro-text {
-    transform: translateY(-2rem);
-    padding: 0.4rem;
-    margin-left: 0rem;
-    margin-top: 0rem;
-    height: 15rem;
-    background-color: #ffc1079c;
-    box-sizing: border-box;
-    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.8);
-    border-radius: 0.0rem 0.5rem 2rem 0rem;
+.banner > .section {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    padding: 2rem 0;
 }
 
-#section-title {
-    margin-top: 6rem;
-    height: 7rem;
-    background-color: #ffc1079c;
-    box-sizing: border-box;
-    box-shadow: 0 0 2rem rgba(0, 0, 0, 0.8);
-    border-radius: 0.5rem 0.5rem 2rem 0.5rem;
-    text-align: center;
-}
-
-#contact-footer {
-    background-color: #FFC107;
-}
-
-
-#contact-footer {
-    color: #222831;
-}
-
-#teaser-img {
-    margin-bottom: 0rem;
-    padding: 0.3rem;
-    width: 9rem;
-}
-
-#teaser-img-2 {
-    margin-bottom: 0rem;
-    padding: 0.3rem;
-    height: 9rem;
-}
-
-#wide-img {
-    margin-bottom: 2.2rem;
-    padding: 0.3rem;
-    width: 20rem;
-
-}
-
-.image-wrapper {
+.banner .image-wrapper {
     overflow: hidden;
     display: inline-block;
 }
 
-.image-wrapper img {
+.banner .image-wrapper img {
     float: left;
     display: block;
     opacity: 0.2;
-    /* simulating a semitransparent image */
 }
 
-
-.image-wrapper:after,
+.image-wrapper::after,
 .loading {
     content: ' ';
-    background: transparent url('../images/spinner.gif') center no-repeat;
-    background-size: auto 100%;
+    display: block;
     width: 100%;
     height: 100%;
-    display: block;
+    background: transparent url('../images/spinner.gif') center no-repeat;
+    background-size: auto 100%;
 }
 
-.publication {
-    background-color: #29465a;
+/* Single non-wrapping row at every width — the portrait column stays beside
+   the text and stretches to the card's full height, so `object-fit: cover`
+   crops it to a tall close-up. This is the original shape; wrapping it is
+   what made the portrait fall onto its own line and sit stranded. */
+.intro {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    padding: 0;
+    background-color: var(--accent-soft);
+    border-radius: var(--shape-panel);
+    box-shadow: var(--shadow-lg);
 }
 
-.publication .card-title {
-    color: #FFC107;
+.intro__portrait {
+    flex: 0 0 auto;
+    align-self: stretch;
+    width: 25%;
+    min-width: 7rem;
+    max-width: 30%;
+    height: auto;
+    padding: 0.25rem;
+    background-color: var(--bg);
+    object-fit: cover;
+    /* The portrait occupies the panel's entire left side, so its outer corners
+       must be the panel's own. Right-hand corners stay square — the copy sits
+       flush against them. */
+    border-radius: var(--shape-corner-tl) 0 0 var(--shape-corner-bl);
 }
 
-@media (max-width:580px) {
-    img.for-large-screens {
-        display: none;
+.intro__copy {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0.5rem 1rem 1rem;
+    color: var(--ink);
+}
+
+/* The two panel headings — About and Research — are sized together and never
+   drop below 2rem. They previously inherited Materialize's h3 default, so the
+   size was incidental rather than chosen. */
+.intro__copy h3,
+.section-title h3 {
+    font-size: clamp(2rem, 3.4vw, 2.9rem);
+    line-height: 1.15;
+}
+
+.intro__copy h3 {
+    margin-top: 0.5rem;
+    color: var(--ink);
+}
+
+.intro__copy p {
+    color: var(--ink);
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+/* On the amber panel the blue link colour has no contrast, so links here use
+   the dark variant instead — still "blue means link", just legible. */
+.intro__copy a {
+    color: var(--link-on-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.14em;
+}
+
+.intro__copy a:hover,
+.intro__copy a:focus-visible {
+    color: var(--ink);
+}
+
+/* Narrow screens keep the same side-by-side crop, just with a slightly wider
+   portrait column and smaller type so the text still has room to breathe. */
+@media (max-width: 700px) {
+    .intro__portrait {
+        width: 32%;
+        max-width: 36%;
     }
+
+    .intro__copy {
+        padding: 0.25rem 0.85rem 0.85rem;
+    }
+
+    /* Size is handled by the shared clamp above, which floors at 2rem. */
+    .intro__copy h3 {
+        margin-top: 0.4rem;
+    }
+
+    .intro__copy p {
+        font-size: 1.05rem;
+        line-height: 1.45;
+    }
+}
+
+.section-title {
+    padding: 0.5rem 1rem;
+    background-color: var(--accent-soft);
+    border-radius: var(--shape-panel);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.section-title h3 {
+    margin: 0.6rem 0;
+    color: var(--ink);
+}
+
+/* --------------------------------------------------------------------------
+   Info + project lists
+   -------------------------------------------------------------------------- */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem 2.5rem;
+    align-items: start;
+}
+
+/* Keeps the original 2:1 emphasis between "Further Information" and
+   "Software Projects" once there is room for two columns. */
+@media (min-width: 900px) {
+    .info-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.info-list {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+}
+
+.info-list li {
+    padding: 0 0 0.6rem 1.5rem;
+    background: url('../images/tri.png') no-repeat 0.2rem 0.35rem;
+    background-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.info-block {
+    margin-bottom: 1.25rem;
+}
+
+.info-block .section-head {
+    margin: 0 0 0.25rem;
+}
+
+.info-block p {
+    margin: 0;
+}
+
+/* Links in body copy: blue, solid underline. */
+.info-list a,
+.info-block a,
+.project-item__desc a,
+.pub-noscript a,
+.copyright-note a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-color: rgba(87, 180, 245, 0.5);
+    text-underline-offset: 0.14em;
+}
+
+.info-list a:hover,
+.info-block a:hover,
+.project-item__desc a:hover,
+.pub-noscript a:hover,
+.copyright-note a:hover,
+.info-list a:focus-visible,
+.info-block a:focus-visible,
+.project-item__desc a:focus-visible,
+.pub-noscript a:focus-visible,
+.copyright-note a:focus-visible {
+    color: var(--link-hover);
+    text-decoration-color: currentColor;
+}
+
+.project-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.project-list > li {
+    padding: 0 0 0.9rem 1.5rem;
+    background: url('../images/tri.png') no-repeat 0.2rem 0.35rem;
+    background-size: 0.8rem;
+}
+
+.project-item__head {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.15rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.project-item__head .iconify {
+    color: var(--text);
+}
+
+.project-item__head a:hover .iconify {
+    color: var(--accent);
+}
+
+.project-item__desc {
+    margin: 0;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.45;
+}
+
+/* Hover-preview triggers. Amber plus a DOTTED underline: these are not links
+   and must not read as one, so they differ from body links in both colour and
+   underline style. */
+.preview-term,
+.project-title {
+    color: var(--accent);
+    cursor: help;
+    text-decoration: underline dotted;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .preview-term:hover,
+    .project-title:hover {
+        color: var(--accent-bright);
+    }
+}
+
+.preview-term:focus-visible {
+    color: var(--accent-bright);
 }
 
 #project-panel {
@@ -427,9 +1075,9 @@ nav ul li.research-tab-wrapper>.research-dropdown-btn {
     display: none;
     padding: 0.35rem;
     background: rgba(17, 21, 26, 0.96);
-    border: 1px solid rgba(255, 193, 7, 0.35);
-    border-radius: 0.7rem;
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.32);
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
     pointer-events: none;
     overflow: hidden;
 }
@@ -437,27 +1085,648 @@ nav ul li.research-tab-wrapper>.research-dropdown-btn {
 #project-panel img {
     display: block;
     width: var(--preview-width, 200px);
-    border-radius: 0.45rem;
+    border-radius: var(--radius-sm);
 }
 
-.inline-preview-term {
-    color: #ffc107;
-    cursor: help;
-    text-decoration: underline;
-    text-decoration-style: solid;
-    text-underline-offset: 0.16em;
+/* --------------------------------------------------------------------------
+   Publications
+   -------------------------------------------------------------------------- */
+
+.pub-list {
+    display: block;
 }
 
-.inline-preview-term:focus {
-    outline: 1px solid rgba(255, 193, 7, 0.75);
-    outline-offset: 0.12rem;
+/* --------------------------------------------------------------------------
+/* --------------------------------------------------------------------------
+   Year navigation
+
+   A flat rail of every year, identical on desktop and mobile. It is a slim
+   sticky toolbar with an opaque background and a bottom rule, so content
+   scrolling beneath it reads as intended rather than as the heading being
+   covered by a floating box.
+   -------------------------------------------------------------------------- */
+
+/* This is a <nav>, and Materialize styles bare `nav` unscoped —
+   `nav{color:#fff;background-color:#ee6e73;width:100%;height:56px;line-height:56px}`
+   plus two box-shadow rules and `nav{position:fixed}`. Those cannot be scoped at
+   source, so every one of them is neutralised here. Without this the rail renders
+   as a 56px-tall salmon bar with a drop shadow. */
+.year-nav {
+    position: sticky;
+    top: var(--nav-height);
+    width: auto;
+    height: auto;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    background-color: var(--bg);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+    color: var(--text);
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: normal;
+    z-index: 500;
 }
 
-.project-title {
+.year-nav__inner {
     display: flex;
     align-items: center;
-  }
-  
-  .github-link {
-    margin-left: 0.5em;
-  }
+    gap: 0.85rem;
+    padding: 0.5rem 0;
+}
+
+.year-nav__label {
+    flex: 0 0 auto;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.year-nav__list {
+    display: flex;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.year-nav__year {
+    padding: 0.22rem 0.6rem;
+    border-radius: var(--radius-sm);
+    color: var(--link);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.5;
+    text-decoration: none;
+    transition: background-color var(--ease), color var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .year-nav__year:hover {
+        background-color: rgba(255, 193, 7, 0.14);
+        color: var(--accent);
+    }
+}
+
+.year-nav__year:focus-visible {
+    background-color: rgba(255, 193, 7, 0.14);
+    color: var(--accent);
+}
+
+/* Whichever year is currently on screen. */
+.year-nav__year.is-current {
+    background-color: var(--accent);
+    color: var(--ink);
+    font-weight: 700;
+}
+
+/* Narrow phones: the label is dropped rather than stacked — stacking doubled the
+   rail's height for a word that the years themselves already imply — and the
+   years scroll sideways instead of wrapping, so the rail stays exactly one line
+   tall however many years accumulate. */
+@media only screen and (max-width: 600px) {
+    .year-nav__label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .year-nav__inner {
+        gap: 0;
+    }
+
+    .year-nav__list {
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .year-nav__list::-webkit-scrollbar {
+        display: none;
+    }
+
+    .year-nav__year {
+        flex: 0 0 auto;
+        padding: 0.22rem 0.7rem;
+    }
+}
+
+
+.pub-year {
+    margin-bottom: 2.5rem;
+    /* Clears both the fixed nav and the sticky year rail when jumped to, so the
+       heading lands below the rail rather than behind it. */
+    scroll-margin-top: calc(var(--nav-height) + 3.5rem);
+}
+
+.pub-year__heading {
+    margin: 0 0 0.4rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 0.18rem dashed var(--accent);
+    color: var(--accent);
+    font-size: 2.1rem;
+}
+
+.pub-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+    padding: 1.1rem 1.25rem;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: background-color var(--ease), transform var(--ease), box-shadow var(--ease);
+}
+
+/* --------------------------------------------------------------------------
+   "All N publications" — a ghost of .pub-card leading the recent list
+
+   Deliberately the same width and radius as a real card so it reads as part of
+   the set, but outlined and dashed instead of filled so it never competes with
+   an actual paper. It replaced a filled blue button that sat above the section
+   heading: orphaned from the heading it belonged to, and the one blue-filled
+   control on a site where amber means "control".
+   -------------------------------------------------------------------------- */
+
+.pub-browse-all {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin: 0 0 1.25rem;
+    padding: 0.95rem 1.25rem;
+    /* A faint wash and a solid border rather than transparent-and-dashed. A
+       dashed outline conventionally reads as an empty slot or a drop target,
+       which undersold a real link; solid at a low alpha still stays clearly
+       secondary to a filled paper card. */
+    background-color: rgba(255, 193, 7, 0.07);
+    border: 1px solid rgba(255, 193, 7, 0.45);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    color: var(--accent);
+    font-family: var(--font-ui);
+    text-decoration: none;
+    transition: background-color var(--ease), border-color var(--ease), color var(--ease);
+}
+
+/* The icon sits in its own tinted chip, which gives the row a fixed visual
+   anchor at its left edge instead of a floating glyph.
+
+   This is an icon *font* glyph, so it is sized with font-size — width/height
+   would only size the box, not the character. The overrides for display and
+   font-size beat Google's own `.material-symbols-outlined` rule because
+   style.css is the later stylesheet at equal specificity. */
+.pub-browse-all__icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem;
+    background-color: rgba(255, 193, 7, 0.14);
+    border-radius: var(--radius-sm);
+    color: currentColor;
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: background-color var(--ease);
+}
+
+.pub-browse-all__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.pub-browse-all__title {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+}
+
+.pub-browse-all__hint {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    transition: color var(--ease);
+}
+
+/* Pushed to the far edge, and nudges along on hover. */
+.pub-browse-all__arrow {
+    flex: 0 0 auto;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-left: auto;
+    color: currentColor;
+    transition: transform var(--ease);
+}
+
+/* Raised well clear of the new 0.07 rest wash, or hovering would read as no
+   change at all. */
+@media (hover: hover) and (pointer: fine) {
+    .pub-browse-all:hover {
+        background-color: rgba(255, 193, 7, 0.17);
+        border-color: var(--accent);
+        color: var(--accent-bright);
+    }
+
+    .pub-browse-all:hover .pub-browse-all__icon {
+        background-color: rgba(255, 193, 7, 0.28);
+    }
+
+    .pub-browse-all:hover .pub-browse-all__hint {
+        color: var(--accent);
+    }
+
+    .pub-browse-all:hover .pub-browse-all__arrow {
+        transform: translateX(0.3rem);
+    }
+}
+
+.pub-browse-all:focus-visible {
+    background-color: rgba(255, 193, 7, 0.17);
+    border-color: var(--accent);
+    color: var(--accent-bright);
+}
+
+@media only screen and (max-width: 600px) {
+    .pub-browse-all {
+        gap: 0.65rem;
+        padding: 0.75rem 0.9rem;
+    }
+
+    .pub-browse-all__icon {
+        padding: 0.3rem;
+        font-size: 1.3rem;
+    }
+
+    .pub-browse-all__title {
+        font-size: 1.1rem;
+    }
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .pub-card:hover {
+        background-color: var(--surface-hover);
+        box-shadow: var(--shadow-md);
+        transform: translateY(-2px);
+    }
+}
+
+/* Teasers always sit on a single row — never wrapping to a second line. The
+   inner wrapper exists so the compact layout can take it out of flow; see the
+   min-width:780px block below. */
+.pub-card__media-inner {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
+/* How the single row holds regardless of how many teasers a paper has:
+     - `height` fixed + `width: auto` makes each image's flex base size its
+       aspect ratio at that height, so wide panels start wider than narrow ones
+       and the row keeps their relative proportions
+     - `min-width: 0` lets them shrink past that base (the default `auto`
+       minimum would refuse and force an overflow)
+     - `object-fit: contain` means shrinking letterboxes rather than distorting,
+       so a squeezed figure is still true to the original
+   `cover` would have cropped scientific figures, which is not acceptable here. */
+.pub-teaser {
+    flex: 0 1 auto;
+    min-width: 0;
+    height: 11rem;
+    width: auto;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+    object-position: center;
+}
+
+.pub-card__body {
+    min-width: 0;
+}
+
+.pub-card__title {
+    margin: 0 0 0.35rem;
+    color: var(--accent);
+    font-size: 1.35rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.pub-card__venue {
+    margin: 0 0 0.2rem;
+    color: var(--text);
+    font-size: 1.05rem;
+}
+
+.pub-card__note {
+    color: var(--text-muted);
+}
+
+.pub-card__authors {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.45;
+}
+
+.pub-card__authors b {
+    color: var(--text);
+}
+
+.pub-card__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pub-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--shape-control);
+    background: transparent;
+    color: var(--accent);
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: background-color var(--ease), border-color var(--ease), color var(--ease);
+}
+
+/* Tapping a pill on touch would otherwise leave it stuck filled amber. */
+@media (hover: hover) and (pointer: fine) {
+    .pub-action:hover {
+        background-color: var(--accent);
+        border-color: var(--accent);
+        color: var(--ink);
+    }
+}
+
+.pub-action:focus-visible,
+.pub-action:active {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: var(--ink);
+}
+
+/* One size for every action icon, set here rather than per-icon in the JS.
+   Iconify swaps the <span> for an <svg> carrying the same classes, and it sets
+   width/height as attributes — which CSS outranks, so both selectors hold. */
+.pub-action__icon,
+.pub-action svg {
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    color: currentColor;
+}
+
+.pub-action__label {
+    white-space: nowrap;
+}
+
+/* Compact variant used for "Recent Publications" on the home page. */
+.pub-card--compact {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* Single-column fallback below 780px, where the media sits above the text and
+   so has no neighbouring column to measure against. */
+.pub-card--compact .pub-teaser {
+    height: 9rem;
+}
+
+.pub-card--compact .pub-card__title {
+    font-size: 1.2rem;
+}
+
+@media (min-width: 780px) {
+    /* A wider media column so a single row of four teasers still reads. */
+    .pub-card--compact {
+        grid-template-columns: minmax(10rem, 42%) minmax(0, 1fr);
+        align-items: stretch;
+    }
+
+    /* The teasers grow to fill the full height of the text column beside them,
+       and can never exceed it.
+
+       The wrapper spans both rows and stretches, so its height is whatever the
+       title/venue/authors/actions column comes to. Taking the inner row out of
+       flow (absolute) is the crucial part: out-of-flow children contribute
+       nothing to sizing, so the images cannot push the row taller — the text
+       alone decides the height, and the images then fill it via height:100%.
+       Sizing them directly would be circular, since their own height would feed
+       back into the row it is meant to be measured against. */
+    .pub-card--compact .pub-card__media {
+        position: relative;
+        grid-row: span 2;
+        min-height: 8rem;
+    }
+
+    .pub-card--compact .pub-card__media-inner {
+        position: absolute;
+        inset: 0;
+        align-items: center;
+    }
+
+    .pub-card--compact .pub-teaser {
+        height: 100%;
+        max-height: 100%;
+    }
+
+    .pub-card--compact .pub-card__actions {
+        grid-column: 2;
+    }
+
+    .pub-card--compact:not(:has(.pub-card__media)) .pub-card__body,
+    .pub-card--compact:not(:has(.pub-card__media)) .pub-card__actions {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Secondary teasers are supporting detail: drop them on small screens, where
+   squeezing four onto one row would leave each unreadably narrow. */
+@media (max-width: 580px) {
+    .pub-teaser--secondary {
+        display: none;
+    }
+
+    .pub-teaser {
+        flex: 0 1 auto;
+        height: auto;
+        max-height: 11rem;
+        max-width: 100%;
+    }
+}
+
+.pub-noscript {
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    background-color: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-sm);
+}
+
+/* Link colour comes from the shared body-link rule above. */
+
+/* --------------------------------------------------------------------------
+   BibTeX dialog
+   -------------------------------------------------------------------------- */
+
+.citation-box {
+    background-color: var(--accent);
+    color: var(--ink);
+    border-radius: var(--radius-md);
+    max-width: 46rem;
+    width: 92%;
+}
+
+.citation-box__heading {
+    margin: 0 0 1rem;
+    font-size: 1.6rem;
+}
+
+.citation-text {
+    margin: 0;
+    padding: 1rem;
+    max-height: 55vh;
+    overflow: auto;
+    background-color: var(--bg);
+    color: var(--text);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 300;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    tab-size: 2;
+}
+
+.citation-box__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 0.9rem;
+}
+
+.pub-action--copy {
+    border-color: rgba(34, 40, 49, 0.45);
+    color: var(--ink);
+}
+
+.pub-action--copy:hover,
+.pub-action--copy:focus-visible {
+    background-color: var(--ink);
+    border-color: var(--ink);
+    color: var(--accent);
+}
+
+.pub-action--copy.is-copied {
+    background-color: var(--ink);
+    border-color: var(--ink);
+    color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Footer
+   -------------------------------------------------------------------------- */
+
+.page-footer {
+    padding-top: 1.5rem;
+    background-color: var(--accent);
+    color: var(--ink);
+}
+
+.page-footer h4,
+.page-footer h5,
+.page-footer p {
+    color: var(--ink);
+}
+
+/* Amber background again, so the same dark link colour as the intro panel. */
+.page-footer a {
+    color: var(--link-on-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.14em;
+}
+
+.page-footer a:hover,
+.page-footer a:focus-visible {
+    color: var(--ink);
+}
+
+.contact-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 3rem;
+    padding-bottom: 1.5rem;
+    text-align: center;
+}
+
+.contact-grid > div {
+    flex: 1 1 16rem;
+}
+
+.contact-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.email-part {
+    height: 21px;
+    width: auto;
+    margin: 0 0 -4px;
+    vertical-align: baseline;
+}
+
+.copyright-note {
+    max-width: var(--content-max);
+    margin: 2rem auto 0;
+    padding: 1.25rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.copyright-note h5 {
+    margin-top: 0;
+    color: var(--text);
+    font-size: 1.2rem;
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .pub-card:hover {
+        transform: none;
+    }
+}

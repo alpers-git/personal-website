@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AŞ's personal website</title>
 
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-JK1W65JPPR"></script>
@@ -14,411 +17,271 @@
   </script>
   <!-- End Google Analytics -->
 
-  <link href="css/style.css" rel="stylesheet" media="screen,projection">
-  <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <!--Import materialize.css-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
-  <!--Let browser know website is optimized for mobile-->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Subset to the single glyph used (the "all publications" card). Requesting
+       the full axis ranges pulled the whole variable font for one icon. -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=book_5">
   <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
 
-  <title>AŞ's personal website</title>
+  <!--Import materialize.css first so our own styles can override it-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-  <nav style="z-index:9999">
+  <nav>
     <div class="nav-wrapper">
-      <a href="#!" class="cornerName"><b> Alper Sahistan</b></a> 
-      <a href="https://github.com/alpers-git" target="_blank"><span class="iconify" data-icon="mdi-github" data-inline="false"
-          style="color: #ffc107;" data-width="1.5rem"></span></a>
-      <a href="https://gitlab.com/alpers-git" target="_blank"><span class="iconify" data-icon="mdi-gitlab" data-inline="false"
-          style="color: #FFC107;" data-width="1.5rem"></span></a>
-      <a href="https://twitter.com/alpers_tw"><span
-          class="iconify" data-icon="mdi-twitter" data-inline="false" style="color: #FFC107;"
-          data-width="1.5rem"></span></a>
-      <a href="https://www.researchgate.net/profile/Alper-Sahistan" target="_blank"><span class="iconify"
-          data-icon="fa-brands:researchgate" data-inline="false" style="color: #FFC107;" data-width="1.3rem"></span></a>
-      <!-- <a href="https://www.linkedin.com/in/alper-sahistan" target="_blank"><span class="iconify" data-icon="mdi-linkedin" -->
-          <!-- data-inline="false" style="color: #FFC107;" data-width="1.6rem"></span></a> -->
-      <a href="https://scholar.google.com/citations?hl=tr&user=dUs6hMIAAAAJ" target="_blank"><span class="iconify"
-          data-icon="academicons:google-scholar" data-inline="false" style="color: #FFC107;"
-          data-width="1.2rem"></span></a>
-      <a href="#" data-target="mobile-sidebar" class="sidenav-trigger"><i class="material-icons icon-light"
-          data-width="1rem">menu</i></a>
-      <ul class="right hide-on-med-and-down">
+      <a href="#about" class="cornerName"><b>Alper Sahistan</b></a>
+
+      <!-- Mobile only: reveals the social strip. Hidden above 992px, where the
+           icons are always on show. -->
+      <button type="button" class="nav-social-toggle" aria-label="Show social links" aria-expanded="false"
+        aria-controls="nav-socials"><i class="material-icons">chevron_right</i></button>
+
+      <div class="nav-socials" id="nav-socials">
+        <a class="nav-social" href="https://github.com/alpers-git" target="_blank" rel="noopener noreferrer"
+          title="GitHub"><span class="iconify" data-icon="mdi-github" data-inline="false" data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://gitlab.com/alpers-git" target="_blank" rel="noopener noreferrer"
+          title="GitLab"><span class="iconify" data-icon="mdi-gitlab" data-inline="false" data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://twitter.com/alpers_tw" target="_blank" rel="noopener noreferrer"
+          title="Twitter"><span class="iconify" data-icon="mdi-twitter" data-inline="false"
+            data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://www.researchgate.net/profile/Alper-Sahistan" target="_blank"
+          rel="noopener noreferrer" title="ResearchGate"><span class="iconify" data-icon="fa-brands:researchgate"
+            data-inline="false" data-width="1.3rem"></span></a>
+        <a class="nav-social" href="https://scholar.google.com/citations?hl=tr&amp;user=dUs6hMIAAAAJ" target="_blank"
+          rel="noopener noreferrer" title="Google Scholar"><span class="iconify" data-icon="academicons:google-scholar"
+            data-inline="false" data-width="1.2rem"></span></a>
+      </div>
+
+      <ul class="right hide-on-med-and-down nav-links">
         <li><a class="active" id="about-tab" href="#about">About</a></li>
-        <li class="research-tab-wrapper">
+        <li class="nav-dropdown">
           <a id="research-tab" href="#research">Research</a>
-          <button type="button" class="research-dropdown-btn" aria-label="Open publications menu"><i class="material-icons">arrow_drop_down</i></button>
-          <div class="research-dropdown-menu">
+          <button type="button" class="nav-dropdown__toggle" aria-label="Open publications menu"
+            aria-expanded="false"><i class="material-icons">arrow_drop_down</i></button>
+          <div class="nav-dropdown__menu">
             <a href="publications.html">All publications</a>
           </div>
         </li>
         <li><a id="contact-tab" href="#contact-footer">Contact</a></li>
-        <!-- <li><a href="resume.pdf" target="_blank" style="color: #FFC107;"><u>Resume</u></a></li> -->
-        <li><a href="cv.pdf" target="_blank" style="color: #FFC107;"><u>CV</u></a></li>
-            <li>
-              <a href="sim_dem.html" title="Volumetric Fog Sim" style="padding:0 8px; vertical-align:middle;">
-                <span class="iconify" data-icon="mdi:smoke" data-inline="false" style="color:#57b4f5; width:1.6em; height:1.6em; display:inline-block; vertical-align:middle; filter:drop-shadow(0 0 4px #57b4f5) drop-shadow(0 0 8px #3a8fd4aa);"></span>
-              </a>
-            </li>
+        <li><a class="nav-cv" href="cv.pdf" target="_blank">CV</a></li>
+        <li><a class="nav-fx-icon" href="sim_dem.html" title="Volumetric Fog Sim" aria-label="Volumetric Fog Sim">
+            <span class="iconify" data-icon="mdi:smoke" data-inline="false"></span>
+          </a></li>
       </ul>
     </div>
   </nav>
 
-  <ul class="sidenav" id="mobile-sidebar">
+  <!-- Outside <nav> on purpose: see .nav-burger in css/style.css -->
+  <button type="button" class="sidenav-trigger nav-burger" data-target="mobile-sidebar" aria-label="Menu"
+    aria-controls="mobile-sidebar" aria-expanded="false">
+    <span class="nav-burger__box"><span class="nav-burger__bar"></span></span>
+  </button>
+
+  <ul class="sidenav right-aligned" id="mobile-sidebar">
     <li><a href="#about">About</a></li>
-    <li class="research-tab-wrapper-mobile">
-      <div class="research-mobile-row">
-        <a href="#research">Research</a>
-        <button type="button" class="research-dropdown-btn mobile-research-dropdown-btn" aria-label="Open publications menu" aria-expanded="false" aria-controls="mobile-research-dropdown-menu"><i class="material-icons">arrow_drop_down</i></button>
-      </div>
-      <div id="mobile-research-dropdown-menu" class="research-dropdown-menu-mobile">
-        <a href="publications.html">All publications</a>
-      </div>
-    </li>
+    <li><a href="#research">Recent works</a></li>
+    <li><a href="publications.html">All publications</a></li>
     <li><a href="#contact-footer">Contact</a></li>
-    <!-- <li><a href="resume.pdf">Resume.pdf</a></li> -->
-    <li><a href="cv.pdf">cv.pdf</a></li>
-      <li>
-        <a href="sim_dem.html" title="Volumetric Fog Sim">
-          <span class="iconify" data-icon="mdi:smoke" data-inline="false" style="color:#57b4f5; width:1.6em; height:1.6em; display:inline-block; vertical-align:middle; filter:drop-shadow(0 0 4px #57b4f5) drop-shadow(0 0 8px #3a8fd4aa);"></span>
-        </a>
-      </li>
+    <li><a href="cv.pdf" target="_blank">cv.pdf</a></li>
+    <li><a class="nav-fx-icon" href="sim_dem.html" title="Volumetric Fog Sim">
+        <span class="iconify" data-icon="mdi:smoke" data-inline="false"></span>
+      </a></li>
   </ul>
 
-  <div id="index-banner" class="parallax-container">
-    <div class="section no-pad-bot anchor " id="about">
-      <br><br>
-      <br><br>
-      <br><br>
+  <!-- ===================== About ===================== -->
+  <div class="parallax-container banner">
+    <div class="section no-pad-bot anchor" id="about">
       <div class="container">
-        <div class="row center-on-small-only">
-          <br><br>
-          <div class="col s12 l10" id="intro-text">
-            <img src="images/portrait.jpeg" class="col s12 l3 object-fit-cover" id="intro-img">
-            <div id="about-text">
-              <h3>About</h3>
-              <h6>I'm Alper Sahistan(Şahıstan), a <b>PhD student</b> at <a href="https://www.sci.utah.edu/" target="_blank"><b>SCI Institute</b></a> at the <a href="https://www.utah.edu/" target="_blank">University of
-                  Utah</a>. I work on <b>scientific visualization, volume rendering, and GPU-accelerated ray tracing</b>. My master’s thesis explored GPU-based <b>data-parallel rendering</b> for <b>large unstructured volumes</b>.</h6>
-            </div>
+        <div class="intro">
+          <img src="images/portrait.jpeg" class="intro__portrait" alt="Portrait of Alper Sahistan">
+          <div class="intro__copy">
+            <h3>About</h3>
+            <p>I'm Alper Sahistan(Şahıstan), a <b>PhD student</b> at <a href="https://www.sci.utah.edu/"
+                target="_blank" rel="noopener noreferrer"><b>SCI Institute</b></a> at the <a href="https://www.utah.edu/"
+                target="_blank" rel="noopener noreferrer">University of Utah</a>. I work on <b>scientific
+                visualization, volume rendering, and GPU-accelerated ray tracing</b>. My master's thesis explored
+              GPU-based <b>data-parallel rendering</b> for <b>large unstructured volumes</b>.</p>
           </div>
         </div>
       </div>
     </div>
-    <div class="parallax image-wrapper"><img src="images/VeachAjar.png"></div>
+    <div class="parallax image-wrapper"><img src="images/VeachAjar.png" alt=""></div>
   </div>
 
-  <div class="container">
-    <div class="section">
-      <div class="row">
-        <div class="col l8 s12">
-          <h5 id="extra-info-head">Further Information</h5>
-          <ul id="extra-info-text">
-            <li id="extra-info-text">
-              Currently working on fun ray-tracing problems in
-              <span class="inline-preview-term" data-image="images/Visualization_Large_Nontrivially/t1.png" data-preview-width="190" tabindex="0">scientific volume rendering</span>,
-              <span class="inline-preview-term" data-image="images/schlieren.png" data-preview-width="170" tabindex="0">computational schlieren imaging</span>, and point queries.
-            </li>
-            <li id="extra-info-text">
-              I have recieved my MS & BS degrees from <a href="https://w3.cs.bilkent.edu.tr/en/" target="_blank"> Bilkent University
-                <b>Department of Computer Engineering</b></a>
-            </li>
-            <li id="extra-info-text">
-              Interned at <a href="https://www.llnl.gov/" target="_blank" rel="noopener noreferrer">Lawrence Livermore National Laboratory</a> in 2022 and 2025 as a Graduate Computing Scholar.
-            </li>
-            <li id="extra-info-text">
-              Worked under Intel Center of Excellence at University of Utah to develop a SYCL implementation of compression library <a href="https://github.com/LLNL/zfp" target="_blank">ZFP</a>.
-            </li>
-            <!-- <li id="extra-info-text">
-              I'm also remotely-collaborating with Prof. Uğur Güdükbay and Serkan Demirci from Bilkent University on more rendering oriented papers.
-            </li> -->
-          </ul>
-          <div class="row">
-            <h6 id="extra-info-head">
-              Advisor:
-            </h6><a id="extra-info-text">Valerio Pascucci</a>
-          </div>
-          <div class="row">
-            <h6 id="extra-info-head">How to pronounce my name?</h6>
-            <p id="extra-info-text"><i>Allper Shahisthan</i></p>
-          </div>
+  <!-- ===================== Further information ===================== -->
+  <div class="page-section">
+    <div class="info-grid">
+      <div>
+        <h5 class="section-head">Further Information</h5>
+        <ul class="info-list">
+          <li>
+            Currently working on fun ray-tracing problems in
+            <span class="preview-term" data-image="images/Visualization_Large_Nontrivially/t1.png"
+              data-preview-width="190" tabindex="0">scientific volume rendering</span>,
+            <span class="preview-term" data-image="images/schlieren.png" data-preview-width="170"
+              tabindex="0">computational schlieren imaging</span>, and point queries.
+          </li>
+          <li>
+            I have recieved my MS &amp; BS degrees from <a href="https://w3.cs.bilkent.edu.tr/en/" target="_blank"
+              rel="noopener noreferrer">Bilkent University <b>Department of Computer Engineering</b></a>
+          </li>
+          <li>
+            Interned at <a href="https://www.llnl.gov/" target="_blank" rel="noopener noreferrer">Lawrence Livermore
+              National Laboratory</a> in 2022 and 2025 as a Graduate Computing Scholar.
+          </li>
+          <li>
+            Worked under Intel Center of Excellence at University of Utah to develop a SYCL implementation of
+            compression library <a href="https://github.com/LLNL/zfp" target="_blank" rel="noopener noreferrer">ZFP</a>.
+          </li>
+        </ul>
+
+        <div class="info-block">
+          <h6 class="section-head">Advisor:</h6>
+          <p>Valerio Pascucci</p>
         </div>
-        <div class="col l4 s12">
-          <div class="row">
-            <h6 id="extra-info-head">Software Projects</h6>
-            <ul id="extra-info-text">
-              <li id="extra-info-text">
-                <h6>
-                  <div style="display: inline;" class="project-title" data-image="images/teasers/strandstorm.png">
-                    StrandStorm</div>
-                  <a href="https://github.com/alpers-git/StrandStorm" target="_blank"><span class="iconify" data-icon="mdi-github"
-                      data-inline="false" style="color: #ffffff;"></span></a>
-                </h6>
-                <i><a href="https://graphics.cs.utah.edu/courses/cs6610/spring2023/" target="_blank">CS6610</a> and
-                  <a href="https://graphics.cs.utah.edu/courses/cs6660/spring2023/" target="_blank">CS6660</a> conjoint project.
-                  Real-time <b>hair rendering and physics</b></i>
-              </li>
-              <li id="extra-info-text">
-                <h6>
-                  <div style="display: inline;" class="project-title" data-image="images/teasers/chroma.png">Chroma Ray
-                    Tracer</div>
-                  <a href="https://github.com/chroma-works/Chroma-RayTracer" target="_blank"><span class="iconify"
-                      data-icon="mdi-github" data-inline="false" style="color: #ffffff;"></span></a>
-                </h6>
-                <i>CPU path tracer with all the well-known features and a real-time preview renderer. <a
-                    href="https://chroma-works.github.io/Chroma-RayTracer/" target="_blank">Development blog</a> </i>
-              </li>
-              <li id="extra-info-text">
-                <h6>
-                  <div style="display: inline;" class="project-title" data-image="images/teasers/curli.png">CuRLI</div>
-                  <a href="https://github.com/alpers-git/CuRLI_v1" target="_blank"><span class="iconify" data-icon="mdi-github"
-                      data-inline="false" style="color: #ffffff;"></span></a>
-                </h6>
-                <i>OpenGL renderer and physics implemented with ECS for <a
-                    href="https://graphics.cs.utah.edu/courses/cs6610/spring2023/" target="_blank">CS6610</a> and
-                  <a href="https://graphics.cs.utah.edu/courses/cs6660/spring2023/" target="_blank">CS6660</a>.</i>
-              </li>
-              <li id="extra-info-text">
-                <h6>
-                  <div style="display: inline;" class="project-title" data-image="images/teasers/deltavis.png">
-                    CS6635 Best Project Finalist: DeltaVis</div>
-                  <a href="https://github.com/alpers-git/deltaVis" target="_blank"><span class="iconify" data-icon="mdi-github"
-                      data-inline="false" style="color: #ffffff;"></span></a>
-                </h6>
-                <i>A simple delta-tracking based volume renderer that uses RTX cores via NVIDIA OptiX.</i>
-              </li>
-              <li id="extra-info-text">
-                <div style="display: inline;" class="project-title" data-image="images/teasers/moviz.png">CS6630 Best
-                  Project 2nd place: Moviz</div>
-                <a href="https://benpm.github.io/moviz/" target="_blank"><span class="iconify" data-icon="mdi-github"
-                    data-inline="false" style="color: #ffffff;"></span></a>
-                </h6>
-                <i>We like movies and their stories, but as a collective, they tell a story about the industry, economy,
-                  and more.</i>
-              </li>
-          </div>
+
+        <div class="info-block">
+          <h6 class="section-head">How to pronounce my name?</h6>
+          <p><i>Al-per Sha-his-tan</i></p>
         </div>
+      </div>
+
+      <div>
+        <h6 class="section-head">Software Projects</h6>
+        <ul class="project-list">
+          <li>
+            <h6 class="project-item__head">
+              <span class="project-title" data-image="images/teasers/strandstorm.png">StrandStorm</span>
+              <a href="https://github.com/alpers-git/StrandStorm" target="_blank" rel="noopener noreferrer"
+                aria-label="StrandStorm on GitHub"><span class="iconify" data-icon="mdi-github"
+                  data-inline="false"></span></a>
+            </h6>
+            <p class="project-item__desc"><a href="https://graphics.cs.utah.edu/courses/cs6610/spring2023/"
+                target="_blank" rel="noopener noreferrer">CS6610</a> and <a
+                href="https://graphics.cs.utah.edu/courses/cs6660/spring2023/" target="_blank"
+                rel="noopener noreferrer">CS6660</a> conjoint project. Real-time <b>hair rendering and physics</b></p>
+          </li>
+          <li>
+            <h6 class="project-item__head">
+              <span class="project-title" data-image="images/teasers/chroma.png">Chroma Ray Tracer</span>
+              <a href="https://github.com/chroma-works/Chroma-RayTracer" target="_blank" rel="noopener noreferrer"
+                aria-label="Chroma Ray Tracer on GitHub"><span class="iconify" data-icon="mdi-github"
+                  data-inline="false"></span></a>
+            </h6>
+            <p class="project-item__desc">CPU path tracer with all the well-known features and a real-time preview
+              renderer. <a href="https://chroma-works.github.io/Chroma-RayTracer/" target="_blank"
+                rel="noopener noreferrer">Development blog</a></p>
+          </li>
+          <li>
+            <h6 class="project-item__head">
+              <span class="project-title" data-image="images/teasers/curli.png">CuRLI</span>
+              <a href="https://github.com/alpers-git/CuRLI_v1" target="_blank" rel="noopener noreferrer"
+                aria-label="CuRLI on GitHub"><span class="iconify" data-icon="mdi-github"
+                  data-inline="false"></span></a>
+            </h6>
+            <p class="project-item__desc">OpenGL renderer and physics implemented with ECS for <a
+                href="https://graphics.cs.utah.edu/courses/cs6610/spring2023/" target="_blank"
+                rel="noopener noreferrer">CS6610</a> and <a
+                href="https://graphics.cs.utah.edu/courses/cs6660/spring2023/" target="_blank"
+                rel="noopener noreferrer">CS6660</a>.</p>
+          </li>
+          <li>
+            <h6 class="project-item__head">
+              <span class="project-title" data-image="images/teasers/deltavis.png">CS6635 Best Project Finalist:
+                DeltaVis</span>
+              <a href="https://github.com/alpers-git/deltaVis" target="_blank" rel="noopener noreferrer"
+                aria-label="DeltaVis on GitHub"><span class="iconify" data-icon="mdi-github"
+                  data-inline="false"></span></a>
+            </h6>
+            <p class="project-item__desc">A simple delta-tracking based volume renderer that uses RTX cores via NVIDIA
+              OptiX.</p>
+          </li>
+          <li>
+            <h6 class="project-item__head">
+              <span class="project-title" data-image="images/teasers/moviz.png">CS6630 Best Project 2nd place:
+                Moviz</span>
+              <a href="https://benpm.github.io/moviz/" target="_blank" rel="noopener noreferrer"
+                aria-label="Moviz project page"><span class="iconify" data-icon="mdi-github"
+                  data-inline="false"></span></a>
+            </h6>
+            <p class="project-item__desc">We like movies and their stories, but as a collective, they tell a story about
+              the industry, economy, and more.</p>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
 
-
-  <div id="index-banner" class="parallax-container">
+  <!-- ===================== Research ===================== -->
+  <div class="parallax-container banner">
     <div class="section no-pad-bot anchor" id="research">
-      <div class="container row">
-        <br><br>
-        <br><br>
-        <div class="col s12 l12" id="section-title">
+      <div class="container">
+        <div class="section-title">
           <h3>Research</h3>
         </div>
       </div>
     </div>
-    <div class="parallax image-wrapper"><img src="images/backdrop.png"></div>
+    <div class="parallax image-wrapper"><img src="images/backdrop.png" alt=""></div>
   </div>
 
-  <div class="container">
-    <div class="section">
-      <a  href="publications.html" class="waves-effect waves-light btn-large" style="background-color:#157ec4;"><i class="material-symbols-outlined right"> description </i>All Publications</a>
-      <h4 id="extra-info-head">Recent Publications</h4>
-      <ul>
-        <li class="row" id="extra-info-text">
-          <div class="col s12 l12">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t1.png">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t2.png">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t5.png">
-          </div>
-          <p class="col s12 m12 l12" id="extra-info-text"><b>A. Sahistan</b>, S. Zellmann, H. Miao, N. Morrical, I. Wald, V. Pascucci
-            "Materializing Inter-Channel Relationships with Multi-Density Woodcock Tracking"
-            <b>IEEE Transactions on Visualization and Computer Graphics (TVCG)</b>
-            <a href="research/authorsMDWT.pdf" target="_blank"> <i
-                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal1"><i
-                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
-          </p>
-        </li>
-      </ul>
-      <ul>
-        <li class="row" id="extra-info-text">
-          <div class="col s12 l12">
-            <!-- Optional teaser images for FAIR paper -->
-            <img class="responsive-img" id="teaser-img-2" src="images/FAIR_framework/t1.png">
-          </div>
-          <p class="col s12 m12 l12" id="extra-info-text">A. Panta, <b>A. Sahistan</b>, X. Huang, A. A. Gooch, G. Scorzelli, H. Torres, P. Klein, G. A. Ovando-Montejo, P. Lindstrom, V. Pascucci
-            "Expanding Access to Science Participation: A FAIR Framework for Petascale Data Visualization and Analytics"
-            <b>IEEE Transactions on Visualization and Computer Graphics (TVCG)</b>
-            <a href="research/TVCG_Web_Based_Vis.pdf" target="_blank"> <i
-                class="material-icons icon-light">picture_as_pdf</i></a>
-            <a class=" modal-trigger" href="#modal3"><i
-                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a>
-          </p>
-        </li>
-      </ul>
-        <li class="row" id="extra-info-text">
-          <div class="col s12 l12">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t1.png">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t2.png">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t3.png">
-            <img class="responsive-img" id="teaser-img-2" src="images/mdwt/t4.png">
-          </div>
-          <p class="col s12 m12 l12" id="extra-info-text"><b>A. Sahistan</b>, S. Zellmann, N. Morrical, V. Pascucci, I. Wald
-            "Multi-Density Woodcock Tracking: Efficient & High-Quality Rendering for Multi-Channel Volumes"
-            <b>EuroVis 2025 Eurographics Symposium on Parallel Graphics and Visualization (EGPGV)</b><a href="research/multi-densityWT.pdf" target="_blank"> <i
-                class="material-icons icon-light">picture_as_pdf</i></a><a class=" modal-trigger" href="#modal2"><i
-                class="icon-light" style="font-family: Source Code Pro">BibTeX</i></a> <a href="research/multi-densityWTsup.pdf" target="_blank" title="Supplemental material (PDF)">
-                  <i class="material-icons icon-light">sticky_note_2</i>
-                </a>
-                
-          </p>
-        </li>
-      </ul>
-      
-      <ul>
-    </div>
-  </div>
-  </div>
+  <div class="page-section">
+    <h4 class="section-head">Recent Publications</h4>
+
+    <noscript>
+      <p class="pub-noscript">
+        This list is generated from a single data file and needs JavaScript to render. See
+        <a href="publications.html">all publications</a> or my
+        <a href="https://scholar.google.com/citations?hl=tr&amp;user=dUs6hMIAAAAJ" target="_blank"
+          rel="noopener noreferrer">Google Scholar</a> profile.
+      </p>
+    </noscript>
+
+    <!-- Rendered from js/publications-data.js -->
+    <div class="pub-list" data-publications="recent"></div>
   </div>
 
-  <!-- Modals -->
-  <div id="modal0" class="modal">
-    <div class="modal-content" id="citation-box">
-
-      <h4>BibTeX citation</h4>
-
-      <div class="card-panel" id="citation-text">
-
-        <p type="text" id="paper0">@article{Zellmann2024Beyond,
-          author = {Zellmann, Stefan and Wu, Qi and Sahistan, Alper and Ma, Kwan-Liu and Wald, Ingo},
-          title = {Beyond ExaBricks: GPU Volume Path Tracing of AMR Data},
-          journal = {Computer Graphics Forum},
-          volume = {43},
-          number = {3},
-          doi = {https://doi.org/10.1111/cgf.15095},
-          year = {2024}}</p>
-      </div>
-      <div class="row">
-        <div class="col m11"></div>
-        <a class="button col m1" onclick="copyToClipboard('paper0')" style="position: absolute; right: 0;"><i
-            class="material-icons">copy_all</i></a>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal1" class="modal">
-    <div class="modal-content" id="citation-box">
-
-      <h4>BibTeX citation</h4>
-
-      <div class="card-panel" id="citation-text">
-
-        <p type="text" id="paper1">@article{Sahistan2026MatMDWT,
-          author = {Sahistan, Alper and Zellmann, Stefan and Miao, Haichao and Morrical, Nate and Pascucci, Valerio and Wald, Ingo},
-          journal={IEEE Transactions on Visualization and Computer Graphics (to appear)}, 
-          title={Materializing Inter-Channel Relationships with Multi-Density Woodcock Tracking}, 
-          year={2026},
-          doi={10.1109/TVCG.2026.3653310},
-          volume={},
-          number={},
-          }</p>
-      </div>
-      <div class="row">
-        <div class="col m11"></div>
-        <a class="button col m1" onclick="copyToClipboard('paper1')" style="position: absolute; right: 0;"><i
-            class="material-icons">copy_all</i></a>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal2" class="modal">
-    <div class="modal-content" id="citation-box">
-
-      <h4>BibTeX citation</h4>
-
-      <div class="card-panel" id="citation-text">
-
-        <p type="text" id="paper2">@inproceedings{Sahistan2025MDWT,
-                      booktitle = {Eurographics Symposium on Parallel Graphics and Visualization},
-                      title = {{Multi-Density Woodcock Tracking: Efficient \& High-Quality Rendering for Multi-Channel Volumes}},
-                      author = {Sahistan, Alper and Zellmann, Stefan and Morrical, Nate and Pascucci, Valerio and Wald, Ingo},
-                      year = {2025},
-                      publisher = {The Eurographics Association},
-                      DOI = {10.2312/pgv.20251150}
-                      }
-        </p>
-      </div>
-      <div class="row">
-        <div class="col m11"></div>
-        <a class="button col m1" onclick="copyToClipboard('paper2')" style="position: absolute; right: 0;"><i
-            class="material-icons">copy_all</i></a>
-      </div>
-    </div>
-  </div>
-
-  <div id="modal3" class="modal">
-    <div class="modal-content" id="citation-box">
-
-      <h4>BibTeX citation</h4>
-
-      <div class="card-panel" id="citation-text">
-
-        <p type="text" id="paper3">@article{Panta2026FAIRPetascale,
-  author = {Panta, Aashish and Sahistan, Alper and Huang, Xuan and Gooch, Amy A. and Scorzelli, Giorgio and Torres, Hector and Klein, Patrice and Ovando-Montejo, Gustavo A. and Lindstrom, Peter and Pascucci, Valerio},
-  journal={IEEE Transactions on Visualization and Computer Graphics (to appear)},
-  title={Expanding Access to Science Participation: A FAIR Framework for Petascale Data Visualization and Analytics},
-  year={2026},
-  volume={},
-  number={}
-}</p>
-      </div>
-      <div class="row">
-        <div class="col m11"></div>
-        <a class="button col m1" onclick="copyToClipboard('paper3')" style="position: absolute; right: 0;"><i
-            class="material-icons">copy_all</i></a>
-      </div>
-    </div>
-  </div>
-
-
-  <div id="index-banner" class="parallax-container">
+  <div class="parallax-container banner">
     <div class="section no-pad-bot">
-      <div class="container row">
-      </div>
+      <div class="container"></div>
     </div>
-    <div class="parallax image-wrapper"><img src="images/other_dragon_2.png"></div>
+    <div class="parallax image-wrapper"><img src="images/other_dragon_2.png" alt=""></div>
   </div>
 
-
+  <!-- ===================== Contact ===================== -->
   <footer class="page-footer anchor" id="contact-footer">
     <div class="container">
-      <h4 class="center" id="contact-footer">Feel free to contact me!</h4>
-      <div class="row center">
-        <div class="col l6 s12">
-          <h5 class="center" id="contact-footer"><i class="material-icons">mail</i> Email </h5>
-          <!-- image of email1.png -->
-          <p><img src="images/email1.png" style="padding: 0%; margin: 0%; margin-bottom: -7px; width:102px;height:21px;"><a href="">@gmail.com</a> OR
-            <img src="images/email2.png" style="padding: 0%; margin: 0%; margin-bottom: -4px; width:73px;height:21px;"><a href="">@sci.utah.edu</a>
+      <h4 class="center">Feel free to contact me!</h4>
+      <div class="contact-grid">
+        <div>
+          <h5 class="contact-heading"><i class="material-icons">mail</i> Email</h5>
+          <p>
+            <img class="email-part" src="images/email1.png" alt="alpersahistan" width="102" height="21">@gmail.com
+            OR
+            <img class="email-part" src="images/email2.png" alt="alper" width="73" height="21">@sci.utah.edu
           </p>
         </div>
-        <div class="col l6 s12">
-          <h5 class="center"></a><span class="iconify" data-icon="mdi-twitter" data-inline="false"
-              style="color: #222831;"></span> <a href="https://twitter.com/alpers_tw" target="_blank">Twitter </h5>
-          <p id="contact-footer"></p>
+        <div>
+          <h5 class="contact-heading"><span class="iconify" data-icon="mdi-twitter" data-inline="false"></span>
+            <a href="https://twitter.com/alpers_tw" target="_blank" rel="noopener noreferrer">Twitter</a>
+          </h5>
         </div>
       </div>
     </div>
   </footer>
 
-  <!--JavaScript at end of body for optimized loading-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="js/publications-data.js"></script>
+  <script src="js/publications.js"></script>
+  <script src="js/main.js"></script>
 </body>
-<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script src="js/main.js"></script>
 
 </html>

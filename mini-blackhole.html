@@ -8,7 +8,7 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300;400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
 
@@ -58,22 +58,25 @@
   <nav>
     <div class="nav-wrapper">
       <a href="index.html" class="cornerName"><b>Alper Sahistan</b></a>
-      <a href="#" data-target="mobile-sidebar" class="sidenav-trigger">
-        <i class="material-icons icon-light">menu</i>
-      </a>
-
-      <ul class="right hide-on-med-and-down">
+      <ul class="right hide-on-med-and-down nav-links">
         <li><a href="index.html#about">About</a></li>
         <li><a href="index.html#research">Research</a></li>
         <li><a href="index.html#contact-footer">Contact</a></li>
-        <li><a href="cv.pdf" target="_blank" style="color:#FFC107;"><u>CV</u></a></li>
+        <li><a class="nav-cv" href="cv.pdf" target="_blank">CV</a></li>
       </ul>
     </div>
   </nav>
 
-  <ul class="sidenav" id="mobile-sidebar">
+  <!-- Outside <nav> on purpose: see .nav-burger in css/style.css -->
+  <button type="button" class="sidenav-trigger nav-burger" data-target="mobile-sidebar" aria-label="Menu"
+    aria-controls="mobile-sidebar" aria-expanded="false">
+    <span class="nav-burger__box"><span class="nav-burger__bar"></span></span>
+  </button>
+
+  <ul class="sidenav right-aligned" id="mobile-sidebar">
     <li><a href="index.html#about">About</a></li>
-    <li><a href="index.html#research">Research</a></li>
+    <li><a href="index.html#research">Recent works</a></li>
+    <li><a href="publications.html">All publications</a></li>
     <li><a href="index.html#contact-footer">Contact</a></li>
     <li><a href="cv.pdf">CV</a></li>
   </ul>
@@ -111,11 +114,8 @@
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      M.Sidenav.init(document.querySelectorAll('.sidenav'));
-    });
-  </script>
+  <!-- Nav + drawer behaviour is shared with the rest of the site. -->
+  <script src="js/main.js"></script>
 
   <script type="module">
     import { initRayWebGL } from './webgl.js';
