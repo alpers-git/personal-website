@@ -118,6 +118,20 @@
     return '<div class="pub-card__actions">' + parts.join('') + '</div>';
   }
 
+  /* The year gets its own slot on the venue line, so a venue that already spells
+     it out ("EuroVis 2024", "2023 IEEE Visualization Conference (VIS)") would
+     print it twice. Strip it there and let the slot carry it, so every card
+     states the year in the same place regardless of how the venue is written. */
+  function venueWithoutYear(pub) {
+    const year = String(pub.year);
+
+    return pub.venue
+      .replace(new RegExp('^' + year + '\\s+'), '')
+      .replace(new RegExp('[,\\s]+' + year + '(?![0-9])'), ' ')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+  }
+
   function renderCard(pub, variant) {
     const note = pub.note ? ' <span class="pub-card__note">(' + escapeHtml(pub.note) + ')</span>' : '';
     const modifier = variant === 'compact' ? ' pub-card--compact' : '';
@@ -126,7 +140,8 @@
       renderTeasers(pub) +
       '<div class="pub-card__body">' +
         '<h3 class="pub-card__title">' + escapeHtml(pub.title) + '</h3>' +
-        '<p class="pub-card__venue"><em>' + escapeHtml(pub.venue) + '</em>' + note + '</p>' +
+        '<p class="pub-card__venue"><em>' + escapeHtml(venueWithoutYear(pub)) + '</em>' + note +
+          '<span class="pub-card__year">' + pub.year + '</span></p>' +
         '<p class="pub-card__authors">' + renderAuthors(pub.authors) + '</p>' +
       '</div>' +
       renderActions(pub) +

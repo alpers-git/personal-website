@@ -1697,6 +1697,22 @@ body.has-lightbox {
     color: var(--text-muted);
 }
 
+/* The year, sharing the venue line rather than taking one of its own. The
+   separator is a pseudo-element so the year can wrap onto the next line without
+   dragging a stray dot with it. Tabular figures keep the four digits the same
+   width from card to card, so the column of years reads as a column. */
+.pub-card__year {
+    color: var(--text-muted);
+    font-feature-settings: 'tnum' 1;
+    white-space: nowrap;
+}
+
+.pub-card__year::before {
+    content: '·';
+    margin: 0 0.4rem;
+    color: var(--accent-dim);
+}
+
 .pub-card__authors {
     margin: 0;
     color: var(--text-muted);

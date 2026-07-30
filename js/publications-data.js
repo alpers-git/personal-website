@@ -28,6 +28,25 @@ const RECENT_PUBLICATION_COUNT = 3;
 
 const PUBLICATIONS = [
   {
+    id: 'vis-inr-2026',
+    title: 'A Query-Efficient Stochastic Volume Rendering Framework for Time-Varying Implicit Neural Volumes',
+    authors: ['A. Sahistan', 'H. Miao', 'Z. Li', 'T. Bremer', 'J. Levine', 'V. Pascucci'],
+    venue: 'IEEE Visualization Conference',
+    year: 2026,
+    note: 'to appear',
+    teasers: ['images/quesvr/t1.png', 'images/quesvr/t2.gif'],
+    links: {
+      pdf: 'research/quesvr.pdf',
+      code: 'https://github.com/alpers-git/VIZ-INR'
+    },
+    bibtex: String.raw`@inproceedings{Sahistan2026VizINR,
+            author={Sahistan, Alper and Miao, Haichao and Li, Zhimin and Bremer, Peer-Timo and Levine, Joshua A. and Pascucci, Valerio},
+            booktitle={2026 IEEE Visualization Conference (to appear)}, 
+            title={A Query-Efficient Stochastic Volume Rendering Framework for Time-Varying Implicit Neural Volumes}, 
+            year={2026},
+            doi={TBD}}`
+  },
+  {
     id: 'mat-mdwt-2026',
     title: 'Materializing Inter-Channel Relationships with Multi-Density Woodcock Tracking',
     authors: ['A. Sahistan', 'S. Zellmann', 'H. Miao', 'N. Morrical', 'I. Wald', 'V. Pascucci'],
@@ -53,7 +72,6 @@ const PUBLICATIONS = [
     authors: ['A. Panta', 'A. Sahistan', 'X. Huang', 'A. A. Gooch', 'G. Scorzelli', 'H. Torres',
       'P. Klein', 'G. A. Ovando-Montejo', 'P. Lindstrom', 'V. Pascucci'],
     venue: 'IEEE Transactions on Visualization and Computer Graphics',
-    note: 'to appear',
     year: 2026,
     teasers: ['images/FAIR_framework/t1.png'],
     links: {
