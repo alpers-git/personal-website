@@ -3,9 +3,14 @@
  *
  * Both the full list on publications.html and the "Recent Publications"
  * block on index.html are rendered from this array by js/publications.js.
- * Adding a paper = adding one object at the top of PUBLICATIONS. Nothing
- * else needs to be touched: year headings, cards, BibTeX dialogs and the
- * homepage highlights are all derived from this data.
+ * Adding a paper = adding one object at the top of PUBLICATIONS: year
+ * headings, cards, BibTeX dialogs and the homepage highlights are all
+ * derived from this data.
+ *
+ * The one follow-up step is `python tools/optimize-images.py`, which builds
+ * the web-sized copy of each teaser under images/thumbs/. The card falls back
+ * to the full-size figure named here until that runs, so a new paper looks
+ * right either way — it just costs the visitor a megabyte or two.
  *
  * Fields
  *   id        unique slug, used for anchors (#pub-<id>)

@@ -66,6 +66,15 @@
       .join(', ');
   }
 
+  /* images/mdwt/t1.png -> images/thumbs/mdwt/t1.webp
+     The publications data names the original figure, which is what the archive
+     wants; a card is 11rem tall (9rem compact) and wants the web-sized copy that
+     tools/optimize-images.py writes alongside it. Deriving the path here keeps
+     the data file free of build artefacts and needs no manifest. */
+  function thumbFor(src) {
+    return 'images/thumbs/' + src.replace(/^images\//, '').replace(/\.[^./]+$/, '.webp');
+  }
+
   function renderTeasers(pub) {
     if (!pub.teasers || pub.teasers.length === 0) {
       return '';
@@ -76,8 +85,11 @@
         // The first teaser carries the page's visual weight on narrow screens;
         // the rest are supporting detail and collapse away there.
         const modifier = index === 0 ? '' : ' pub-teaser--secondary';
-        return '<img class="pub-teaser' + modifier + '" loading="lazy" src="' +
-          escapeHtml(src) + '" alt="Teaser figure from &quot;' + escapeHtml(pub.title) + '&quot;">';
+        // data-full is the fallback for a paper added since the last run of
+        // tools/optimize-images.py, which therefore has no thumbnail yet.
+        return '<img class="pub-teaser' + modifier + '" loading="lazy" decoding="async" src="' +
+          escapeHtml(thumbFor(src)) + '" data-full="' + escapeHtml(src) +
+          '" alt="Teaser figure from &quot;' + escapeHtml(pub.title) + '&quot;">';
       })
       .join('');
 
@@ -425,6 +437,29 @@
     });
   }
 
+  /* ---- thumbnail fallback --------------------------------------------- */
+
+  /* Falls back to the full-size figure when a card's thumbnail is missing —
+     the case being a paper added to publications-data.js since the last run of
+     tools/optimize-images.py.
+
+     Registered in the capture phase because error events from <img> do not
+     bubble, and once per document rather than per image. data-full is cleared
+     before the retry so an original that is *also* missing cannot loop. */
+  function watchForMissingThumbnails() {
+    document.addEventListener('error', function (event) {
+      const image = event.target;
+
+      if (!image || image.tagName !== 'IMG' || !image.dataset.full) {
+        return;
+      }
+
+      const full = image.dataset.full;
+      delete image.dataset.full;
+      image.src = full;
+    }, true);
+  }
+
   /* ---- boot ------------------------------------------------------------ */
 
   function init() {
@@ -438,6 +473,9 @@
     if (targets.length === 0) {
       return;
     }
+
+    // Before the cards exist, so the first failing thumbnail is already covered.
+    watchForMissingThumbnails();
 
     targets.forEach(function (container) {
       if (container.getAttribute('data-publications') === 'recent') {
