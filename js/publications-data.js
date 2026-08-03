@@ -20,7 +20,7 @@
  *   note      optional qualifier shown after the venue, e.g. "to appear"
  *   year      number, used to group the list
  *   teasers   array of image paths (thumbnails)
- *   links     optional { pdf, supplemental, code, doi, project }
+ *   links     optional { pdf, supplemental, code, arxiv, doi, project }
  *   bibtex    citation string, written with String.raw so LaTeX escapes
  *             such as \" and \& survive verbatim
  */
@@ -50,6 +50,27 @@ const PUBLICATIONS = [
             title={A Query-Efficient Stochastic Volume Rendering Framework for Time-Varying Implicit Neural Volumes}, 
             year={2026},
             doi={TBD}}`
+  },
+  {
+    id: 'rafi-2026',
+    title: 'RAFI — A Ray/Work Forwarding Infrastructure for Data Parallel Multi-Node/Multi-GPU Computing',
+    authors: ['I. Wald', 'S. Demirci', 'A. Sahistan', 'S. Zellmann', 'A. Paris', 'P. Moran',
+      'M. Jaros', 'T. von Landesberger', 'U. Gudukbay', 'V. Pascucci'],
+    venue: 'arXiv preprint',
+    year: 2026,
+    teasers: ['images/rafi/t1.png', 'images/rafi/t2.png', 'images/rafi/t3.png'],
+    links: {
+      pdf: 'research/rafi.pdf',
+      arxiv: 'https://arxiv.org/abs/2605.30294'
+    },
+    bibtex: String.raw`@misc{wald2026rafirayworkforwarding,
+  title={RAFI -- A Ray/Work Forwarding Infrastructure for Data Parallel Multi-Node/Multi-GPU Computing},
+  author={Ingo Wald and Serkan Demirci and Alper Sahistan and Stefan Zellmann and Andrea Paris and Patrick Moran and Milan Jaros and Tatiana von Landesberger and Ugur Gudukbay and Valerio Pascucci},
+  year={2026},
+  eprint={2605.30294},
+  archivePrefix={arXiv},
+  primaryClass={cs.DC},
+  url={https://arxiv.org/abs/2605.30294}}`
   },
   {
     id: 'mat-mdwt-2026',

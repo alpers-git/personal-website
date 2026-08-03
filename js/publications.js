@@ -24,6 +24,7 @@
     code: 'mdi:github',
     supplemental: 'mdi:file-document-outline',
     doi: 'mdi:link-variant',
+    arxiv: 'academicons:arxiv',
     project: 'mdi:web',
     copy: 'mdi:content-copy'
   };
@@ -32,6 +33,7 @@
     pdf: "Author's version (PDF)",
     supplemental: 'Supplemental material (PDF)',
     doi: 'Publisher page',
+    arxiv: 'arXiv page',
     project: 'Project page',
     code: 'Source code'
   };
@@ -40,6 +42,7 @@
     pdf: 'PDF',
     supplemental: 'Supplemental',
     doi: 'DOI',
+    arxiv: 'arXiv',
     project: 'Project',
     code: 'Code'
   };
@@ -121,7 +124,7 @@
       '<span class="pub-action__label">BibTeX</span></button>'
     );
 
-    ['code', 'supplemental', 'doi', 'project'].forEach(function (kind) {
+    ['code', 'supplemental', 'arxiv', 'doi', 'project'].forEach(function (kind) {
       if (links[kind]) {
         parts.push(renderAction(kind, links[kind], pub));
       }
