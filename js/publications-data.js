@@ -42,7 +42,8 @@ const PUBLICATIONS = [
     teasers: ['images/quesvr/t1.png', 'images/quesvr/t2.gif'],
     links: {
       pdf: 'research/quesvr.pdf',
-      code: 'https://github.com/alpers-git/VIZ-INR'
+      code: 'https://github.com/alpers-git/VIZ-INR',
+      arxiv: 'https://arxiv.org/abs/2607.28047'
     },
     bibtex: String.raw`@inproceedings{Sahistan2026VizINR,
             author={Sahistan, Alper and Miao, Haichao and Li, Zhimin and Bremer, Peer-Timo and Levine, Joshua A. and Pascucci, Valerio},
@@ -61,6 +62,7 @@ const PUBLICATIONS = [
     teasers: ['images/rafi/t1.png', 'images/rafi/t2.png', 'images/rafi/t3.png'],
     links: {
       pdf: 'research/rafi.pdf',
+      code: 'https://github.com/ingowald/rafi',
       arxiv: 'https://arxiv.org/abs/2605.30294'
     },
     bibtex: String.raw`@misc{wald2026rafirayworkforwarding,
