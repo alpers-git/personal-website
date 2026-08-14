@@ -75,6 +75,31 @@ const PUBLICATIONS = [
   url={https://arxiv.org/abs/2605.30294}}`
   },
   {
+    id: 'advanced-volume-graphics-2026',
+    title: 'Advanced Real-Time Volume Graphics',
+    authors: ['S. Zellmann', 'A. Sahistan', 'I. Wald'],
+    venue: 'ACM SIGGRAPH 2026 Courses',
+    year: 2026,
+    teasers: ['images/advancedVolumeGraphics.png'],
+    links: {
+      code: 'https://github.com/dvr-course/dvr-course-cpp',
+      doi: 'https://dl.acm.org/doi/10.1145/3799820.3812500'
+    },
+    bibtex: String.raw`@inproceedings{Zellmann2026AdvancedVolume,
+  author = {Zellmann, Stefan and Sahistan, Alper and Wald, Ingo},
+  title = {Advanced Real-Time Volume Graphics},
+  year = {2026},
+  isbn = {9798400725432},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3799820.3812500},
+  doi = {10.1145/3799820.3812500},
+  booktitle = {Proceedings of the Special Interest Group on Computer Graphics and Interactive Techniques Conference Courses},
+  articleno = {28},
+  numpages = {4},
+  series = {SIGGRAPH Courses '26}}`
+  },
+  {
     id: 'mat-mdwt-2026',
     title: 'Materializing Inter-Channel Relationships with Multi-Density Woodcock Tracking',
     authors: ['A. Sahistan', 'S. Zellmann', 'H. Miao', 'N. Morrical', 'I. Wald', 'V. Pascucci'],
