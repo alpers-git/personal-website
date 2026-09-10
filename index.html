@@ -114,9 +114,19 @@
       </div>
     </div>
     <!-- The .webp copies are built by tools/optimize-images.py from the .png
-         originals, which stay in the repository. Re-run it after replacing one. -->
+         originals, which stay in the repository. Re-run it after replacing one.
+
+         The banner crops this to fill the window (see .parallax img in
+         style.css), so the width worth downloading is the wider of two things:
+         the window itself, and - where the crop is taller than the window is
+         wide - the height of the image box, which is 130% of a banner that is
+         at most min(500px, 80vh) tall. 130% * 80vh * 16/9 is 185vh, capped at
+         1156px by the 500px. A browser that cannot parse the max()/min() falls
+         back to 100vw, which lands on the same candidate on any phone. -->
     <div class="parallax image-wrapper"><img src="images/VeachAjar.webp" alt="" width="1920" height="1080"
-        fetchpriority="high"></div>
+        srcset="images/VeachAjar-960w.webp 960w, images/VeachAjar-1280w.webp 1280w,
+                images/VeachAjar-1600w.webp 1600w, images/VeachAjar.webp 1920w"
+        sizes="max(100vw, min(1156px, 185vh))" fetchpriority="high"></div>
   </div>
 
   <!-- ===================== Further information ===================== -->
@@ -249,8 +259,11 @@
         </div>
       </div>
     </div>
+    <!-- 1280x943 is all there is of this one, so it has a single alternate.
+         The sizes cap is 130% * 500px * 1280/943 - see the About banner. -->
     <div class="parallax image-wrapper"><img src="images/backdrop.webp" alt="" width="1280" height="943"
-        loading="lazy"></div>
+        srcset="images/backdrop-960w.webp 960w, images/backdrop.webp 1280w"
+        sizes="max(100vw, min(882px, 141vh))" loading="lazy"></div>
   </div>
 
   <div class="page-section">
@@ -273,8 +286,12 @@
     <div class="section no-pad-bot">
       <div class="container"></div>
     </div>
-    <div class="parallax image-wrapper"><img src="images/other_dragon_2.webp" alt="" width="1920" height="1080"
-        loading="lazy"></div>
+    <!-- No srcset on this one: .at-native-width draws it at 1920px on anything
+         narrower than that, so every viewport asks for the full-width copy and
+         a smaller candidate could never be chosen. It is the lightest of the
+         three backdrops at 171K. -->
+    <div class="parallax image-wrapper"><img src="images/other_dragon_2.webp" class="at-native-width" alt=""
+        width="1920" height="1080" loading="lazy"></div>
   </div>
 
   <!-- ===================== Contact ===================== -->

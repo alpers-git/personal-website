@@ -163,10 +163,34 @@ img {
     max-width: 100%;
 }
 
-/* Parallax images must be free to overflow the container — Materialize sizes
-   them with min-width/min-height and clamping the width stretches them. */
+/* Materialize sizes parallax images with min-width/min-height, which raises the
+   two axes independently: a viewport wider than the image's own aspect ratio
+   grows the width while the height stays at its intrinsic value, and the
+   picture stretches. So size the box here instead — container width, natural
+   height — and let object-fit crop the overflow rather than distort it. The
+   min-height floor keeps a strip for the parallax to travel through on
+   viewports too narrow for the natural height to provide one; without it the
+   image would exactly fill the banner there and stop moving. max-width has to
+   be released as well, or the global img rule clamps the width back. */
 .parallax-container .parallax img {
     max-width: none;
+    width: 100%;
+    height: auto;
+    min-height: 130%;
+    object-fit: cover;
+}
+
+/* The dragon banner carries no text of its own, and at window scale its subject
+   is a speck in an empty room — the framing only works when the render is drawn
+   at the size it was authored. Materialize's min-width used to do that by
+   accident, keeping the image at its native width on any narrower window; the
+   rule above replaced that with a fit-to-window width and zoomed the shot out.
+   So put the floor back for this one banner, deliberately. The value is the
+   image's own pixel width — 1920 for images/other_dragon_2.png — and has to
+   move with it if that file is ever replaced. Above 1920px of window the image
+   fills the width as any other banner does, which is what it did before too. */
+.parallax-container .parallax img.at-native-width {
+    min-width: 1920px;
 }
 
 h2 {
