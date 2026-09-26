@@ -1947,6 +1947,180 @@ body.has-lightbox {
 }
 
 /* --------------------------------------------------------------------------
+   Image diff tool (img-diff.html)
+   -------------------------------------------------------------------------- */
+
+.img-diff__inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.25rem;
+    margin: 1.5rem 0 1.25rem;
+}
+
+/* Beats Materialize's `label` rule, which sets a small grey font. */
+.img-diff .drop-zone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 14rem;
+    padding: 1.25rem;
+    background-color: rgba(255, 193, 7, 0.06);
+    border: 1px dashed rgba(255, 193, 7, 0.45);
+    border-radius: var(--shape-panel);
+    color: var(--text);
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--ease), border-color var(--ease);
+}
+
+.img-diff .drop-zone.has-image {
+    border-style: solid;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .img-diff .drop-zone:hover {
+        background-color: rgba(255, 193, 7, 0.13);
+        border-color: var(--accent);
+    }
+}
+
+.img-diff .drop-zone.is-dragover,
+.img-diff .drop-zone:focus-within {
+    background-color: rgba(255, 193, 7, 0.17);
+    border-color: var(--accent);
+}
+
+/* Visually hidden but still focusable, so the zone works from the keyboard. */
+.drop-zone__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+}
+
+.drop-zone__label {
+    color: var(--accent);
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.drop-zone__preview {
+    max-height: 12rem;
+    border-radius: var(--radius-sm);
+    object-fit: contain;
+}
+
+.drop-zone__hint {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.drop-zone.has-image .drop-zone__hint {
+    display: none;
+}
+
+.drop-zone__meta {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    word-break: break-all;
+}
+
+.img-diff__actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.img-diff__calc {
+    padding: 0.45rem 1.4rem;
+    font-size: 1.1rem;
+}
+
+.img-diff .pub-action:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.img-diff__status {
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+}
+
+.img-diff__scores {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.score-tile {
+    display: flex;
+    flex-direction: column;
+    min-width: 12rem;
+    padding: 1rem 1.4rem;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.score-tile__label {
+    color: var(--text-muted);
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.score-tile__value {
+    color: var(--accent);
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.img-diff__maps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: 1.5rem;
+}
+
+.heat-map {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 1rem;
+    background-color: var(--surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.heat-map__caption {
+    color: var(--accent);
+    font-family: var(--font-heading);
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.heat-map__canvas {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+}
+
+/* --------------------------------------------------------------------------
    Footer
    -------------------------------------------------------------------------- */
 

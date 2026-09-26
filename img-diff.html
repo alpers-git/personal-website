@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AŞ's Image Diff</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Roboto+Condensed:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://code.iconify.design/1/1.0.7/iconify.min.js"></script>
+
+  <!--Import materialize.css first so our own styles can override it-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="index.html" class="cornerName"><b>Alper Sahistan</b></a>
+
+      <!-- Mobile only: reveals the social strip. Hidden above 992px, where the icons are always on show. -->
+      <button type="button" class="nav-social-toggle" aria-label="Show social links" aria-expanded="false"
+        aria-controls="nav-socials"><i class="material-icons">chevron_right</i></button>
+
+      <div class="nav-socials" id="nav-socials">
+        <a class="nav-social" href="https://github.com/alpers-git" target="_blank" rel="noopener noreferrer"
+          title="GitHub"><span class="iconify" data-icon="mdi-github" data-inline="false" data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://gitlab.com/alpers-git" target="_blank" rel="noopener noreferrer"
+          title="GitLab"><span class="iconify" data-icon="mdi-gitlab" data-inline="false" data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://twitter.com/alpers_tw" target="_blank" rel="noopener noreferrer"
+          title="Twitter"><span class="iconify" data-icon="mdi-twitter" data-inline="false"
+            data-width="1.5rem"></span></a>
+        <a class="nav-social" href="https://www.researchgate.net/profile/Alper-Sahistan" target="_blank"
+          rel="noopener noreferrer" title="ResearchGate"><span class="iconify" data-icon="fa-brands:researchgate"
+            data-inline="false" data-width="1.3rem"></span></a>
+        <a class="nav-social" href="https://scholar.google.com/citations?hl=tr&amp;user=dUs6hMIAAAAJ" target="_blank"
+          rel="noopener noreferrer" title="Google Scholar"><span class="iconify" data-icon="academicons:google-scholar"
+            data-inline="false" data-width="1.2rem"></span></a>
+      </div>
+
+      <ul class="right hide-on-med-and-down nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a class="nav-cv" href="cv.pdf" target="_blank">CV</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Outside <nav> on purpose: see .nav-burger in css/style.css -->
+  <button type="button" class="sidenav-trigger nav-burger" data-target="mobile-sidebar" aria-label="Menu"
+    aria-controls="mobile-sidebar" aria-expanded="false">
+    <span class="nav-burger__box"><span class="nav-burger__bar"></span></span>
+  </button>
+
+  <ul class="sidenav right-aligned" id="mobile-sidebar">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#research">Recent works</a></li>
+    <li><a href="publications.html">All publications</a></li>
+    <li><a href="cv.pdf" target="_blank">cv.pdf</a></li>
+  </ul>
+
+  <main class="page-body">
+    <div class="page-section img-diff">
+      <h1 class="section-head">Image Diff</h1>
+      <p class="text-muted">Compare two images of the same size with PSNR and SSIM. Everything runs in your browser;
+        nothing is uploaded.</p>
+
+      <div class="img-diff__inputs">
+        <label class="drop-zone" data-slot="0">
+          <input type="file" accept="image/*" class="drop-zone__input">
+          <span class="drop-zone__label">Reference</span>
+          <img class="drop-zone__preview" alt="" hidden>
+          <span class="drop-zone__hint">Drop an image here or click to choose</span>
+          <span class="drop-zone__meta"></span>
+        </label>
+        <label class="drop-zone" data-slot="1">
+          <input type="file" accept="image/*" class="drop-zone__input">
+          <span class="drop-zone__label">Test</span>
+          <img class="drop-zone__preview" alt="" hidden>
+          <span class="drop-zone__hint">Drop an image here or click to choose</span>
+          <span class="drop-zone__meta"></span>
+        </label>
+      </div>
+
+      <div class="img-diff__actions">
+        <button type="button" class="pub-action img-diff__calc" disabled>Calculate</button>
+        <span class="img-diff__status" role="status"></span>
+      </div>
+
+      <section class="img-diff__results" hidden>
+        <div class="img-diff__scores">
+          <div class="score-tile">
+            <span class="score-tile__label">PSNR</span>
+            <span class="score-tile__value" data-score="psnr"></span>
+          </div>
+          <div class="score-tile">
+            <span class="score-tile__label">SSIM</span>
+            <span class="score-tile__value" data-score="ssim"></span>
+          </div>
+        </div>
+
+        <div class="img-diff__maps">
+          <figure class="heat-map">
+            <figcaption class="heat-map__caption">SSIM dissimilarity (1 &minus; SSIM)</figcaption>
+            <canvas class="heat-map__canvas" data-map="ssim"></canvas>
+            <button type="button" class="pub-action heat-map__save" data-save="ssim">Save PNG</button>
+          </figure>
+          <figure class="heat-map">
+            <figcaption class="heat-map__caption">Absolute error |ref &minus; test|</figcaption>
+            <canvas class="heat-map__canvas" data-map="err"></canvas>
+            <button type="button" class="pub-action heat-map__save" data-save="err">Save PNG</button>
+          </figure>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/img-diff.js"></script>
+</body>
+
+</html>
